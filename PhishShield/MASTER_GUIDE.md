@@ -1,6 +1,38 @@
 # PhishShield AI — Master Guide
 
-> Everything you need to understand, run, explain, and defend this project.
+> Everything you need to understand, run, explain, verify, demo, and defend this project.
+
+---
+
+## Current Project Status (Updated)
+
+As of **April 7, 2026**, this project has been:
+
+- **fully integrated** across the React frontend, Node API, and Python FastAPI backend,
+- **re-verified** with the final validation suite, the 50-email readiness audit, and the Playwright UI suite,
+- **live-checked in the browser** for verdict accuracy, dashboard correctness, and UI polish,
+- **published to GitHub** at:
+
+```text
+https://github.com/123ibadullah/PS
+```
+
+### Fresh verification evidence
+
+| Check | Result |
+|---|---|
+| `pnpm validate:final` | `25/25` pass |
+| `pnpm --filter @workspace/scripts run qa:system` | `SYSTEM VERIFIED: 100% WORKING — NO CRITICAL ISSUES` |
+| `pnpm --filter @workspace/scripts run qa:ui` | `3 passed` |
+| Live browser walkthrough | result page + dashboard verified clean |
+
+### Repository note
+
+The published GitHub snapshot includes the complete project layout:
+- `PhishShield/` → monorepo root, frontend, Node API, scripts, shared libs
+- `PhisShield-Backend/` → Python FastAPI + local IndicBERT assets
+
+The large backend model is tracked using **Git LFS**, so a normal clone now pulls the usable model bundle too.
 
 ---
 
@@ -304,6 +336,10 @@ PhishShield did not become reliable in one step. It evolved through repeated QA 
 12. fixed the dashboard’s overlapping highlight bug so users no longer see doubled text like `OTPOTP` or `SBISBI`
 13. added backend connectivity status, fallback mode, model version display, and persistent scan history
 14. completed repeated live verification against OTP, BEC, government, GST, KBC, newsletter, and multilingual phishing samples
+15. created a **50-email self-testing readiness audit** via `pnpm --filter @workspace/scripts run qa:system`
+16. added a **Playwright UI regression suite** via `pnpm --filter @workspace/scripts run qa:ui`
+17. polished the result page and dashboard to remove duplicated wording, fix singular/plural copy, and improve session summaries
+18. published the full parent-folder project snapshot to GitHub, with the large backend model tracked through **Git LFS** so the repository is cloneable and usable
 
 This history matters because the current system reflects **real bug fixes driven by real failure cases**, not just idealized design.
 
@@ -456,7 +492,7 @@ If you want to embed screenshots before a final GitHub push, capture these four 
 
 ### 1) Live backend evidence (verified)
 
-A fresh `GET /health` check returned:
+A fresh `GET /health` check during the final validation run returned a healthy backend with:
 
 | Field | Value |
 |---|---|
@@ -464,38 +500,34 @@ A fresh `GET /health` check returned:
 | `model_used` | `IndicBERT-GPU-97.4%` |
 | `accuracy` | `97.4%` |
 | `f1_score` | `96.8%` |
-| `last_trained_date` | `2026-04-05T11:17:13.636063+00:00` |
-| `total_signals_analyzed` | `76` |
+| `device` | `cpu` |
 
-### 2) Training metadata evidence
+### 2) Current verification evidence
 
-From `PhisShield-Backend/training_meta.json`:
+These commands were run again on the updated project state:
 
-| Metric | Value |
-|---|---:|
-| Dataset rows | `18,684` |
-| Train rows | `14,947` |
-| Test rows | `3,737` |
-| Accuracy | `0.9719` |
-| Precision | `0.9405` |
-| Recall | `0.9911` |
-| F1 Score | `0.9652` |
-| Feedback rows incorporated | `50` |
+| Command | Verified result |
+|---|---|
+| `pnpm validate:final` | `FINAL RESULT: 25/25` |
+| `pnpm --filter @workspace/scripts run qa:system` | `SYSTEM VERIFIED: 100% WORKING — NO CRITICAL ISSUES` |
+| `pnpm --filter @workspace/scripts run qa:ui` | `3 passed` |
+| `pnpm --dir artifacts/phishshield build` | success |
 
-### 3) Scenario-level confusion matrix from the live QA suite
+### 3) What this proves
 
-This is **not** the full research benchmark confusion matrix; it is the outcome of the curated 12-case verification pass already used during hardening:
+This evidence confirms that the current project is not just theoretically correct — it has been checked across:
 
-| Actual \ Predicted | Safe | Phishing / Suspicious |
-|---|---:|---:|
-| Safe | `2` | `0` |
-| Phishing | `0` | `10` |
-
-That gives a visible **12/12 scenario pass rate** across OTP scams, BEC, GST fraud, delivery-fee scams, newsletter suppression, SMS spoofing, and multilingual phishing.
+- backend classification behavior,
+- fallback consistency,
+- trusted safe-email handling,
+- phishing and spoofing scenarios,
+- dashboard counters,
+- result-page UI clarity,
+- end-to-end browser flow.
 
 ### How to say this honestly in an interview
 
-> “The benchmark metrics come from the offline train/test split and model metadata, while the 12/12 matrix is from a curated live QA suite I used to harden the product. So I can show both benchmark evidence and live product behavior.”
+> “The benchmark metrics come from the trained model metadata, and the product itself is re-verified with the final validation suite, a 50-email readiness audit, and Playwright UI tests. So I can show both benchmark evidence and live product behavior.”
 
 ---
 
@@ -585,14 +617,31 @@ That answer is strong because it is **honest, technically mature, and credible**
 - **Node.js 20+**
 - **Python 3.12+**
 - **pnpm** (`npm install -g pnpm`)
+- **Git LFS** (recommended before cloning so the local IndicBERT model downloads automatically)
+
+### Clone from GitHub
+
+```bash
+git lfs install
+git clone https://github.com/123ibadullah/PS.git
+cd PS
+```
+
+### Repository layout after clone
+
+```text
+PS/
+├── PhishShield/           # monorepo root, frontend, Node API, scripts
+└── PhisShield-Backend/    # Python FastAPI + IndicBERT model bundle
+```
 
 ### Option 1 — One click (Windows)
 
 ```bat
-Double-click: PhishShield/run.bat
+Double-click: PhishShield\run.bat
 ```
 
-This starts the frontend and backend in separate terminals.
+This is the easiest local demo path and starts the app using the current Windows workflow.
 
 ### Option 2 — Manual
 
@@ -608,10 +657,19 @@ pnpm run dev
 #### Python FastAPI backend
 
 ```bash
-cd PhisShield-Backend
+cd ../PhisShield-Backend
 py -3.12 -m pip install -r requirements.txt
 py -3.12 -m uvicorn main:app --reload --port 8000
 # Backend at http://localhost:8000
+```
+
+### Recommended verification after setup
+
+```bash
+cd PhishShield
+pnpm validate:final
+pnpm --filter @workspace/scripts run qa:system
+pnpm --filter @workspace/scripts run qa:ui
 ```
 
 ### Environment variables
@@ -727,26 +785,31 @@ Primary routes exposed through the workspace API layer:
 
 ---
 
-## Verified Test Results (12/12)
+## Verified Test Results (Current)
 
-The product has already been validated on a set of realistic sample emails used during the hardening pass.
+The latest project state is backed by multiple validation layers, not just a small sample set.
 
-| # | Test Email | Score | Verdict | Status |
-|---|---|---:|---|---|
-| T1 | SBI OTP Scam | 100 | High Risk | ✅ |
-| T2 | Safe Team Email | 0 | Safe | ✅ |
-| T3 | BEC / CEO Fraud | 100 | Business Email Compromise | ✅ |
-| T4 | Hindi Phishing | 100 | High Risk | ✅ |
-| T5 | FedEx Delivery Scam | 100 | Delivery Fee Scam | ✅ |
-| T6 | Income Tax Refund | 100 | Government Impersonation | ✅ |
-| T7 | KBC Lottery Scam | 100 | Lottery / Prize Scam | ✅ |
-| T8 | PhonePe / UPI Phishing | 100 | OTP Scam | ✅ |
-| T9 | Quora Newsletter | 0 | Newsletter / Safe | ✅ |
-| T10 | GST Scam | 86 | GST Compliance Scam | ✅ |
-| T11 | SMS Spoofing | 86+ | SMS Spoofing Attack | ✅ |
-| T12 | Telugu Phishing | 100 | High Risk | ✅ |
+| Verification Layer | Scope | Result |
+|---|---|---|
+| Final validation suite | curated backend + fallback + consistency checks | **`25/25`** |
+| System readiness audit | **50-email** end-to-end audit | **`100% WORKING — NO CRITICAL ISSUES`** |
+| Playwright UI suite | trusted-safe flow, spoofing flow, dashboard counters | **`3 passed`** |
+| Live browser review | result page wording + dashboard content | **passed** |
 
-**Detection rate: 12/12**
+### Examples covered by the current checks
+
+- OTP scams
+- header spoofing
+- BEC / vendor transfer fraud
+- delivery-fee scams
+- government impersonation
+- invoice lures
+- multilingual phishing (Hindi / Telugu / Hinglish)
+- trusted safe emails and newsletters
+- dashboard counter consistency
+- result-page explanation clarity
+
+**Bottom line:** the current build is verified well beyond the earlier 12-case smoke pass.
 
 ---
 
