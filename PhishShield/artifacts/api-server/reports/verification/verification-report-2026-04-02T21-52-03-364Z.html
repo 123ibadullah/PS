@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>PhishShield Verification Report</title>
+  <style>
+    body { font-family: Segoe UI, Arial, sans-serif; margin: 24px; background: #0b1220; color: #e5eefc; }
+    h1, h2, h3 { margin: 0 0 12px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 20px 0; }
+    .card { background: #131d32; border: 1px solid #263452; border-radius: 12px; padding: 16px; }
+    .ok { background: #123222; border: 1px solid #2b8a57; padding: 12px; border-radius: 10px; }
+    .fail { background: #3a1d24; border: 1px solid #d65567; padding: 12px; border-radius: 10px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 16px; background: #131d32; }
+    th, td { padding: 10px; border: 1px solid #263452; text-align: left; vertical-align: top; }
+    th { background: #1b2942; }
+    code { background: #09101d; padding: 2px 6px; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <h1>PhishShield AI Verification Report</h1>
+  <p>Generated at <code>2026-04-02T21:52:03.364Z</code> with seed <code>20260403</code>.</p>
+
+  <div class="grid">
+    <div class="card"><h3>Overall</h3><p><strong>128/134</strong> tests passed</p><p>6 failed</p></div>
+    <div class="card"><h3>Accuracy</h3><p>95.90%</p><p>Precision 100.00% · Recall 97.06%</p></div>
+    <div class="card"><h3>F1 / Error Rates</h3><p>F1 98.51%</p><p>FP 0.00% · FN 2.94%</p></div>
+    <div class="card"><h3>Performance</h3><p>Avg 2.9ms · P95 4.8ms</p><p>Throughput 346.52/sec</p></div>
+  </div>
+
+  <h2>Threshold status</h2>
+  <div class="ok">All configured thresholds passed.</div>
+
+  <h2>Suite breakdown</h2>
+  <div class="grid">
+        <div class="card">
+          <h3>basic</h3>
+          <p><strong>3/3</strong> passed</p>
+          <p>0 failed · avg latency 24.3ms</p>
+        </div>
+
+        <div class="card">
+          <h3>phishing-detection</h3>
+          <p><strong>42/46</strong> passed</p>
+          <p>4 failed · avg latency 4.0ms</p>
+        </div>
+
+        <div class="card">
+          <h3>edge-cases</h3>
+          <p><strong>10/11</strong> passed</p>
+          <p>1 failed · avg latency 3.1ms</p>
+        </div>
+
+        <div class="card">
+          <h3>header-spoofing</h3>
+          <p><strong>8/8</strong> passed</p>
+          <p>0 failed · avg latency 3.0ms</p>
+        </div>
+
+        <div class="card">
+          <h3>safe-email</h3>
+          <p><strong>20/20</strong> passed</p>
+          <p>0 failed · avg latency 3.3ms</p>
+        </div>
+
+        <div class="card">
+          <h3>transformer-only</h3>
+          <p><strong>8/8</strong> passed</p>
+          <p>0 failed · avg latency 3.3ms</p>
+        </div>
+
+        <div class="card">
+          <h3>multilingual</h3>
+          <p><strong>16/16</strong> passed</p>
+          <p>0 failed · avg latency 2.7ms</p>
+        </div>
+
+        <div class="card">
+          <h3>url-analysis</h3>
+          <p><strong>10/10</strong> passed</p>
+          <p>0 failed · avg latency 2.8ms</p>
+        </div>
+
+        <div class="card">
+          <h3>llm-fallback</h3>
+          <p><strong>1/1</strong> passed</p>
+          <p>0 failed · avg latency 40.0ms</p>
+        </div>
+
+        <div class="card">
+          <h3>integration</h3>
+          <p><strong>3/3</strong> passed</p>
+          <p>0 failed · avg latency 48.4ms</p>
+        </div>
+
+        <div class="card">
+          <h3>failure-handling</h3>
+          <p><strong>4/4</strong> passed</p>
+          <p>0 failed · avg latency 373.9ms</p>
+        </div>
+
+        <div class="card">
+          <h3>consistency</h3>
+          <p><strong>3/3</strong> passed</p>
+          <p>0 failed · avg latency 7.4ms</p>
+        </div>
+
+        <div class="card">
+          <h3>performance</h3>
+          <p><strong>0/1</strong> passed</p>
+          <p>1 failed · avg latency 346.3ms</p>
+        </div></div>
+
+  <h2>Failed cases</h2>
+  <table>
+    <thead>
+      <tr><th>Suite</th><th>Case</th><th>Expected</th><th>Actual</th><th>Score</th><th>Reason</th></tr>
+    </thead>
+    <tbody>
+      
+        <tr>
+          <td>phishing-detection</td>
+          <td>Crypto doubling scam is never marked safe</td>
+          <td>phishing</td>
+          <td>safe</td>
+          <td>16</td>
+          <td>Classification mismatch. Expected phishing, received safe.; Risk score 16 is outside the expected range 71-100.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Credential-only PIN request is blocked</td>
+          <td>phishing</td>
+          <td>uncertain</td>
+          <td>60</td>
+          <td>Classification mismatch. Expected phishing, received uncertain.; Risk score 60 is outside the expected range 71-100.</td>
+        </tr>
+
+        <tr>
+          <td>edge-cases</td>
+          <td>Very short urgency text is never treated as safe</td>
+          <td>uncertain</td>
+          <td>safe</td>
+          <td>22</td>
+          <td>Classification mismatch. Expected uncertain/phishing, received safe.; Risk score 22 is outside the expected range 30-100.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>No-link Paytm KYC suspension scam escalates correctly</td>
+          <td>phishing</td>
+          <td>uncertain</td>
+          <td>65</td>
+          <td>Classification mismatch. Expected phishing, received uncertain.; Risk score 65 is outside the expected range 71-100.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>No-link cashback reward scam is blocked</td>
+          <td>phishing</td>
+          <td>uncertain</td>
+          <td>46</td>
+          <td>Classification mismatch. Expected phishing, received uncertain.; Risk score 46 is outside the expected range 71-100.</td>
+        </tr>
+
+        <tr>
+          <td>performance</td>
+          <td>Batch performance and stability over 120 emails</td>
+          <td>safe</td>
+          <td>safe</td>
+          <td>-</td>
+          <td>5 case(s) failed during the performance batch.</td>
+        </tr>
+    </tbody>
+  </table>
+</body>
+</html>

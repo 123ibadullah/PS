@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+requests
+scikit-learn
+pandas
+numpy
+python-dotenv
+joblib
+transformers
+torch
+datasets
+accelerate
+shap
+lime

@@ -1,0 +1,809 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>PhishShield Verification Report</title>
+  <style>
+    body { font-family: Segoe UI, Arial, sans-serif; margin: 24px; background: #0b1220; color: #e5eefc; }
+    h1, h2, h3 { margin: 0 0 12px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 20px 0; }
+    .card { background: #131d32; border: 1px solid #263452; border-radius: 12px; padding: 16px; }
+    .ok { background: #123222; border: 1px solid #2b8a57; padding: 12px; border-radius: 10px; }
+    .fail { background: #3a1d24; border: 1px solid #d65567; padding: 12px; border-radius: 10px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 16px; background: #131d32; }
+    th, td { padding: 10px; border: 1px solid #263452; text-align: left; vertical-align: top; }
+    th { background: #1b2942; }
+    code { background: #09101d; padding: 2px 6px; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <h1>PhishShield AI Verification Report</h1>
+  <p>Generated at <code>2026-04-02T21:19:21.141Z</code> with seed <code>20260403</code>.</p>
+
+  <div class="grid">
+    <div class="card"><h3>Overall</h3><p><strong>49/126</strong> tests passed</p><p>77 failed</p></div>
+    <div class="card"><h3>Accuracy</h3><p>56.25%</p><p>Precision 100.00% · Recall 47.37%</p></div>
+    <div class="card"><h3>F1 / Error Rates</h3><p>F1 64.29%</p><p>FP 0.00% · FN 52.63%</p></div>
+    <div class="card"><h3>Performance</h3><p>Avg 3.0ms · P95 5.2ms</p><p>Throughput 329.21/sec</p></div>
+  </div>
+
+  <h2>Threshold status</h2>
+  <div class="fail"><strong>Threshold failures:</strong><ul><li>Accuracy below threshold: 56.25% < 90.00%</li><li>Phishing recall below threshold: 47.37% < 95.00%</li><li>False negative rate too high: 52.63% > 10.00%</li></ul></div>
+
+  <h2>Suite breakdown</h2>
+  <div class="grid">
+        <div class="card">
+          <h3>basic</h3>
+          <p><strong>2/3</strong> passed</p>
+          <p>1 failed · avg latency 26.3ms</p>
+        </div>
+
+        <div class="card">
+          <h3>edge-cases</h3>
+          <p><strong>2/10</strong> passed</p>
+          <p>8 failed · avg latency 2.2ms</p>
+        </div>
+
+        <div class="card">
+          <h3>header-spoofing</h3>
+          <p><strong>0/8</strong> passed</p>
+          <p>8 failed · avg latency 2.5ms</p>
+        </div>
+
+        <div class="card">
+          <h3>phishing-detection</h3>
+          <p><strong>18/42</strong> passed</p>
+          <p>24 failed · avg latency 6.3ms</p>
+        </div>
+
+        <div class="card">
+          <h3>safe-email</h3>
+          <p><strong>15/20</strong> passed</p>
+          <p>5 failed · avg latency 10.5ms</p>
+        </div>
+
+        <div class="card">
+          <h3>transformer-only</h3>
+          <p><strong>0/8</strong> passed</p>
+          <p>8 failed · avg latency 3.1ms</p>
+        </div>
+
+        <div class="card">
+          <h3>multilingual</h3>
+          <p><strong>8/16</strong> passed</p>
+          <p>8 failed · avg latency 2.5ms</p>
+        </div>
+
+        <div class="card">
+          <h3>url-analysis</h3>
+          <p><strong>0/10</strong> passed</p>
+          <p>10 failed · avg latency 2.6ms</p>
+        </div>
+
+        <div class="card">
+          <h3>llm-fallback</h3>
+          <p><strong>1/1</strong> passed</p>
+          <p>0 failed · avg latency 31.1ms</p>
+        </div>
+
+        <div class="card">
+          <h3>integration</h3>
+          <p><strong>3/3</strong> passed</p>
+          <p>0 failed · avg latency 49.0ms</p>
+        </div>
+
+        <div class="card">
+          <h3>failure-handling</h3>
+          <p><strong>0/4</strong> passed</p>
+          <p>4 failed · avg latency 3.8ms</p>
+        </div>
+
+        <div class="card">
+          <h3>performance</h3>
+          <p><strong>0/1</strong> passed</p>
+          <p>1 failed · avg latency 355.4ms</p>
+        </div></div>
+
+  <h2>Failed cases</h2>
+  <table>
+    <thead>
+      <tr><th>Suite</th><th>Case</th><th>Expected</th><th>Actual</th><th>Score</th><th>Reason</th></tr>
+    </thead>
+    <tbody>
+      
+        <tr>
+          <td>basic</td>
+          <td>Vague account alert lands in the suspicious band</td>
+          <td>uncertain</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Unhandled exception during analysis.</td>
+        </tr>
+
+        <tr>
+          <td>header-spoofing</td>
+          <td>Reply-To mismatch is surfaced in header analysis</td>
+          <td>phishing</td>
+          <td>safe</td>
+          <td>11</td>
+          <td>Classification mismatch. Expected phishing, received safe.; Risk score 11 is outside the expected range 71-100.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Google Pay KYC or suspension phishing #1</td>
+          <td>phishing</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Unhandled exception during analysis.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>ICICI KYC or suspension phishing #2</td>
+          <td>phishing</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Unhandled exception during analysis.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>HDFC KYC or suspension phishing #3</td>
+          <td>phishing</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Unhandled exception during analysis.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>HDFC KYC or suspension phishing #4</td>
+          <td>phishing</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Unhandled exception during analysis.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Google Pay KYC or suspension phishing #5</td>
+          <td>phishing</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Unhandled exception during analysis.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>ICICI KYC or suspension phishing #6</td>
+          <td>phishing</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Unhandled exception during analysis.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>ICICI KYC or suspension phishing #7</td>
+          <td>phishing</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Unhandled exception during analysis.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>ICICI KYC or suspension phishing #9</td>
+          <td>phishing</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Unhandled exception during analysis.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>HDFC KYC or suspension phishing #13</td>
+          <td>phishing</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Unhandled exception during analysis.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Google Pay KYC or suspension phishing #14</td>
+          <td>phishing</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Unhandled exception during analysis.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Reward scam #1</td>
+          <td>phishing</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Unhandled exception during analysis.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Reward scam #2</td>
+          <td>phishing</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Unhandled exception during analysis.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Reward scam #4</td>
+          <td>phishing</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Unhandled exception during analysis.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Reward scam #5</td>
+          <td>phishing</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Unhandled exception during analysis.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Reward scam #6</td>
+          <td>phishing</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Unhandled exception during analysis.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Reward scam #7</td>
+          <td>phishing</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Unhandled exception during analysis.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Reward scam #9</td>
+          <td>phishing</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Unhandled exception during analysis.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Reward scam #10</td>
+          <td>phishing</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Unhandled exception during analysis.</td>
+        </tr>
+
+        <tr>
+          <td>safe-email</td>
+          <td>Legitimate security notification #1</td>
+          <td>safe</td>
+          <td>uncertain</td>
+          <td>61</td>
+          <td>Classification mismatch. Expected safe, received uncertain.; Risk score 61 is outside the expected range 0-29.</td>
+        </tr>
+
+        <tr>
+          <td>safe-email</td>
+          <td>Legitimate security notification #5</td>
+          <td>safe</td>
+          <td>uncertain</td>
+          <td>61</td>
+          <td>Classification mismatch. Expected safe, received uncertain.; Risk score 61 is outside the expected range 0-29.</td>
+        </tr>
+
+        <tr>
+          <td>safe-email</td>
+          <td>Legitimate security notification #6</td>
+          <td>safe</td>
+          <td>uncertain</td>
+          <td>61</td>
+          <td>Classification mismatch. Expected safe, received uncertain.; Risk score 61 is outside the expected range 0-29.</td>
+        </tr>
+
+        <tr>
+          <td>safe-email</td>
+          <td>Legitimate security notification #8</td>
+          <td>safe</td>
+          <td>uncertain</td>
+          <td>61</td>
+          <td>Classification mismatch. Expected safe, received uncertain.; Risk score 61 is outside the expected range 0-29.</td>
+        </tr>
+
+        <tr>
+          <td>safe-email</td>
+          <td>Legitimate security notification #10</td>
+          <td>safe</td>
+          <td>uncertain</td>
+          <td>61</td>
+          <td>Classification mismatch. Expected safe, received uncertain.; Risk score 61 is outside the expected range 0-29.</td>
+        </tr>
+
+        <tr>
+          <td>transformer-only</td>
+          <td>Clean-looking enterprise phishing #1</td>
+          <td>phishing</td>
+          <td>uncertain</td>
+          <td>38</td>
+          <td>Classification mismatch. Expected phishing, received uncertain.; Risk score 38 is outside the expected range 71-100.</td>
+        </tr>
+
+        <tr>
+          <td>transformer-only</td>
+          <td>Clean-looking enterprise phishing #2</td>
+          <td>phishing</td>
+          <td>uncertain</td>
+          <td>48</td>
+          <td>Classification mismatch. Expected phishing, received uncertain.; Risk score 48 is outside the expected range 71-100.</td>
+        </tr>
+
+        <tr>
+          <td>transformer-only</td>
+          <td>Clean-looking enterprise phishing #3</td>
+          <td>phishing</td>
+          <td>uncertain</td>
+          <td>48</td>
+          <td>Classification mismatch. Expected phishing, received uncertain.; Risk score 48 is outside the expected range 71-100.</td>
+        </tr>
+
+        <tr>
+          <td>transformer-only</td>
+          <td>Clean-looking enterprise phishing #4</td>
+          <td>phishing</td>
+          <td>uncertain</td>
+          <td>47</td>
+          <td>Classification mismatch. Expected phishing, received uncertain.; Risk score 47 is outside the expected range 71-100.</td>
+        </tr>
+
+        <tr>
+          <td>transformer-only</td>
+          <td>Clean-looking enterprise phishing #5</td>
+          <td>phishing</td>
+          <td>uncertain</td>
+          <td>38</td>
+          <td>Classification mismatch. Expected phishing, received uncertain.; Risk score 38 is outside the expected range 71-100.</td>
+        </tr>
+
+        <tr>
+          <td>transformer-only</td>
+          <td>Clean-looking enterprise phishing #6</td>
+          <td>phishing</td>
+          <td>uncertain</td>
+          <td>65</td>
+          <td>Classification mismatch. Expected phishing, received uncertain.; Risk score 65 is outside the expected range 71-100.</td>
+        </tr>
+
+        <tr>
+          <td>transformer-only</td>
+          <td>Clean-looking enterprise phishing #7</td>
+          <td>phishing</td>
+          <td>uncertain</td>
+          <td>48</td>
+          <td>Classification mismatch. Expected phishing, received uncertain.; Risk score 48 is outside the expected range 71-100.</td>
+        </tr>
+
+        <tr>
+          <td>transformer-only</td>
+          <td>Clean-looking enterprise phishing #8</td>
+          <td>phishing</td>
+          <td>uncertain</td>
+          <td>38</td>
+          <td>Classification mismatch. Expected phishing, received uncertain.; Risk score 38 is outside the expected range 71-100.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Obfuscated phishing variant #1</td>
+          <td>phishing</td>
+          <td>uncertain</td>
+          <td>36</td>
+          <td>Classification mismatch. Expected phishing, received uncertain.; Risk score 36 is outside the expected range 71-100.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Obfuscated phishing variant #3</td>
+          <td>phishing</td>
+          <td>uncertain</td>
+          <td>38</td>
+          <td>Classification mismatch. Expected phishing, received uncertain.; Risk score 38 is outside the expected range 71-100.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Obfuscated phishing variant #5</td>
+          <td>phishing</td>
+          <td>uncertain</td>
+          <td>36</td>
+          <td>Classification mismatch. Expected phishing, received uncertain.; Risk score 36 is outside the expected range 71-100.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Obfuscated phishing variant #6</td>
+          <td>phishing</td>
+          <td>uncertain</td>
+          <td>38</td>
+          <td>Classification mismatch. Expected phishing, received uncertain.; Risk score 38 is outside the expected range 71-100.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Obfuscated phishing variant #7</td>
+          <td>phishing</td>
+          <td>uncertain</td>
+          <td>38</td>
+          <td>Classification mismatch. Expected phishing, received uncertain.; Risk score 38 is outside the expected range 71-100.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Obfuscated phishing variant #8</td>
+          <td>phishing</td>
+          <td>uncertain</td>
+          <td>34</td>
+          <td>Classification mismatch. Expected phishing, received uncertain.; Risk score 34 is outside the expected range 71-100.</td>
+        </tr>
+
+        <tr>
+          <td>edge-cases</td>
+          <td>Ambiguous account alert #1</td>
+          <td>uncertain</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Unhandled exception during analysis.</td>
+        </tr>
+
+        <tr>
+          <td>edge-cases</td>
+          <td>Ambiguous account alert #2</td>
+          <td>uncertain</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Unhandled exception during analysis.</td>
+        </tr>
+
+        <tr>
+          <td>edge-cases</td>
+          <td>Ambiguous account alert #3</td>
+          <td>uncertain</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Unhandled exception during analysis.</td>
+        </tr>
+
+        <tr>
+          <td>edge-cases</td>
+          <td>Ambiguous account alert #4</td>
+          <td>uncertain</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Unhandled exception during analysis.</td>
+        </tr>
+
+        <tr>
+          <td>edge-cases</td>
+          <td>Ambiguous account alert #5</td>
+          <td>uncertain</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Unhandled exception during analysis.</td>
+        </tr>
+
+        <tr>
+          <td>edge-cases</td>
+          <td>Ambiguous account alert #6</td>
+          <td>uncertain</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Unhandled exception during analysis.</td>
+        </tr>
+
+        <tr>
+          <td>edge-cases</td>
+          <td>Ambiguous account alert #7</td>
+          <td>uncertain</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Unhandled exception during analysis.</td>
+        </tr>
+
+        <tr>
+          <td>edge-cases</td>
+          <td>Ambiguous account alert #8</td>
+          <td>uncertain</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Unhandled exception during analysis.</td>
+        </tr>
+
+        <tr>
+          <td>multilingual</td>
+          <td>Telugu phishing email #1</td>
+          <td>phishing</td>
+          <td>uncertain</td>
+          <td>39</td>
+          <td>Classification mismatch. Expected phishing, received uncertain.; Risk score 39 is outside the expected range 71-100.</td>
+        </tr>
+
+        <tr>
+          <td>multilingual</td>
+          <td>Telugu phishing email #2</td>
+          <td>phishing</td>
+          <td>uncertain</td>
+          <td>66</td>
+          <td>Classification mismatch. Expected phishing, received uncertain.; Risk score 66 is outside the expected range 71-100.</td>
+        </tr>
+
+        <tr>
+          <td>multilingual</td>
+          <td>Telugu phishing email #3</td>
+          <td>phishing</td>
+          <td>uncertain</td>
+          <td>66</td>
+          <td>Classification mismatch. Expected phishing, received uncertain.; Risk score 66 is outside the expected range 71-100.</td>
+        </tr>
+
+        <tr>
+          <td>multilingual</td>
+          <td>Telugu phishing email #4</td>
+          <td>phishing</td>
+          <td>uncertain</td>
+          <td>66</td>
+          <td>Classification mismatch. Expected phishing, received uncertain.; Risk score 66 is outside the expected range 71-100.</td>
+        </tr>
+
+        <tr>
+          <td>multilingual</td>
+          <td>Telugu phishing email #5</td>
+          <td>phishing</td>
+          <td>uncertain</td>
+          <td>66</td>
+          <td>Classification mismatch. Expected phishing, received uncertain.; Risk score 66 is outside the expected range 71-100.</td>
+        </tr>
+
+        <tr>
+          <td>multilingual</td>
+          <td>Telugu phishing email #6</td>
+          <td>phishing</td>
+          <td>uncertain</td>
+          <td>66</td>
+          <td>Classification mismatch. Expected phishing, received uncertain.; Risk score 66 is outside the expected range 71-100.</td>
+        </tr>
+
+        <tr>
+          <td>multilingual</td>
+          <td>Telugu phishing email #7</td>
+          <td>phishing</td>
+          <td>uncertain</td>
+          <td>66</td>
+          <td>Classification mismatch. Expected phishing, received uncertain.; Risk score 66 is outside the expected range 71-100.</td>
+        </tr>
+
+        <tr>
+          <td>multilingual</td>
+          <td>Telugu phishing email #8</td>
+          <td>phishing</td>
+          <td>uncertain</td>
+          <td>66</td>
+          <td>Classification mismatch. Expected phishing, received uncertain.; Risk score 66 is outside the expected range 71-100.</td>
+        </tr>
+
+        <tr>
+          <td>url-analysis</td>
+          <td>URL analysis catches suspicious destination #1</td>
+          <td>phishing</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Unhandled exception during analysis.</td>
+        </tr>
+
+        <tr>
+          <td>url-analysis</td>
+          <td>URL analysis catches suspicious destination #2</td>
+          <td>phishing</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Unhandled exception during analysis.</td>
+        </tr>
+
+        <tr>
+          <td>url-analysis</td>
+          <td>URL analysis catches suspicious destination #3</td>
+          <td>phishing</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Unhandled exception during analysis.</td>
+        </tr>
+
+        <tr>
+          <td>url-analysis</td>
+          <td>URL analysis catches suspicious destination #4</td>
+          <td>phishing</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Unhandled exception during analysis.</td>
+        </tr>
+
+        <tr>
+          <td>url-analysis</td>
+          <td>URL analysis catches suspicious destination #5</td>
+          <td>phishing</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Unhandled exception during analysis.</td>
+        </tr>
+
+        <tr>
+          <td>url-analysis</td>
+          <td>URL analysis catches suspicious destination #6</td>
+          <td>phishing</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Unhandled exception during analysis.</td>
+        </tr>
+
+        <tr>
+          <td>url-analysis</td>
+          <td>URL analysis catches suspicious destination #7</td>
+          <td>phishing</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Unhandled exception during analysis.</td>
+        </tr>
+
+        <tr>
+          <td>url-analysis</td>
+          <td>URL analysis catches suspicious destination #8</td>
+          <td>phishing</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Unhandled exception during analysis.</td>
+        </tr>
+
+        <tr>
+          <td>url-analysis</td>
+          <td>URL analysis catches suspicious destination #9</td>
+          <td>phishing</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Unhandled exception during analysis.</td>
+        </tr>
+
+        <tr>
+          <td>url-analysis</td>
+          <td>URL analysis catches suspicious destination #10</td>
+          <td>phishing</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Unhandled exception during analysis.</td>
+        </tr>
+
+        <tr>
+          <td>header-spoofing</td>
+          <td>Header spoof attempt #1</td>
+          <td>phishing</td>
+          <td>uncertain</td>
+          <td>46</td>
+          <td>Classification mismatch. Expected phishing, received uncertain.; Risk score 46 is outside the expected range 71-100.</td>
+        </tr>
+
+        <tr>
+          <td>header-spoofing</td>
+          <td>Header spoof attempt #2</td>
+          <td>phishing</td>
+          <td>uncertain</td>
+          <td>38</td>
+          <td>Classification mismatch. Expected phishing, received uncertain.; Risk score 38 is outside the expected range 71-100.</td>
+        </tr>
+
+        <tr>
+          <td>header-spoofing</td>
+          <td>Header spoof attempt #3</td>
+          <td>phishing</td>
+          <td>uncertain</td>
+          <td>45</td>
+          <td>Classification mismatch. Expected phishing, received uncertain.; Risk score 45 is outside the expected range 71-100.</td>
+        </tr>
+
+        <tr>
+          <td>header-spoofing</td>
+          <td>Header spoof attempt #4</td>
+          <td>phishing</td>
+          <td>uncertain</td>
+          <td>45</td>
+          <td>Classification mismatch. Expected phishing, received uncertain.; Risk score 45 is outside the expected range 71-100.</td>
+        </tr>
+
+        <tr>
+          <td>header-spoofing</td>
+          <td>Header spoof attempt #5</td>
+          <td>phishing</td>
+          <td>uncertain</td>
+          <td>46</td>
+          <td>Classification mismatch. Expected phishing, received uncertain.; Risk score 46 is outside the expected range 71-100.</td>
+        </tr>
+
+        <tr>
+          <td>header-spoofing</td>
+          <td>Header spoof attempt #6</td>
+          <td>phishing</td>
+          <td>uncertain</td>
+          <td>38</td>
+          <td>Classification mismatch. Expected phishing, received uncertain.; Risk score 38 is outside the expected range 71-100.</td>
+        </tr>
+
+        <tr>
+          <td>header-spoofing</td>
+          <td>Header spoof attempt #7</td>
+          <td>phishing</td>
+          <td>uncertain</td>
+          <td>46</td>
+          <td>Classification mismatch. Expected phishing, received uncertain.; Risk score 46 is outside the expected range 71-100.</td>
+        </tr>
+
+        <tr>
+          <td>failure-handling</td>
+          <td>Backend validation failure returns a structured error</td>
+          <td>safe</td>
+          <td>safe</td>
+          <td>-</td>
+          <td>Backend error response was not structured JSON.</td>
+        </tr>
+
+        <tr>
+          <td>failure-handling</td>
+          <td>ML model failure falls back safely</td>
+          <td>safe</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Child process exited with code -1.; Expected success marker was not found in child process output.</td>
+        </tr>
+
+        <tr>
+          <td>failure-handling</td>
+          <td>Transformer API outage does not crash analysis</td>
+          <td>safe</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Child process exited with code -1.; Expected success marker was not found in child process output.</td>
+        </tr>
+
+        <tr>
+          <td>failure-handling</td>
+          <td>LLM timeout falls back to a valid local verdict</td>
+          <td>uncertain</td>
+          <td>error</td>
+          <td>-</td>
+          <td>Unhandled exception during analysis.</td>
+        </tr>
+
+        <tr>
+          <td>performance</td>
+          <td>Batch performance and stability over 120 emails</td>
+          <td>safe</td>
+          <td>safe</td>
+          <td>-</td>
+          <td>72 case(s) failed during the performance batch.</td>
+        </tr>
+    </tbody>
+  </table>
+</body>
+</html>

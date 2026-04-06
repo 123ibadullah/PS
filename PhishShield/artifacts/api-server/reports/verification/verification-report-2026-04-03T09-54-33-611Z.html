@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>PhishShield Verification Report</title>
+  <style>
+    body { font-family: Segoe UI, Arial, sans-serif; margin: 24px; background: #0b1220; color: #e5eefc; }
+    h1, h2, h3 { margin: 0 0 12px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 20px 0; }
+    .card { background: #131d32; border: 1px solid #263452; border-radius: 12px; padding: 16px; }
+    .ok { background: #123222; border: 1px solid #2b8a57; padding: 12px; border-radius: 10px; }
+    .fail { background: #3a1d24; border: 1px solid #d65567; padding: 12px; border-radius: 10px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 16px; background: #131d32; }
+    th, td { padding: 10px; border: 1px solid #263452; text-align: left; vertical-align: top; }
+    th { background: #1b2942; }
+    code { background: #09101d; padding: 2px 6px; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <h1>PhishShield AI Verification Report</h1>
+  <p>Generated at <code>2026-04-03T09:54:33.611Z</code> with seed <code>20260403</code>.</p>
+
+  <div class="grid">
+    <div class="card"><h3>Overall</h3><p><strong>146/146</strong> tests passed</p><p>0 failed</p></div>
+    <div class="card"><h3>Accuracy</h3><p>100.00%</p><p>Precision 100.00% · Recall 100.00%</p></div>
+    <div class="card"><h3>F1 / Error Rates</h3><p>F1 100.00%</p><p>FP 0.00% · FN 0.00%</p></div>
+    <div class="card"><h3>Performance</h3><p>Avg 3.0ms · P95 3.9ms</p><p>Throughput 337.99/sec</p></div>
+  </div>
+
+  <h2>Threshold status</h2>
+  <div class="ok">All configured thresholds passed.</div>
+
+  <h2>Suite breakdown</h2>
+  <div class="grid">
+        <div class="card">
+          <h3>basic</h3>
+          <p><strong>3/3</strong> passed</p>
+          <p>0 failed · avg latency 28.3ms</p>
+        </div>
+
+        <div class="card">
+          <h3>phishing-detection</h3>
+          <p><strong>52/52</strong> passed</p>
+          <p>0 failed · avg latency 4.1ms</p>
+        </div>
+
+        <div class="card">
+          <h3>edge-cases</h3>
+          <p><strong>13/13</strong> passed</p>
+          <p>0 failed · avg latency 2.5ms</p>
+        </div>
+
+        <div class="card">
+          <h3>multilingual</h3>
+          <p><strong>19/19</strong> passed</p>
+          <p>0 failed · avg latency 3.5ms</p>
+        </div>
+
+        <div class="card">
+          <h3>safe-email</h3>
+          <p><strong>21/21</strong> passed</p>
+          <p>0 failed · avg latency 3.2ms</p>
+        </div>
+
+        <div class="card">
+          <h3>header-spoofing</h3>
+          <p><strong>8/8</strong> passed</p>
+          <p>0 failed · avg latency 2.9ms</p>
+        </div>
+
+        <div class="card">
+          <h3>transformer-only</h3>
+          <p><strong>8/8</strong> passed</p>
+          <p>0 failed · avg latency 3.3ms</p>
+        </div>
+
+        <div class="card">
+          <h3>url-analysis</h3>
+          <p><strong>10/10</strong> passed</p>
+          <p>0 failed · avg latency 2.7ms</p>
+        </div>
+
+        <div class="card">
+          <h3>llm-fallback</h3>
+          <p><strong>1/1</strong> passed</p>
+          <p>0 failed · avg latency 41.0ms</p>
+        </div>
+
+        <div class="card">
+          <h3>integration</h3>
+          <p><strong>3/3</strong> passed</p>
+          <p>0 failed · avg latency 40.2ms</p>
+        </div>
+
+        <div class="card">
+          <h3>failure-handling</h3>
+          <p><strong>4/4</strong> passed</p>
+          <p>0 failed · avg latency 339.6ms</p>
+        </div>
+
+        <div class="card">
+          <h3>consistency</h3>
+          <p><strong>3/3</strong> passed</p>
+          <p>0 failed · avg latency 8.7ms</p>
+        </div>
+
+        <div class="card">
+          <h3>performance</h3>
+          <p><strong>1/1</strong> passed</p>
+          <p>0 failed · avg latency 355.0ms</p>
+        </div></div>
+
+  <h2>Failed cases</h2>
+  <table>
+    <thead>
+      <tr><th>Suite</th><th>Case</th><th>Expected</th><th>Actual</th><th>Score</th><th>Reason</th></tr>
+    </thead>
+    <tbody>
+      <tr><td colspan="6">No failures 🎉</td></tr>
+    </tbody>
+  </table>
+</body>
+</html>

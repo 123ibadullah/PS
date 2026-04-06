@@ -1,0 +1,1139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>PhishShield Verification Report</title>
+  <style>
+    body { font-family: Segoe UI, Arial, sans-serif; margin: 24px; background: #0b1220; color: #e5eefc; }
+    h1, h2, h3 { margin: 0 0 12px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 20px 0; }
+    .card { background: #131d32; border: 1px solid #263452; border-radius: 12px; padding: 16px; }
+    .ok { background: #123222; border: 1px solid #2b8a57; padding: 12px; border-radius: 10px; }
+    .fail { background: #3a1d24; border: 1px solid #d65567; padding: 12px; border-radius: 10px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 16px; background: #131d32; }
+    th, td { padding: 10px; border: 1px solid #263452; text-align: left; vertical-align: top; }
+    th { background: #1b2942; }
+    code { background: #09101d; padding: 2px 6px; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <h1>PhishShield AI Verification Report</h1>
+  <p>Generated at <code>2026-04-03T20:27:27.209Z</code> with seed <code>20260403</code>.</p>
+
+  <div class="grid">
+    <div class="card"><h3>Overall</h3><p><strong>51/164</strong> tests passed</p><p>113 failed</p></div>
+    <div class="card"><h3>Accuracy</h3><p>28.29%</p><p>Precision 100.00% · Recall 100.00%</p></div>
+    <div class="card"><h3>F1 / Error Rates</h3><p>F1 100.00%</p><p>FP 0.00% · FN 0.00%</p></div>
+    <div class="card"><h3>Performance</h3><p>Avg 5.9ms · P95 8.0ms</p><p>Throughput 169.65/sec</p></div>
+  </div>
+
+  <h2>Threshold status</h2>
+  <div class="fail"><strong>Threshold failures:</strong><ul><li>Accuracy below threshold: 28.29% < 90.00%</li></ul></div>
+
+  <h2>Suite breakdown</h2>
+  <div class="grid">
+        <div class="card">
+          <h3>basic</h3>
+          <p><strong>2/3</strong> passed</p>
+          <p>1 failed · avg latency 79.9ms</p>
+        </div>
+
+        <div class="card">
+          <h3>phishing-detection</h3>
+          <p><strong>0/60</strong> passed</p>
+          <p>60 failed · avg latency 7.9ms</p>
+        </div>
+
+        <div class="card">
+          <h3>edge-cases</h3>
+          <p><strong>18/19</strong> passed</p>
+          <p>1 failed · avg latency 6.8ms</p>
+        </div>
+
+        <div class="card">
+          <h3>multilingual</h3>
+          <p><strong>0/21</strong> passed</p>
+          <p>21 failed · avg latency 6.8ms</p>
+        </div>
+
+        <div class="card">
+          <h3>safe-email</h3>
+          <p><strong>23/23</strong> passed</p>
+          <p>0 failed · avg latency 6.4ms</p>
+        </div>
+
+        <div class="card">
+          <h3>header-spoofing</h3>
+          <p><strong>0/8</strong> passed</p>
+          <p>8 failed · avg latency 6.2ms</p>
+        </div>
+
+        <div class="card">
+          <h3>transformer-only</h3>
+          <p><strong>0/8</strong> passed</p>
+          <p>8 failed · avg latency 6.3ms</p>
+        </div>
+
+        <div class="card">
+          <h3>url-analysis</h3>
+          <p><strong>0/10</strong> passed</p>
+          <p>10 failed · avg latency 6.2ms</p>
+        </div>
+
+        <div class="card">
+          <h3>llm-fallback</h3>
+          <p><strong>0/1</strong> passed</p>
+          <p>1 failed · avg latency 62.4ms</p>
+        </div>
+
+        <div class="card">
+          <h3>integration</h3>
+          <p><strong>2/3</strong> passed</p>
+          <p>1 failed · avg latency 87.0ms</p>
+        </div>
+
+        <div class="card">
+          <h3>failure-handling</h3>
+          <p><strong>4/4</strong> passed</p>
+          <p>0 failed · avg latency 769.8ms</p>
+        </div>
+
+        <div class="card">
+          <h3>consistency</h3>
+          <p><strong>2/3</strong> passed</p>
+          <p>1 failed · avg latency 19.9ms</p>
+        </div>
+
+        <div class="card">
+          <h3>performance</h3>
+          <p><strong>0/1</strong> passed</p>
+          <p>1 failed · avg latency 707.4ms</p>
+        </div></div>
+
+  <h2>Failed cases</h2>
+  <table>
+    <thead>
+      <tr><th>Suite</th><th>Case</th><th>Expected</th><th>Actual</th><th>Score</th><th>Reason</th></tr>
+    </thead>
+    <tbody>
+      
+        <tr>
+          <td>basic</td>
+          <td>Direct OTP harvesting request is blocked</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>78</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 78% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Crypto doubling scam is never marked safe</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>72</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Credential-only PIN request is blocked</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>78</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 78% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>edge-cases</td>
+          <td>Very short urgency text is never treated as safe</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>72</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Short click-link suspension warning is treated as phishing</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>72</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>multilingual</td>
+          <td>Hinglish OTP account-block warning escalates to phishing</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>98</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 98% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>HR pay-fee job confirmation prompt is phishing</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>72</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Suspicious login confirm identity is phishing</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>72</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Confirm details to avoid closure is phishing</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>72</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>No-link Paytm KYC suspension scam escalates correctly</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>72</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>No-link cashback reward scam is blocked</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>72</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Job selection fee scam is never marked safe</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>72</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>multilingual</td>
+          <td>Hindi bank closure threat escalates to phishing</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>72</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>multilingual</td>
+          <td>Telugu bank blocked warning escalates to phishing</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>72</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Urgent invoice payment request is treated as phishing</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>72</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Urgent transfer request while in a meeting is treated as BEC phishing</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>72</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>multilingual</td>
+          <td>Hinglish OTP pressure scam escalates to phishing</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>98</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 98% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Income tax notice demanding details is treated as phishing</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>100</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Payment failure asking for card updates is phishing</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>95</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 95% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Short verification-required prompt is never safe</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>72</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>multilingual</td>
+          <td>Hinglish payment pressure with service-block threat is phishing</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>79</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 79% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Profile verification with disruption threat escalates to phishing</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>72</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Unavailable-task urgency request is treated as phishing</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>90</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 90% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Unavailable request with a vague urgent task is treated as phishing</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>90</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 90% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Pending invoice reminder with service disruption is phishing</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>72</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>header-spoofing</td>
+          <td>Reply-To mismatch is surfaced in header analysis</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>72</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Google Pay KYC or suspension phishing #1</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>100</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>ICICI KYC or suspension phishing #2</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>100</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>HDFC KYC or suspension phishing #3</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>100</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>HDFC KYC or suspension phishing #4</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>100</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Google Pay KYC or suspension phishing #5</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>100</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>ICICI KYC or suspension phishing #6</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>100</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>ICICI KYC or suspension phishing #7</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>100</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Axis Bank KYC or suspension phishing #8</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>100</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>ICICI KYC or suspension phishing #9</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>100</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Axis Bank KYC or suspension phishing #10</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>100</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>PhonePe KYC or suspension phishing #11</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>100</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Axis Bank KYC or suspension phishing #12</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>100</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>HDFC KYC or suspension phishing #13</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>100</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Google Pay KYC or suspension phishing #14</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>100</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>OTP reply scam #1</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>100</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>OTP reply scam #2</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>100</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>OTP reply scam #3</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>100</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>OTP reply scam #4</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>100</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>OTP reply scam #5</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>100</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>OTP reply scam #6</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>100</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>OTP reply scam #7</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>100</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>OTP reply scam #8</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>100</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>OTP reply scam #9</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>100</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>OTP reply scam #10</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>100</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Reward scam #1</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>84</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 84% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Reward scam #2</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>84</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 84% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Reward scam #3</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>84</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 84% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Reward scam #4</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>84</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 84% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Reward scam #5</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>84</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 84% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Reward scam #6</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>84</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 84% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Reward scam #7</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>84</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 84% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Reward scam #8</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>84</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 84% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Reward scam #9</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>87</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 87% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Reward scam #10</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>84</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 84% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>transformer-only</td>
+          <td>Clean-looking enterprise phishing #1</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>72</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>transformer-only</td>
+          <td>Clean-looking enterprise phishing #2</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>74</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 74% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>transformer-only</td>
+          <td>Clean-looking enterprise phishing #3</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>74</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 74% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>transformer-only</td>
+          <td>Clean-looking enterprise phishing #4</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>74</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 74% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>transformer-only</td>
+          <td>Clean-looking enterprise phishing #5</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>72</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>transformer-only</td>
+          <td>Clean-looking enterprise phishing #6</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>87</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 87% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>transformer-only</td>
+          <td>Clean-looking enterprise phishing #7</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>74</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 74% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>transformer-only</td>
+          <td>Clean-looking enterprise phishing #8</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>72</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Obfuscated phishing variant #1</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>72</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Obfuscated phishing variant #2</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>94</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 94% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Obfuscated phishing variant #3</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>73</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 73% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Obfuscated phishing variant #4</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>94</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 94% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Obfuscated phishing variant #5</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>72</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Obfuscated phishing variant #6</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>73</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 73% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Obfuscated phishing variant #7</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>73</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 73% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>phishing-detection</td>
+          <td>Obfuscated phishing variant #8</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>75</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 75% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>multilingual</td>
+          <td>Hindi phishing email #1</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>100</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>multilingual</td>
+          <td>Hindi phishing email #2</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>78</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 78% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>multilingual</td>
+          <td>Hindi phishing email #3</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>100</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>multilingual</td>
+          <td>Hindi phishing email #4</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>78</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 78% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>multilingual</td>
+          <td>Hindi phishing email #5</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>78</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 78% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>multilingual</td>
+          <td>Hindi phishing email #6</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>100</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>multilingual</td>
+          <td>Hindi phishing email #7</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>78</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 78% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>multilingual</td>
+          <td>Hindi phishing email #8</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>78</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 78% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>multilingual</td>
+          <td>Telugu phishing email #1</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>88</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 88% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>multilingual</td>
+          <td>Telugu phishing email #2</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>100</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>multilingual</td>
+          <td>Telugu phishing email #3</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>100</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>multilingual</td>
+          <td>Telugu phishing email #4</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>100</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>multilingual</td>
+          <td>Telugu phishing email #5</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>100</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>multilingual</td>
+          <td>Telugu phishing email #6</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>100</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>multilingual</td>
+          <td>Telugu phishing email #7</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>100</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>multilingual</td>
+          <td>Telugu phishing email #8</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>100</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>url-analysis</td>
+          <td>URL analysis catches suspicious destination #1</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>62</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 62% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>url-analysis</td>
+          <td>URL analysis catches suspicious destination #2</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>62</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 62% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>url-analysis</td>
+          <td>URL analysis catches suspicious destination #3</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>62</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 62% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>url-analysis</td>
+          <td>URL analysis catches suspicious destination #4</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>62</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 62% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>url-analysis</td>
+          <td>URL analysis catches suspicious destination #5</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>62</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 62% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>url-analysis</td>
+          <td>URL analysis catches suspicious destination #6</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>62</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 62% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>url-analysis</td>
+          <td>URL analysis catches suspicious destination #7</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>62</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 62% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>url-analysis</td>
+          <td>URL analysis catches suspicious destination #8</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>62</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 62% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>url-analysis</td>
+          <td>URL analysis catches suspicious destination #9</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>62</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 62% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>url-analysis</td>
+          <td>URL analysis catches suspicious destination #10</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>62</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 62% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>header-spoofing</td>
+          <td>Header spoof attempt #1</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>98</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 98% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>header-spoofing</td>
+          <td>Header spoof attempt #2</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>72</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>header-spoofing</td>
+          <td>Header spoof attempt #3</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>72</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>header-spoofing</td>
+          <td>Header spoof attempt #4</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>72</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>header-spoofing</td>
+          <td>Header spoof attempt #5</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>98</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 98% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>header-spoofing</td>
+          <td>Header spoof attempt #6</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>96</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 96% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>header-spoofing</td>
+          <td>Header spoof attempt #7</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>98</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 98% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>llm-fallback</td>
+          <td>LLM fallback is triggered for a mid-range ambiguous alert</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>88</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 88% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>integration</td>
+          <td>HTTP phishing analysis</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>94</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 94% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>consistency</td>
+          <td>Repeated phishing lure stays stable</td>
+          <td>phishing</td>
+          <td>phishing</td>
+          <td>94</td>
+          <td>Display label mismatch. Expected it to include 'High Risk', received '🔴 94% · High risk with strong confidence'.; Display label mismatch. Expected it to include 'High Risk', received '🔴 94% · High risk with strong confidence'.; Display label mismatch. Expected it to include 'High Risk', received '🔴 94% · High risk with strong confidence'.</td>
+        </tr>
+
+        <tr>
+          <td>performance</td>
+          <td>Batch performance and stability over 120 emails</td>
+          <td>safe</td>
+          <td>safe</td>
+          <td>-</td>
+          <td>77 case(s) failed during the performance batch.</td>
+        </tr>
+    </tbody>
+  </table>
+</body>
+</html>

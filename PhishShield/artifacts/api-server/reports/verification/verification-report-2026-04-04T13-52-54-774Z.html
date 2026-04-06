@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>PhishShield Verification Report</title>
+  <style>
+    body { font-family: Segoe UI, Arial, sans-serif; margin: 24px; background: #0b1220; color: #e5eefc; }
+    h1, h2, h3 { margin: 0 0 12px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 20px 0; }
+    .card { background: #131d32; border: 1px solid #263452; border-radius: 12px; padding: 16px; }
+    .ok { background: #123222; border: 1px solid #2b8a57; padding: 12px; border-radius: 10px; }
+    .fail { background: #3a1d24; border: 1px solid #d65567; padding: 12px; border-radius: 10px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 16px; background: #131d32; }
+    th, td { padding: 10px; border: 1px solid #263452; text-align: left; vertical-align: top; }
+    th { background: #1b2942; }
+    code { background: #09101d; padding: 2px 6px; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <h1>PhishShield AI Verification Report</h1>
+  <p>Generated at <code>2026-04-04T13:52:54.774Z</code> with seed <code>20260403</code>.</p>
+
+  <div class="grid">
+    <div class="card"><h3>Overall</h3><p><strong>162/164</strong> tests passed</p><p>2 failed</p></div>
+    <div class="card"><h3>Accuracy</h3><p>99.34%</p><p>Precision 100.00% · Recall 100.00%</p></div>
+    <div class="card"><h3>F1 / Error Rates</h3><p>F1 100.00%</p><p>FP 0.00% · FN 0.00%</p></div>
+    <div class="card"><h3>Performance</h3><p>Avg 7.0ms · P95 12.6ms</p><p>Throughput 143.77/sec</p></div>
+  </div>
+
+  <h2>Threshold status</h2>
+  <div class="ok">All configured thresholds passed.</div>
+
+  <h2>Suite breakdown</h2>
+  <div class="grid">
+        <div class="card">
+          <h3>basic</h3>
+          <p><strong>3/3</strong> passed</p>
+          <p>0 failed · avg latency 70.0ms</p>
+        </div>
+
+        <div class="card">
+          <h3>phishing-detection</h3>
+          <p><strong>60/60</strong> passed</p>
+          <p>0 failed · avg latency 7.3ms</p>
+        </div>
+
+        <div class="card">
+          <h3>edge-cases</h3>
+          <p><strong>18/19</strong> passed</p>
+          <p>1 failed · avg latency 6.3ms</p>
+        </div>
+
+        <div class="card">
+          <h3>multilingual</h3>
+          <p><strong>21/21</strong> passed</p>
+          <p>0 failed · avg latency 5.5ms</p>
+        </div>
+
+        <div class="card">
+          <h3>safe-email</h3>
+          <p><strong>23/23</strong> passed</p>
+          <p>0 failed · avg latency 5.5ms</p>
+        </div>
+
+        <div class="card">
+          <h3>header-spoofing</h3>
+          <p><strong>8/8</strong> passed</p>
+          <p>0 failed · avg latency 4.3ms</p>
+        </div>
+
+        <div class="card">
+          <h3>transformer-only</h3>
+          <p><strong>8/8</strong> passed</p>
+          <p>0 failed · avg latency 5.5ms</p>
+        </div>
+
+        <div class="card">
+          <h3>url-analysis</h3>
+          <p><strong>10/10</strong> passed</p>
+          <p>0 failed · avg latency 5.7ms</p>
+        </div>
+
+        <div class="card">
+          <h3>llm-fallback</h3>
+          <p><strong>1/1</strong> passed</p>
+          <p>0 failed · avg latency 47.0ms</p>
+        </div>
+
+        <div class="card">
+          <h3>integration</h3>
+          <p><strong>3/3</strong> passed</p>
+          <p>0 failed · avg latency 79.1ms</p>
+        </div>
+
+        <div class="card">
+          <h3>failure-handling</h3>
+          <p><strong>4/4</strong> passed</p>
+          <p>0 failed · avg latency 661.6ms</p>
+        </div>
+
+        <div class="card">
+          <h3>consistency</h3>
+          <p><strong>3/3</strong> passed</p>
+          <p>0 failed · avg latency 20.3ms</p>
+        </div>
+
+        <div class="card">
+          <h3>performance</h3>
+          <p><strong>0/1</strong> passed</p>
+          <p>1 failed · avg latency 834.6ms</p>
+        </div></div>
+
+  <h2>Failed cases</h2>
+  <table>
+    <thead>
+      <tr><th>Suite</th><th>Case</th><th>Expected</th><th>Actual</th><th>Score</th><th>Reason</th></tr>
+    </thead>
+    <tbody>
+      
+        <tr>
+          <td>edge-cases</td>
+          <td>Generic security update prompt stays suspicious not phishing</td>
+          <td>uncertain</td>
+          <td>phishing</td>
+          <td>72</td>
+          <td>Classification mismatch. Expected uncertain, received phishing.; Confidence level mismatch. Expected MEDIUM, received HIGH.; Risk score 72 is outside the expected range 30-60.</td>
+        </tr>
+
+        <tr>
+          <td>performance</td>
+          <td>Batch performance and stability over 120 emails</td>
+          <td>safe</td>
+          <td>safe</td>
+          <td>-</td>
+          <td>1 case(s) failed during the performance batch.</td>
+        </tr>
+    </tbody>
+  </table>
+</body>
+</html>

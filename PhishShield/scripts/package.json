@@ -1,0 +1,18 @@
+{
+  "name": "@workspace/scripts",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "hello": "tsx ./src/hello.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "final-validation": "tsx ./src/final-validation-suite.ts",
+    "qa:system": "tsx ./src/system-readiness-audit.ts",
+    "qa:ui": "playwright test --config=playwright.config.ts"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "@types/node": "catalog:",
+    "tsx": "catalog:"
+  }
+}

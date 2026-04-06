@@ -1,0 +1,22 @@
+{
+  "feedbackSamples": 7,
+  "confirmedCorrect": 0,
+  "falsePositiveCount": 0,
+  "falseNegativeCount": 7,
+  "needsReviewCount": 0,
+  "correctedSafeCount": 0,
+  "correctedPhishingCount": 7,
+  "feedbackAgreementRate": 0,
+  "driftScore": 0.81,
+  "driftLevel": "high",
+  "retrainingRecommended": true,
+  "samplesSinceLastRetrain": 7,
+  "samplesNeededForRetrain": 18,
+  "currentModelVersion": "top-end-phishing-v2",
+  "topThreatThemes": [
+    "general-phishing"
+  ],
+  "retrainingFocusArea": "general-phishing",
+  "lastModelTrainingAt": "2026-04-03T00:00:00.000Z",
+  "lastModelAccuracy": 0.8571
+}

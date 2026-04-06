@@ -1,0 +1,14 @@
+packages:
+  "framer-motion": "Animations for the dashboard transitions and scanning effects"
+  "clsx": "Utility for constructing className strings conditionally"
+  "tailwind-merge": "Utility for intelligently merging tailwind classes"
+  "lucide-react": "Beautiful consistent icons for the dashboard"
+
+images:
+  - path: "artifacts/phishshield/public/images/cyber-bg.png"
+    description: "Abstract dark cybersecurity background with subtle glowing cyan data lines, network nodes, and dark navy deep space. Minimalist and professional."
+    aspect_ratio: "16:9"
+
+notes:
+  - App relies on the @workspace/api-client-react package for API calls.
+  - Dark mode is enforced as the default theme for the cybersecurity aesthetic.

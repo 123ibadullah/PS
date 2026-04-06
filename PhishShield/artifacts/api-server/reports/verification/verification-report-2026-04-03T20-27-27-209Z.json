@@ -1,0 +1,4180 @@
+{
+  "generatedAt": "2026-04-03T20:27:27.209Z",
+  "seed": 20260403,
+  "summary": {
+    "total": 164,
+    "passed": 51,
+    "failed": 113
+  },
+  "suites": [
+    {
+      "suite": "basic",
+      "total": 3,
+      "passed": 2,
+      "failed": 1,
+      "avgLatencyMs": 79.91
+    },
+    {
+      "suite": "phishing-detection",
+      "total": 60,
+      "passed": 0,
+      "failed": 60,
+      "avgLatencyMs": 7.88
+    },
+    {
+      "suite": "edge-cases",
+      "total": 19,
+      "passed": 18,
+      "failed": 1,
+      "avgLatencyMs": 6.84
+    },
+    {
+      "suite": "multilingual",
+      "total": 21,
+      "passed": 0,
+      "failed": 21,
+      "avgLatencyMs": 6.76
+    },
+    {
+      "suite": "safe-email",
+      "total": 23,
+      "passed": 23,
+      "failed": 0,
+      "avgLatencyMs": 6.38
+    },
+    {
+      "suite": "header-spoofing",
+      "total": 8,
+      "passed": 0,
+      "failed": 8,
+      "avgLatencyMs": 6.15
+    },
+    {
+      "suite": "transformer-only",
+      "total": 8,
+      "passed": 0,
+      "failed": 8,
+      "avgLatencyMs": 6.34
+    },
+    {
+      "suite": "url-analysis",
+      "total": 10,
+      "passed": 0,
+      "failed": 10,
+      "avgLatencyMs": 6.2
+    },
+    {
+      "suite": "llm-fallback",
+      "total": 1,
+      "passed": 0,
+      "failed": 1,
+      "avgLatencyMs": 62.43
+    },
+    {
+      "suite": "integration",
+      "total": 3,
+      "passed": 2,
+      "failed": 1,
+      "avgLatencyMs": 86.97
+    },
+    {
+      "suite": "failure-handling",
+      "total": 4,
+      "passed": 4,
+      "failed": 0,
+      "avgLatencyMs": 769.8
+    },
+    {
+      "suite": "consistency",
+      "total": 3,
+      "passed": 2,
+      "failed": 1,
+      "avgLatencyMs": 19.9
+    },
+    {
+      "suite": "performance",
+      "total": 1,
+      "passed": 0,
+      "failed": 1,
+      "avgLatencyMs": 707.35
+    }
+  ],
+  "metrics": {
+    "totalCases": 152,
+    "accuracy": 0.28289473684210525,
+    "precision": 1,
+    "recall": 1,
+    "f1Score": 1,
+    "falsePositiveRate": 0,
+    "falseNegativeRate": 0,
+    "tp": 56,
+    "fp": 0,
+    "tn": 26,
+    "fn": 0
+  },
+  "performance": {
+    "batchSize": 120,
+    "averageLatencyMs": 5.888514166666634,
+    "p95LatencyMs": 7.971899999998641,
+    "maxLatencyMs": 16.181099999999788,
+    "throughputPerSecond": 169.64722707366147,
+    "memoryDeltaMb": -4.943290710449219,
+    "passed": false
+  },
+  "thresholds": {
+    "accuracy": 0.9,
+    "phishingRecall": 0.95,
+    "precision": 0.9,
+    "falsePositiveRate": 0.1,
+    "falseNegativeRate": 0.1,
+    "averageLatencyMs": 500,
+    "p95LatencyMs": 1500
+  },
+  "thresholdFailures": [
+    "Accuracy below threshold: 28.29% < 90.00%"
+  ],
+  "failures": [
+    {
+      "caseId": "basic-phish-otp",
+      "suite": "basic",
+      "name": "Direct OTP harvesting request is blocked",
+      "passed": false,
+      "latencyMs": 50.162000000000035,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 78,
+      "confidence": 0.78,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 78% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-crypto-double-money",
+      "suite": "phishing-detection",
+      "name": "Crypto doubling scam is never marked safe",
+      "passed": false,
+      "latencyMs": 14.258000000000038,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-pin-request",
+      "suite": "phishing-detection",
+      "name": "Credential-only PIN request is blocked",
+      "passed": false,
+      "latencyMs": 12.408200000000079,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 78,
+      "confidence": 0.78,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 78% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-short-verify-now",
+      "suite": "edge-cases",
+      "name": "Very short urgency text is never treated as safe",
+      "passed": false,
+      "latencyMs": 12.248000000000047,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-click-link-avoid-suspension",
+      "suite": "phishing-detection",
+      "name": "Short click-link suspension warning is treated as phishing",
+      "passed": false,
+      "latencyMs": 9.129500000000007,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-hinglish-otp-hard",
+      "suite": "multilingual",
+      "name": "Hinglish OTP account-block warning escalates to phishing",
+      "passed": false,
+      "latencyMs": 8.658400000000029,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 98,
+      "confidence": 0.98,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 98% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-job-fee-short-no-amount",
+      "suite": "phishing-detection",
+      "name": "HR pay-fee job confirmation prompt is phishing",
+      "passed": false,
+      "latencyMs": 6.914700000000039,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-suspicious-login-confirm-identity",
+      "suite": "phishing-detection",
+      "name": "Suspicious login confirm identity is phishing",
+      "passed": false,
+      "latencyMs": 6.461000000000013,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-confirm-details-avoid-closure",
+      "suite": "phishing-detection",
+      "name": "Confirm details to avoid closure is phishing",
+      "passed": false,
+      "latencyMs": 6.830999999999904,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-paytm-kyc-no-link",
+      "suite": "phishing-detection",
+      "name": "No-link Paytm KYC suspension scam escalates correctly",
+      "passed": false,
+      "latencyMs": 8.27559999999994,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-reward-no-link",
+      "suite": "phishing-detection",
+      "name": "No-link cashback reward scam is blocked",
+      "passed": false,
+      "latencyMs": 37.50499999999988,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-job-fee-scam",
+      "suite": "phishing-detection",
+      "name": "Job selection fee scam is never marked safe",
+      "passed": false,
+      "latencyMs": 8.273300000000063,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-hindi-bank-threat",
+      "suite": "multilingual",
+      "name": "Hindi bank closure threat escalates to phishing",
+      "passed": false,
+      "latencyMs": 12.664199999999937,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-telugu-bank-threat",
+      "suite": "multilingual",
+      "name": "Telugu bank blocked warning escalates to phishing",
+      "passed": false,
+      "latencyMs": 6.649400000000014,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-invoice-payment-fraud",
+      "suite": "phishing-detection",
+      "name": "Urgent invoice payment request is treated as phishing",
+      "passed": false,
+      "latencyMs": 5.547399999999925,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-urgent-transfer-meeting",
+      "suite": "phishing-detection",
+      "name": "Urgent transfer request while in a meeting is treated as BEC phishing",
+      "passed": false,
+      "latencyMs": 6.4922999999998865,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-hinglish-otp-pressure",
+      "suite": "multilingual",
+      "name": "Hinglish OTP pressure scam escalates to phishing",
+      "passed": false,
+      "latencyMs": 8.069200000000137,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 98,
+      "confidence": 0.98,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 98% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-tax-notice-details",
+      "suite": "phishing-detection",
+      "name": "Income tax notice demanding details is treated as phishing",
+      "passed": false,
+      "latencyMs": 4.936799999999948,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-payment-failed-card-update",
+      "suite": "phishing-detection",
+      "name": "Payment failure asking for card updates is phishing",
+      "passed": false,
+      "latencyMs": 3.321100000000115,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 95,
+      "confidence": 0.95,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 95% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-short-verification-required",
+      "suite": "phishing-detection",
+      "name": "Short verification-required prompt is never safe",
+      "passed": false,
+      "latencyMs": 3.891300000000001,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-hinglish-service-band-payment",
+      "suite": "multilingual",
+      "name": "Hinglish payment pressure with service-block threat is phishing",
+      "passed": false,
+      "latencyMs": 5.503799999999956,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 79,
+      "confidence": 0.79,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 79% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-profile-disruption-short",
+      "suite": "phishing-detection",
+      "name": "Profile verification with disruption threat escalates to phishing",
+      "passed": false,
+      "latencyMs": 6.037199999999984,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-bec-unavailable-task",
+      "suite": "phishing-detection",
+      "name": "Unavailable-task urgency request is treated as phishing",
+      "passed": false,
+      "latencyMs": 5.198999999999842,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 90,
+      "confidence": 0.9,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 90% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-bec-complete-task-urgent",
+      "suite": "phishing-detection",
+      "name": "Unavailable request with a vague urgent task is treated as phishing",
+      "passed": false,
+      "latencyMs": 5.569100000000162,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 90,
+      "confidence": 0.9,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 90% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-payment-reminder-service-disruption",
+      "suite": "phishing-detection",
+      "name": "Pending invoice reminder with service disruption is phishing",
+      "passed": false,
+      "latencyMs": 6.474500000000035,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "header-spoof-fixed",
+      "suite": "header-spoofing",
+      "name": "Reply-To mismatch is surfaced in header analysis",
+      "passed": false,
+      "latencyMs": 7.808700000000044,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "bank-phish-0",
+      "suite": "phishing-detection",
+      "name": "Google Pay KYC or suspension phishing #1",
+      "passed": false,
+      "latencyMs": 14.163200000000188,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "bank-phish-1",
+      "suite": "phishing-detection",
+      "name": "ICICI KYC or suspension phishing #2",
+      "passed": false,
+      "latencyMs": 7.3641999999999825,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "bank-phish-2",
+      "suite": "phishing-detection",
+      "name": "HDFC KYC or suspension phishing #3",
+      "passed": false,
+      "latencyMs": 7.2409000000000106,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "bank-phish-3",
+      "suite": "phishing-detection",
+      "name": "HDFC KYC or suspension phishing #4",
+      "passed": false,
+      "latencyMs": 7.124199999999973,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "bank-phish-4",
+      "suite": "phishing-detection",
+      "name": "Google Pay KYC or suspension phishing #5",
+      "passed": false,
+      "latencyMs": 9.08770000000004,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "bank-phish-5",
+      "suite": "phishing-detection",
+      "name": "ICICI KYC or suspension phishing #6",
+      "passed": false,
+      "latencyMs": 8.894500000000107,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "bank-phish-6",
+      "suite": "phishing-detection",
+      "name": "ICICI KYC or suspension phishing #7",
+      "passed": false,
+      "latencyMs": 8.850400000000036,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "bank-phish-7",
+      "suite": "phishing-detection",
+      "name": "Axis Bank KYC or suspension phishing #8",
+      "passed": false,
+      "latencyMs": 9.805899999999838,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "bank-phish-8",
+      "suite": "phishing-detection",
+      "name": "ICICI KYC or suspension phishing #9",
+      "passed": false,
+      "latencyMs": 9.032399999999825,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "bank-phish-9",
+      "suite": "phishing-detection",
+      "name": "Axis Bank KYC or suspension phishing #10",
+      "passed": false,
+      "latencyMs": 9.41769999999974,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "bank-phish-10",
+      "suite": "phishing-detection",
+      "name": "PhonePe KYC or suspension phishing #11",
+      "passed": false,
+      "latencyMs": 8.495300000000043,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "bank-phish-11",
+      "suite": "phishing-detection",
+      "name": "Axis Bank KYC or suspension phishing #12",
+      "passed": false,
+      "latencyMs": 9.742200000000139,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "bank-phish-12",
+      "suite": "phishing-detection",
+      "name": "HDFC KYC or suspension phishing #13",
+      "passed": false,
+      "latencyMs": 8.443899999999758,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "bank-phish-13",
+      "suite": "phishing-detection",
+      "name": "Google Pay KYC or suspension phishing #14",
+      "passed": false,
+      "latencyMs": 7.394600000000082,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "otp-phish-0",
+      "suite": "phishing-detection",
+      "name": "OTP reply scam #1",
+      "passed": false,
+      "latencyMs": 7.763500000000022,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "otp-phish-1",
+      "suite": "phishing-detection",
+      "name": "OTP reply scam #2",
+      "passed": false,
+      "latencyMs": 5.666999999999916,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "otp-phish-2",
+      "suite": "phishing-detection",
+      "name": "OTP reply scam #3",
+      "passed": false,
+      "latencyMs": 7.610400000000027,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "otp-phish-3",
+      "suite": "phishing-detection",
+      "name": "OTP reply scam #4",
+      "passed": false,
+      "latencyMs": 6.782000000000153,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "otp-phish-4",
+      "suite": "phishing-detection",
+      "name": "OTP reply scam #5",
+      "passed": false,
+      "latencyMs": 6.392100000000028,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "otp-phish-5",
+      "suite": "phishing-detection",
+      "name": "OTP reply scam #6",
+      "passed": false,
+      "latencyMs": 6.796700000000328,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "otp-phish-6",
+      "suite": "phishing-detection",
+      "name": "OTP reply scam #7",
+      "passed": false,
+      "latencyMs": 6.896900000000187,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "otp-phish-7",
+      "suite": "phishing-detection",
+      "name": "OTP reply scam #8",
+      "passed": false,
+      "latencyMs": 5.3746000000001,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "otp-phish-8",
+      "suite": "phishing-detection",
+      "name": "OTP reply scam #9",
+      "passed": false,
+      "latencyMs": 5.0612999999998465,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "otp-phish-9",
+      "suite": "phishing-detection",
+      "name": "OTP reply scam #10",
+      "passed": false,
+      "latencyMs": 6.41399999999976,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "reward-phish-0",
+      "suite": "phishing-detection",
+      "name": "Reward scam #1",
+      "passed": false,
+      "latencyMs": 8.091100000000097,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 84,
+      "confidence": 0.84,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 84% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "reward-phish-1",
+      "suite": "phishing-detection",
+      "name": "Reward scam #2",
+      "passed": false,
+      "latencyMs": 7.135600000000068,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 84,
+      "confidence": 0.84,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 84% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "reward-phish-2",
+      "suite": "phishing-detection",
+      "name": "Reward scam #3",
+      "passed": false,
+      "latencyMs": 7.212500000000091,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 84,
+      "confidence": 0.84,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 84% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "reward-phish-3",
+      "suite": "phishing-detection",
+      "name": "Reward scam #4",
+      "passed": false,
+      "latencyMs": 6.208000000000084,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 84,
+      "confidence": 0.84,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 84% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "reward-phish-4",
+      "suite": "phishing-detection",
+      "name": "Reward scam #5",
+      "passed": false,
+      "latencyMs": 6.978200000000015,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 84,
+      "confidence": 0.84,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 84% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "reward-phish-5",
+      "suite": "phishing-detection",
+      "name": "Reward scam #6",
+      "passed": false,
+      "latencyMs": 7.422199999999975,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 84,
+      "confidence": 0.84,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 84% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "reward-phish-6",
+      "suite": "phishing-detection",
+      "name": "Reward scam #7",
+      "passed": false,
+      "latencyMs": 8.19210000000021,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 84,
+      "confidence": 0.84,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 84% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "reward-phish-7",
+      "suite": "phishing-detection",
+      "name": "Reward scam #8",
+      "passed": false,
+      "latencyMs": 5.970299999999952,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 84,
+      "confidence": 0.84,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 84% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "reward-phish-8",
+      "suite": "phishing-detection",
+      "name": "Reward scam #9",
+      "passed": false,
+      "latencyMs": 7.475199999999859,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 87,
+      "confidence": 0.87,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 87% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "reward-phish-9",
+      "suite": "phishing-detection",
+      "name": "Reward scam #10",
+      "passed": false,
+      "latencyMs": 7.29910000000018,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 84,
+      "confidence": 0.84,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 84% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "transformer-semantic-0",
+      "suite": "transformer-only",
+      "name": "Clean-looking enterprise phishing #1",
+      "passed": false,
+      "latencyMs": 7.070600000000013,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "transformer-semantic-1",
+      "suite": "transformer-only",
+      "name": "Clean-looking enterprise phishing #2",
+      "passed": false,
+      "latencyMs": 5.4770000000003165,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 74,
+      "confidence": 0.74,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 74% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "transformer-semantic-2",
+      "suite": "transformer-only",
+      "name": "Clean-looking enterprise phishing #3",
+      "passed": false,
+      "latencyMs": 6.36200000000008,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 74,
+      "confidence": 0.74,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 74% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "transformer-semantic-3",
+      "suite": "transformer-only",
+      "name": "Clean-looking enterprise phishing #4",
+      "passed": false,
+      "latencyMs": 5.274699999999939,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 74,
+      "confidence": 0.74,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 74% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "transformer-semantic-4",
+      "suite": "transformer-only",
+      "name": "Clean-looking enterprise phishing #5",
+      "passed": false,
+      "latencyMs": 6.153999999999996,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "transformer-semantic-5",
+      "suite": "transformer-only",
+      "name": "Clean-looking enterprise phishing #6",
+      "passed": false,
+      "latencyMs": 6.821399999999812,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 87,
+      "confidence": 0.87,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 87% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "transformer-semantic-6",
+      "suite": "transformer-only",
+      "name": "Clean-looking enterprise phishing #7",
+      "passed": false,
+      "latencyMs": 6.052400000000034,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 74,
+      "confidence": 0.74,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 74% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "transformer-semantic-7",
+      "suite": "transformer-only",
+      "name": "Clean-looking enterprise phishing #8",
+      "passed": false,
+      "latencyMs": 7.480000000000018,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "obfuscated-phish-0",
+      "suite": "phishing-detection",
+      "name": "Obfuscated phishing variant #1",
+      "passed": false,
+      "latencyMs": 9.318099999999959,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "obfuscated-phish-1",
+      "suite": "phishing-detection",
+      "name": "Obfuscated phishing variant #2",
+      "passed": false,
+      "latencyMs": 7.002700000000004,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 94,
+      "confidence": 0.94,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 94% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "obfuscated-phish-2",
+      "suite": "phishing-detection",
+      "name": "Obfuscated phishing variant #3",
+      "passed": false,
+      "latencyMs": 5.775200000000041,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 73,
+      "confidence": 0.73,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 73% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "obfuscated-phish-3",
+      "suite": "phishing-detection",
+      "name": "Obfuscated phishing variant #4",
+      "passed": false,
+      "latencyMs": 6.23090000000002,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 94,
+      "confidence": 0.94,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 94% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "obfuscated-phish-4",
+      "suite": "phishing-detection",
+      "name": "Obfuscated phishing variant #5",
+      "passed": false,
+      "latencyMs": 6.6194000000000415,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "obfuscated-phish-5",
+      "suite": "phishing-detection",
+      "name": "Obfuscated phishing variant #6",
+      "passed": false,
+      "latencyMs": 5.853800000000319,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 73,
+      "confidence": 0.73,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 73% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "obfuscated-phish-6",
+      "suite": "phishing-detection",
+      "name": "Obfuscated phishing variant #7",
+      "passed": false,
+      "latencyMs": 6.662699999999859,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 73,
+      "confidence": 0.73,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 73% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "obfuscated-phish-7",
+      "suite": "phishing-detection",
+      "name": "Obfuscated phishing variant #8",
+      "passed": false,
+      "latencyMs": 5.993399999999838,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 75,
+      "confidence": 0.75,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 75% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "hindi-phish-0",
+      "suite": "multilingual",
+      "name": "Hindi phishing email #1",
+      "passed": false,
+      "latencyMs": 7.350799999999708,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "hindi-phish-1",
+      "suite": "multilingual",
+      "name": "Hindi phishing email #2",
+      "passed": false,
+      "latencyMs": 5.646099999999933,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 78,
+      "confidence": 0.78,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 78% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "hindi-phish-2",
+      "suite": "multilingual",
+      "name": "Hindi phishing email #3",
+      "passed": false,
+      "latencyMs": 6.320300000000316,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "hindi-phish-3",
+      "suite": "multilingual",
+      "name": "Hindi phishing email #4",
+      "passed": false,
+      "latencyMs": 5.79300000000012,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 78,
+      "confidence": 0.78,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 78% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "hindi-phish-4",
+      "suite": "multilingual",
+      "name": "Hindi phishing email #5",
+      "passed": false,
+      "latencyMs": 6.47440000000006,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 78,
+      "confidence": 0.78,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 78% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "hindi-phish-5",
+      "suite": "multilingual",
+      "name": "Hindi phishing email #6",
+      "passed": false,
+      "latencyMs": 6.320000000000164,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "hindi-phish-6",
+      "suite": "multilingual",
+      "name": "Hindi phishing email #7",
+      "passed": false,
+      "latencyMs": 4.685500000000047,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 78,
+      "confidence": 0.78,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 78% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "hindi-phish-7",
+      "suite": "multilingual",
+      "name": "Hindi phishing email #8",
+      "passed": false,
+      "latencyMs": 10.166400000000067,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 78,
+      "confidence": 0.78,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 78% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "telugu-phish-0",
+      "suite": "multilingual",
+      "name": "Telugu phishing email #1",
+      "passed": false,
+      "latencyMs": 6.0999000000001615,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 88,
+      "confidence": 0.88,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 88% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "telugu-phish-1",
+      "suite": "multilingual",
+      "name": "Telugu phishing email #2",
+      "passed": false,
+      "latencyMs": 6.812000000000353,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "telugu-phish-2",
+      "suite": "multilingual",
+      "name": "Telugu phishing email #3",
+      "passed": false,
+      "latencyMs": 6.714399999999841,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "telugu-phish-3",
+      "suite": "multilingual",
+      "name": "Telugu phishing email #4",
+      "passed": false,
+      "latencyMs": 5.3659999999999854,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "telugu-phish-4",
+      "suite": "multilingual",
+      "name": "Telugu phishing email #5",
+      "passed": false,
+      "latencyMs": 6.330799999999726,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "telugu-phish-5",
+      "suite": "multilingual",
+      "name": "Telugu phishing email #6",
+      "passed": false,
+      "latencyMs": 5.351599999999962,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "telugu-phish-6",
+      "suite": "multilingual",
+      "name": "Telugu phishing email #7",
+      "passed": false,
+      "latencyMs": 5.184700000000248,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "telugu-phish-7",
+      "suite": "multilingual",
+      "name": "Telugu phishing email #8",
+      "passed": false,
+      "latencyMs": 5.716899999999896,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "url-analysis-0",
+      "suite": "url-analysis",
+      "name": "URL analysis catches suspicious destination #1",
+      "passed": false,
+      "latencyMs": 6.664200000000164,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 62,
+      "confidence": 0.62,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 62% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "url-analysis-1",
+      "suite": "url-analysis",
+      "name": "URL analysis catches suspicious destination #2",
+      "passed": false,
+      "latencyMs": 6.004500000000007,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 62,
+      "confidence": 0.62,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 62% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "url-analysis-2",
+      "suite": "url-analysis",
+      "name": "URL analysis catches suspicious destination #3",
+      "passed": false,
+      "latencyMs": 6.969200000000001,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 62,
+      "confidence": 0.62,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 62% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "url-analysis-3",
+      "suite": "url-analysis",
+      "name": "URL analysis catches suspicious destination #4",
+      "passed": false,
+      "latencyMs": 7.096399999999903,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 62,
+      "confidence": 0.62,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 62% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "url-analysis-4",
+      "suite": "url-analysis",
+      "name": "URL analysis catches suspicious destination #5",
+      "passed": false,
+      "latencyMs": 5.818500000000313,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 62,
+      "confidence": 0.62,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 62% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "url-analysis-5",
+      "suite": "url-analysis",
+      "name": "URL analysis catches suspicious destination #6",
+      "passed": false,
+      "latencyMs": 5.7184000000002015,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 62,
+      "confidence": 0.62,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 62% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "url-analysis-6",
+      "suite": "url-analysis",
+      "name": "URL analysis catches suspicious destination #7",
+      "passed": false,
+      "latencyMs": 6.496299999999792,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 62,
+      "confidence": 0.62,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 62% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "url-analysis-7",
+      "suite": "url-analysis",
+      "name": "URL analysis catches suspicious destination #8",
+      "passed": false,
+      "latencyMs": 4.922500000000127,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 62,
+      "confidence": 0.62,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 62% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "url-analysis-8",
+      "suite": "url-analysis",
+      "name": "URL analysis catches suspicious destination #9",
+      "passed": false,
+      "latencyMs": 5.45029999999997,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 62,
+      "confidence": 0.62,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 62% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "url-analysis-9",
+      "suite": "url-analysis",
+      "name": "URL analysis catches suspicious destination #10",
+      "passed": false,
+      "latencyMs": 6.810500000000047,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 62,
+      "confidence": 0.62,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 62% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "header-spoof-0",
+      "suite": "header-spoofing",
+      "name": "Header spoof attempt #1",
+      "passed": false,
+      "latencyMs": 5.953899999999976,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 98,
+      "confidence": 0.98,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 98% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "header-spoof-1",
+      "suite": "header-spoofing",
+      "name": "Header spoof attempt #2",
+      "passed": false,
+      "latencyMs": 7.045000000000073,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "header-spoof-2",
+      "suite": "header-spoofing",
+      "name": "Header spoof attempt #3",
+      "passed": false,
+      "latencyMs": 5.31020000000035,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "header-spoof-3",
+      "suite": "header-spoofing",
+      "name": "Header spoof attempt #4",
+      "passed": false,
+      "latencyMs": 5.848899999999958,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "header-spoof-4",
+      "suite": "header-spoofing",
+      "name": "Header spoof attempt #5",
+      "passed": false,
+      "latencyMs": 5.906399999999849,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 98,
+      "confidence": 0.98,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 98% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "header-spoof-5",
+      "suite": "header-spoofing",
+      "name": "Header spoof attempt #6",
+      "passed": false,
+      "latencyMs": 5.731499999999869,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 96,
+      "confidence": 0.96,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 96% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "header-spoof-6",
+      "suite": "header-spoofing",
+      "name": "Header spoof attempt #7",
+      "passed": false,
+      "latencyMs": 5.580600000000231,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 98,
+      "confidence": 0.98,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 98% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "llm-fallback-midrange",
+      "suite": "llm-fallback",
+      "name": "LLM fallback is triggered for a mid-range ambiguous alert",
+      "passed": false,
+      "latencyMs": 62.43229999999994,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 88,
+      "confidence": 0.88,
+      "llmUsed": true,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 88% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "integration-phishing",
+      "suite": "integration",
+      "name": "HTTP phishing analysis",
+      "passed": false,
+      "latencyMs": 40.417099999999664,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 94,
+      "confidence": 0.94,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 94% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "consistency-phishing",
+      "suite": "consistency",
+      "name": "Repeated phishing lure stays stable",
+      "passed": false,
+      "latencyMs": 18.77980000000025,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 94,
+      "confidence": 0.94,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 94% · High risk with strong confidence'.",
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 94% · High risk with strong confidence'.",
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 94% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "performance-batch",
+      "suite": "performance",
+      "name": "Batch performance and stability over 120 emails",
+      "passed": false,
+      "latencyMs": 707.3502000000008,
+      "expectedClassification": "safe",
+      "actualClassification": "safe",
+      "issues": [
+        "77 case(s) failed during the performance batch."
+      ]
+    }
+  ],
+  "results": [
+    {
+      "caseId": "basic-safe-otp",
+      "suite": "basic",
+      "name": "Legitimate OTP notification remains safe",
+      "passed": true,
+      "latencyMs": 170.0045,
+      "expectedClassification": "safe",
+      "actualClassification": "safe",
+      "riskScore": 18,
+      "confidence": 0.18,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "basic-phish-otp",
+      "suite": "basic",
+      "name": "Direct OTP harvesting request is blocked",
+      "passed": false,
+      "latencyMs": 50.162000000000035,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 78,
+      "confidence": 0.78,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 78% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "basic-uncertain-alert",
+      "suite": "basic",
+      "name": "Vague account alert lands in the suspicious band",
+      "passed": true,
+      "latencyMs": 19.56009999999992,
+      "expectedClassification": "uncertain",
+      "actualClassification": "uncertain",
+      "riskScore": 35,
+      "confidence": 0.35,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "regression-crypto-double-money",
+      "suite": "phishing-detection",
+      "name": "Crypto doubling scam is never marked safe",
+      "passed": false,
+      "latencyMs": 14.258000000000038,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-pin-request",
+      "suite": "phishing-detection",
+      "name": "Credential-only PIN request is blocked",
+      "passed": false,
+      "latencyMs": 12.408200000000079,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 78,
+      "confidence": 0.78,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 78% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-short-verify-now",
+      "suite": "edge-cases",
+      "name": "Very short urgency text is never treated as safe",
+      "passed": false,
+      "latencyMs": 12.248000000000047,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-bare-suspicious-link",
+      "suite": "edge-cases",
+      "name": "Standalone suspicious-TLD URL is never marked safe",
+      "passed": true,
+      "latencyMs": 15.426600000000008,
+      "expectedClassification": "uncertain",
+      "actualClassification": "uncertain",
+      "riskScore": 34,
+      "confidence": 0.34,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "regression-click-link-avoid-suspension",
+      "suite": "phishing-detection",
+      "name": "Short click-link suspension warning is treated as phishing",
+      "passed": false,
+      "latencyMs": 9.129500000000007,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-generic-security-update",
+      "suite": "edge-cases",
+      "name": "Generic security update prompt stays suspicious not phishing",
+      "passed": true,
+      "latencyMs": 10.605600000000095,
+      "expectedClassification": "uncertain",
+      "actualClassification": "uncertain",
+      "riskScore": 35,
+      "confidence": 0.35,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "regression-confirm-email-address",
+      "suite": "edge-cases",
+      "name": "Confirm your email address stays suspicious not phishing",
+      "passed": true,
+      "latencyMs": 9.205799999999954,
+      "expectedClassification": "uncertain",
+      "actualClassification": "uncertain",
+      "riskScore": 35,
+      "confidence": 0.35,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "regression-update-your-info",
+      "suite": "edge-cases",
+      "name": "Update your info is never treated as fully safe",
+      "passed": true,
+      "latencyMs": 7.085700000000088,
+      "expectedClassification": "uncertain",
+      "actualClassification": "uncertain",
+      "riskScore": 35,
+      "confidence": 0.35,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "regression-hinglish-otp-hard",
+      "suite": "multilingual",
+      "name": "Hinglish OTP account-block warning escalates to phishing",
+      "passed": false,
+      "latencyMs": 8.658400000000029,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 98,
+      "confidence": 0.98,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 98% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-job-fee-short-no-amount",
+      "suite": "phishing-detection",
+      "name": "HR pay-fee job confirmation prompt is phishing",
+      "passed": false,
+      "latencyMs": 6.914700000000039,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-suspicious-login-confirm-identity",
+      "suite": "phishing-detection",
+      "name": "Suspicious login confirm identity is phishing",
+      "passed": false,
+      "latencyMs": 6.461000000000013,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-confirm-details-avoid-closure",
+      "suite": "phishing-detection",
+      "name": "Confirm details to avoid closure is phishing",
+      "passed": false,
+      "latencyMs": 6.830999999999904,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-security-update-required-suspicious",
+      "suite": "edge-cases",
+      "name": "Security update required stays suspicious not phishing",
+      "passed": true,
+      "latencyMs": 6.1853000000000975,
+      "expectedClassification": "uncertain",
+      "actualClassification": "uncertain",
+      "riskScore": 38,
+      "confidence": 0.38,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "regression-security-check-required-suspicious",
+      "suite": "edge-cases",
+      "name": "Security check required stays suspicious not phishing",
+      "passed": true,
+      "latencyMs": 5.258399999999938,
+      "expectedClassification": "uncertain",
+      "actualClassification": "uncertain",
+      "riskScore": 38,
+      "confidence": 0.38,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "regression-password-changed-successfully-safe",
+      "suite": "safe-email",
+      "name": "Password changed successfully notification stays safe",
+      "passed": true,
+      "latencyMs": 5.464100000000144,
+      "expectedClassification": "safe",
+      "actualClassification": "safe",
+      "riskScore": 22,
+      "confidence": 0.22,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "regression-paytm-kyc-no-link",
+      "suite": "phishing-detection",
+      "name": "No-link Paytm KYC suspension scam escalates correctly",
+      "passed": false,
+      "latencyMs": 8.27559999999994,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-reward-no-link",
+      "suite": "phishing-detection",
+      "name": "No-link cashback reward scam is blocked",
+      "passed": false,
+      "latencyMs": 37.50499999999988,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-job-fee-scam",
+      "suite": "phishing-detection",
+      "name": "Job selection fee scam is never marked safe",
+      "passed": false,
+      "latencyMs": 8.273300000000063,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-hindi-bank-threat",
+      "suite": "multilingual",
+      "name": "Hindi bank closure threat escalates to phishing",
+      "passed": false,
+      "latencyMs": 12.664199999999937,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-telugu-bank-threat",
+      "suite": "multilingual",
+      "name": "Telugu bank blocked warning escalates to phishing",
+      "passed": false,
+      "latencyMs": 6.649400000000014,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-invoice-payment-fraud",
+      "suite": "phishing-detection",
+      "name": "Urgent invoice payment request is treated as phishing",
+      "passed": false,
+      "latencyMs": 5.547399999999925,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-urgent-transfer-meeting",
+      "suite": "phishing-detection",
+      "name": "Urgent transfer request while in a meeting is treated as BEC phishing",
+      "passed": false,
+      "latencyMs": 6.4922999999998865,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-hinglish-otp-pressure",
+      "suite": "multilingual",
+      "name": "Hinglish OTP pressure scam escalates to phishing",
+      "passed": false,
+      "latencyMs": 8.069200000000137,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 98,
+      "confidence": 0.98,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 98% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-generic-account-update",
+      "suite": "edge-cases",
+      "name": "Generic account update prompt is never treated as fully safe",
+      "passed": true,
+      "latencyMs": 6.048600000000079,
+      "expectedClassification": "uncertain",
+      "actualClassification": "uncertain",
+      "riskScore": 35,
+      "confidence": 0.35,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "regression-tax-notice-details",
+      "suite": "phishing-detection",
+      "name": "Income tax notice demanding details is treated as phishing",
+      "passed": false,
+      "latencyMs": 4.936799999999948,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-payment-failed-card-update",
+      "suite": "phishing-detection",
+      "name": "Payment failure asking for card updates is phishing",
+      "passed": false,
+      "latencyMs": 3.321100000000115,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 95,
+      "confidence": 0.95,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 95% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-short-verification-required",
+      "suite": "phishing-detection",
+      "name": "Short verification-required prompt is never safe",
+      "passed": false,
+      "latencyMs": 3.891300000000001,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-login-activity-generic",
+      "suite": "edge-cases",
+      "name": "Generic login activity alert stays at least uncertain",
+      "passed": true,
+      "latencyMs": 5.276299999999992,
+      "expectedClassification": "uncertain",
+      "actualClassification": "uncertain",
+      "riskScore": 35,
+      "confidence": 0.35,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "regression-hinglish-service-band-payment",
+      "suite": "multilingual",
+      "name": "Hinglish payment pressure with service-block threat is phishing",
+      "passed": false,
+      "latencyMs": 5.503799999999956,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 79,
+      "confidence": 0.79,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 79% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-profile-disruption-short",
+      "suite": "phishing-detection",
+      "name": "Profile verification with disruption threat escalates to phishing",
+      "passed": false,
+      "latencyMs": 6.037199999999984,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-bec-unavailable-task",
+      "suite": "phishing-detection",
+      "name": "Unavailable-task urgency request is treated as phishing",
+      "passed": false,
+      "latencyMs": 5.198999999999842,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 90,
+      "confidence": 0.9,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 90% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-bec-complete-task-urgent",
+      "suite": "phishing-detection",
+      "name": "Unavailable request with a vague urgent task is treated as phishing",
+      "passed": false,
+      "latencyMs": 5.569100000000162,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 90,
+      "confidence": 0.9,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 90% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-payment-reminder-service-disruption",
+      "suite": "phishing-detection",
+      "name": "Pending invoice reminder with service disruption is phishing",
+      "passed": false,
+      "latencyMs": 6.474500000000035,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "regression-order-confirmation-safe-long",
+      "suite": "safe-email",
+      "name": "Long order confirmation remains safe",
+      "passed": true,
+      "latencyMs": 5.95900000000006,
+      "expectedClassification": "safe",
+      "actualClassification": "safe",
+      "riskScore": 0,
+      "confidence": 0,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "regression-feedback-request-safe",
+      "suite": "safe-email",
+      "name": "Feedback request stays safe",
+      "passed": true,
+      "latencyMs": 4.696800000000167,
+      "expectedClassification": "safe",
+      "actualClassification": "safe",
+      "riskScore": 24,
+      "confidence": 0.24,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "edge-empty",
+      "suite": "edge-cases",
+      "name": "Empty email does not crash the pipeline",
+      "passed": true,
+      "latencyMs": 0.39030000000002474,
+      "expectedClassification": "safe",
+      "actualClassification": "safe",
+      "riskScore": 0,
+      "confidence": 0,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "edge-short-safe",
+      "suite": "edge-cases",
+      "name": "Single-line benign message remains safe",
+      "passed": true,
+      "latencyMs": 4.88189999999986,
+      "expectedClassification": "safe",
+      "actualClassification": "safe",
+      "riskScore": 0,
+      "confidence": 0,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "header-spoof-fixed",
+      "suite": "header-spoofing",
+      "name": "Reply-To mismatch is surfaced in header analysis",
+      "passed": false,
+      "latencyMs": 7.808700000000044,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "bank-phish-0",
+      "suite": "phishing-detection",
+      "name": "Google Pay KYC or suspension phishing #1",
+      "passed": false,
+      "latencyMs": 14.163200000000188,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "bank-phish-1",
+      "suite": "phishing-detection",
+      "name": "ICICI KYC or suspension phishing #2",
+      "passed": false,
+      "latencyMs": 7.3641999999999825,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "bank-phish-2",
+      "suite": "phishing-detection",
+      "name": "HDFC KYC or suspension phishing #3",
+      "passed": false,
+      "latencyMs": 7.2409000000000106,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "bank-phish-3",
+      "suite": "phishing-detection",
+      "name": "HDFC KYC or suspension phishing #4",
+      "passed": false,
+      "latencyMs": 7.124199999999973,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "bank-phish-4",
+      "suite": "phishing-detection",
+      "name": "Google Pay KYC or suspension phishing #5",
+      "passed": false,
+      "latencyMs": 9.08770000000004,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "bank-phish-5",
+      "suite": "phishing-detection",
+      "name": "ICICI KYC or suspension phishing #6",
+      "passed": false,
+      "latencyMs": 8.894500000000107,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "bank-phish-6",
+      "suite": "phishing-detection",
+      "name": "ICICI KYC or suspension phishing #7",
+      "passed": false,
+      "latencyMs": 8.850400000000036,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "bank-phish-7",
+      "suite": "phishing-detection",
+      "name": "Axis Bank KYC or suspension phishing #8",
+      "passed": false,
+      "latencyMs": 9.805899999999838,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "bank-phish-8",
+      "suite": "phishing-detection",
+      "name": "ICICI KYC or suspension phishing #9",
+      "passed": false,
+      "latencyMs": 9.032399999999825,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "bank-phish-9",
+      "suite": "phishing-detection",
+      "name": "Axis Bank KYC or suspension phishing #10",
+      "passed": false,
+      "latencyMs": 9.41769999999974,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "bank-phish-10",
+      "suite": "phishing-detection",
+      "name": "PhonePe KYC or suspension phishing #11",
+      "passed": false,
+      "latencyMs": 8.495300000000043,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "bank-phish-11",
+      "suite": "phishing-detection",
+      "name": "Axis Bank KYC or suspension phishing #12",
+      "passed": false,
+      "latencyMs": 9.742200000000139,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "bank-phish-12",
+      "suite": "phishing-detection",
+      "name": "HDFC KYC or suspension phishing #13",
+      "passed": false,
+      "latencyMs": 8.443899999999758,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "bank-phish-13",
+      "suite": "phishing-detection",
+      "name": "Google Pay KYC or suspension phishing #14",
+      "passed": false,
+      "latencyMs": 7.394600000000082,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "otp-phish-0",
+      "suite": "phishing-detection",
+      "name": "OTP reply scam #1",
+      "passed": false,
+      "latencyMs": 7.763500000000022,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "otp-phish-1",
+      "suite": "phishing-detection",
+      "name": "OTP reply scam #2",
+      "passed": false,
+      "latencyMs": 5.666999999999916,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "otp-phish-2",
+      "suite": "phishing-detection",
+      "name": "OTP reply scam #3",
+      "passed": false,
+      "latencyMs": 7.610400000000027,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "otp-phish-3",
+      "suite": "phishing-detection",
+      "name": "OTP reply scam #4",
+      "passed": false,
+      "latencyMs": 6.782000000000153,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "otp-phish-4",
+      "suite": "phishing-detection",
+      "name": "OTP reply scam #5",
+      "passed": false,
+      "latencyMs": 6.392100000000028,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "otp-phish-5",
+      "suite": "phishing-detection",
+      "name": "OTP reply scam #6",
+      "passed": false,
+      "latencyMs": 6.796700000000328,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "otp-phish-6",
+      "suite": "phishing-detection",
+      "name": "OTP reply scam #7",
+      "passed": false,
+      "latencyMs": 6.896900000000187,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "otp-phish-7",
+      "suite": "phishing-detection",
+      "name": "OTP reply scam #8",
+      "passed": false,
+      "latencyMs": 5.3746000000001,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "otp-phish-8",
+      "suite": "phishing-detection",
+      "name": "OTP reply scam #9",
+      "passed": false,
+      "latencyMs": 5.0612999999998465,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "otp-phish-9",
+      "suite": "phishing-detection",
+      "name": "OTP reply scam #10",
+      "passed": false,
+      "latencyMs": 6.41399999999976,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "reward-phish-0",
+      "suite": "phishing-detection",
+      "name": "Reward scam #1",
+      "passed": false,
+      "latencyMs": 8.091100000000097,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 84,
+      "confidence": 0.84,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 84% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "reward-phish-1",
+      "suite": "phishing-detection",
+      "name": "Reward scam #2",
+      "passed": false,
+      "latencyMs": 7.135600000000068,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 84,
+      "confidence": 0.84,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 84% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "reward-phish-2",
+      "suite": "phishing-detection",
+      "name": "Reward scam #3",
+      "passed": false,
+      "latencyMs": 7.212500000000091,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 84,
+      "confidence": 0.84,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 84% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "reward-phish-3",
+      "suite": "phishing-detection",
+      "name": "Reward scam #4",
+      "passed": false,
+      "latencyMs": 6.208000000000084,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 84,
+      "confidence": 0.84,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 84% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "reward-phish-4",
+      "suite": "phishing-detection",
+      "name": "Reward scam #5",
+      "passed": false,
+      "latencyMs": 6.978200000000015,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 84,
+      "confidence": 0.84,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 84% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "reward-phish-5",
+      "suite": "phishing-detection",
+      "name": "Reward scam #6",
+      "passed": false,
+      "latencyMs": 7.422199999999975,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 84,
+      "confidence": 0.84,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 84% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "reward-phish-6",
+      "suite": "phishing-detection",
+      "name": "Reward scam #7",
+      "passed": false,
+      "latencyMs": 8.19210000000021,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 84,
+      "confidence": 0.84,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 84% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "reward-phish-7",
+      "suite": "phishing-detection",
+      "name": "Reward scam #8",
+      "passed": false,
+      "latencyMs": 5.970299999999952,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 84,
+      "confidence": 0.84,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 84% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "reward-phish-8",
+      "suite": "phishing-detection",
+      "name": "Reward scam #9",
+      "passed": false,
+      "latencyMs": 7.475199999999859,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 87,
+      "confidence": 0.87,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 87% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "reward-phish-9",
+      "suite": "phishing-detection",
+      "name": "Reward scam #10",
+      "passed": false,
+      "latencyMs": 7.29910000000018,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 84,
+      "confidence": 0.84,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 84% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "safe-receipt-0",
+      "suite": "safe-email",
+      "name": "Legitimate transactional receipt #1",
+      "passed": true,
+      "latencyMs": 6.649699999999939,
+      "expectedClassification": "safe",
+      "actualClassification": "safe",
+      "riskScore": 9,
+      "confidence": 0.09,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "safe-receipt-1",
+      "suite": "safe-email",
+      "name": "Legitimate transactional receipt #2",
+      "passed": true,
+      "latencyMs": 5.311400000000049,
+      "expectedClassification": "safe",
+      "actualClassification": "safe",
+      "riskScore": 13,
+      "confidence": 0.13,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "safe-receipt-2",
+      "suite": "safe-email",
+      "name": "Legitimate transactional receipt #3",
+      "passed": true,
+      "latencyMs": 6.135999999999967,
+      "expectedClassification": "safe",
+      "actualClassification": "safe",
+      "riskScore": 12,
+      "confidence": 0.12,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "safe-receipt-3",
+      "suite": "safe-email",
+      "name": "Legitimate transactional receipt #4",
+      "passed": true,
+      "latencyMs": 6.278099999999995,
+      "expectedClassification": "safe",
+      "actualClassification": "safe",
+      "riskScore": 9,
+      "confidence": 0.09,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "safe-receipt-4",
+      "suite": "safe-email",
+      "name": "Legitimate transactional receipt #5",
+      "passed": true,
+      "latencyMs": 8.00859999999966,
+      "expectedClassification": "safe",
+      "actualClassification": "safe",
+      "riskScore": 13,
+      "confidence": 0.13,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "safe-receipt-5",
+      "suite": "safe-email",
+      "name": "Legitimate transactional receipt #6",
+      "passed": true,
+      "latencyMs": 6.624400000000151,
+      "expectedClassification": "safe",
+      "actualClassification": "safe",
+      "riskScore": 13,
+      "confidence": 0.13,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "safe-receipt-6",
+      "suite": "safe-email",
+      "name": "Legitimate transactional receipt #7",
+      "passed": true,
+      "latencyMs": 5.470600000000104,
+      "expectedClassification": "safe",
+      "actualClassification": "safe",
+      "riskScore": 0,
+      "confidence": 0,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "safe-receipt-7",
+      "suite": "safe-email",
+      "name": "Legitimate transactional receipt #8",
+      "passed": true,
+      "latencyMs": 5.136700000000019,
+      "expectedClassification": "safe",
+      "actualClassification": "safe",
+      "riskScore": 13,
+      "confidence": 0.13,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "safe-receipt-8",
+      "suite": "safe-email",
+      "name": "Legitimate transactional receipt #9",
+      "passed": true,
+      "latencyMs": 7.584399999999732,
+      "expectedClassification": "safe",
+      "actualClassification": "safe",
+      "riskScore": 9,
+      "confidence": 0.09,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "safe-receipt-9",
+      "suite": "safe-email",
+      "name": "Legitimate transactional receipt #10",
+      "passed": true,
+      "latencyMs": 6.204499999999825,
+      "expectedClassification": "safe",
+      "actualClassification": "safe",
+      "riskScore": 12,
+      "confidence": 0.12,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "safe-security-0",
+      "suite": "safe-email",
+      "name": "Legitimate security notification #1",
+      "passed": true,
+      "latencyMs": 7.264000000000124,
+      "expectedClassification": "safe",
+      "actualClassification": "safe",
+      "riskScore": 18,
+      "confidence": 0.18,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "safe-security-1",
+      "suite": "safe-email",
+      "name": "Legitimate security notification #2",
+      "passed": true,
+      "latencyMs": 8.408899999999903,
+      "expectedClassification": "safe",
+      "actualClassification": "safe",
+      "riskScore": 18,
+      "confidence": 0.18,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "safe-security-2",
+      "suite": "safe-email",
+      "name": "Legitimate security notification #3",
+      "passed": true,
+      "latencyMs": 6.057999999999993,
+      "expectedClassification": "safe",
+      "actualClassification": "safe",
+      "riskScore": 18,
+      "confidence": 0.18,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "safe-security-3",
+      "suite": "safe-email",
+      "name": "Legitimate security notification #4",
+      "passed": true,
+      "latencyMs": 6.206600000000435,
+      "expectedClassification": "safe",
+      "actualClassification": "safe",
+      "riskScore": 18,
+      "confidence": 0.18,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "safe-security-4",
+      "suite": "safe-email",
+      "name": "Legitimate security notification #5",
+      "passed": true,
+      "latencyMs": 10.428400000000238,
+      "expectedClassification": "safe",
+      "actualClassification": "safe",
+      "riskScore": 18,
+      "confidence": 0.18,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "safe-security-5",
+      "suite": "safe-email",
+      "name": "Legitimate security notification #6",
+      "passed": true,
+      "latencyMs": 5.335799999999836,
+      "expectedClassification": "safe",
+      "actualClassification": "safe",
+      "riskScore": 18,
+      "confidence": 0.18,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "safe-security-6",
+      "suite": "safe-email",
+      "name": "Legitimate security notification #7",
+      "passed": true,
+      "latencyMs": 6.3332000000000335,
+      "expectedClassification": "safe",
+      "actualClassification": "safe",
+      "riskScore": 17,
+      "confidence": 0.17,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "safe-security-7",
+      "suite": "safe-email",
+      "name": "Legitimate security notification #8",
+      "passed": true,
+      "latencyMs": 5.06939999999986,
+      "expectedClassification": "safe",
+      "actualClassification": "safe",
+      "riskScore": 18,
+      "confidence": 0.18,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "safe-security-8",
+      "suite": "safe-email",
+      "name": "Legitimate security notification #9",
+      "passed": true,
+      "latencyMs": 6.010099999999966,
+      "expectedClassification": "safe",
+      "actualClassification": "safe",
+      "riskScore": 18,
+      "confidence": 0.18,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "safe-security-9",
+      "suite": "safe-email",
+      "name": "Legitimate security notification #10",
+      "passed": true,
+      "latencyMs": 6.0929000000001,
+      "expectedClassification": "safe",
+      "actualClassification": "safe",
+      "riskScore": 18,
+      "confidence": 0.18,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "transformer-semantic-0",
+      "suite": "transformer-only",
+      "name": "Clean-looking enterprise phishing #1",
+      "passed": false,
+      "latencyMs": 7.070600000000013,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "transformer-semantic-1",
+      "suite": "transformer-only",
+      "name": "Clean-looking enterprise phishing #2",
+      "passed": false,
+      "latencyMs": 5.4770000000003165,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 74,
+      "confidence": 0.74,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 74% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "transformer-semantic-2",
+      "suite": "transformer-only",
+      "name": "Clean-looking enterprise phishing #3",
+      "passed": false,
+      "latencyMs": 6.36200000000008,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 74,
+      "confidence": 0.74,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 74% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "transformer-semantic-3",
+      "suite": "transformer-only",
+      "name": "Clean-looking enterprise phishing #4",
+      "passed": false,
+      "latencyMs": 5.274699999999939,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 74,
+      "confidence": 0.74,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 74% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "transformer-semantic-4",
+      "suite": "transformer-only",
+      "name": "Clean-looking enterprise phishing #5",
+      "passed": false,
+      "latencyMs": 6.153999999999996,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "transformer-semantic-5",
+      "suite": "transformer-only",
+      "name": "Clean-looking enterprise phishing #6",
+      "passed": false,
+      "latencyMs": 6.821399999999812,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 87,
+      "confidence": 0.87,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 87% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "transformer-semantic-6",
+      "suite": "transformer-only",
+      "name": "Clean-looking enterprise phishing #7",
+      "passed": false,
+      "latencyMs": 6.052400000000034,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 74,
+      "confidence": 0.74,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 74% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "transformer-semantic-7",
+      "suite": "transformer-only",
+      "name": "Clean-looking enterprise phishing #8",
+      "passed": false,
+      "latencyMs": 7.480000000000018,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "obfuscated-phish-0",
+      "suite": "phishing-detection",
+      "name": "Obfuscated phishing variant #1",
+      "passed": false,
+      "latencyMs": 9.318099999999959,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "obfuscated-phish-1",
+      "suite": "phishing-detection",
+      "name": "Obfuscated phishing variant #2",
+      "passed": false,
+      "latencyMs": 7.002700000000004,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 94,
+      "confidence": 0.94,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 94% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "obfuscated-phish-2",
+      "suite": "phishing-detection",
+      "name": "Obfuscated phishing variant #3",
+      "passed": false,
+      "latencyMs": 5.775200000000041,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 73,
+      "confidence": 0.73,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 73% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "obfuscated-phish-3",
+      "suite": "phishing-detection",
+      "name": "Obfuscated phishing variant #4",
+      "passed": false,
+      "latencyMs": 6.23090000000002,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 94,
+      "confidence": 0.94,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 94% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "obfuscated-phish-4",
+      "suite": "phishing-detection",
+      "name": "Obfuscated phishing variant #5",
+      "passed": false,
+      "latencyMs": 6.6194000000000415,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "obfuscated-phish-5",
+      "suite": "phishing-detection",
+      "name": "Obfuscated phishing variant #6",
+      "passed": false,
+      "latencyMs": 5.853800000000319,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 73,
+      "confidence": 0.73,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 73% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "obfuscated-phish-6",
+      "suite": "phishing-detection",
+      "name": "Obfuscated phishing variant #7",
+      "passed": false,
+      "latencyMs": 6.662699999999859,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 73,
+      "confidence": 0.73,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 73% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "obfuscated-phish-7",
+      "suite": "phishing-detection",
+      "name": "Obfuscated phishing variant #8",
+      "passed": false,
+      "latencyMs": 5.993399999999838,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 75,
+      "confidence": 0.75,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 75% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "uncertain-case-0",
+      "suite": "edge-cases",
+      "name": "Ambiguous account alert #1",
+      "passed": true,
+      "latencyMs": 4.95069999999987,
+      "expectedClassification": "uncertain",
+      "actualClassification": "uncertain",
+      "riskScore": 35,
+      "confidence": 0.35,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "uncertain-case-1",
+      "suite": "edge-cases",
+      "name": "Ambiguous account alert #2",
+      "passed": true,
+      "latencyMs": 5.945499999999811,
+      "expectedClassification": "uncertain",
+      "actualClassification": "uncertain",
+      "riskScore": 35,
+      "confidence": 0.35,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "uncertain-case-2",
+      "suite": "edge-cases",
+      "name": "Ambiguous account alert #3",
+      "passed": true,
+      "latencyMs": 6.270399999999881,
+      "expectedClassification": "uncertain",
+      "actualClassification": "uncertain",
+      "riskScore": 35,
+      "confidence": 0.35,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "uncertain-case-3",
+      "suite": "edge-cases",
+      "name": "Ambiguous account alert #4",
+      "passed": true,
+      "latencyMs": 5.9047999999997955,
+      "expectedClassification": "uncertain",
+      "actualClassification": "uncertain",
+      "riskScore": 35,
+      "confidence": 0.35,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "uncertain-case-4",
+      "suite": "edge-cases",
+      "name": "Ambiguous account alert #5",
+      "passed": true,
+      "latencyMs": 6.7672999999999774,
+      "expectedClassification": "uncertain",
+      "actualClassification": "uncertain",
+      "riskScore": 35,
+      "confidence": 0.35,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "uncertain-case-5",
+      "suite": "edge-cases",
+      "name": "Ambiguous account alert #6",
+      "passed": true,
+      "latencyMs": 6.06269999999995,
+      "expectedClassification": "uncertain",
+      "actualClassification": "uncertain",
+      "riskScore": 35,
+      "confidence": 0.35,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "uncertain-case-6",
+      "suite": "edge-cases",
+      "name": "Ambiguous account alert #7",
+      "passed": true,
+      "latencyMs": 5.37920000000031,
+      "expectedClassification": "uncertain",
+      "actualClassification": "uncertain",
+      "riskScore": 35,
+      "confidence": 0.35,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "uncertain-case-7",
+      "suite": "edge-cases",
+      "name": "Ambiguous account alert #8",
+      "passed": true,
+      "latencyMs": 6.073299999999563,
+      "expectedClassification": "uncertain",
+      "actualClassification": "uncertain",
+      "riskScore": 35,
+      "confidence": 0.35,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "hindi-phish-0",
+      "suite": "multilingual",
+      "name": "Hindi phishing email #1",
+      "passed": false,
+      "latencyMs": 7.350799999999708,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "hindi-phish-1",
+      "suite": "multilingual",
+      "name": "Hindi phishing email #2",
+      "passed": false,
+      "latencyMs": 5.646099999999933,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 78,
+      "confidence": 0.78,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 78% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "hindi-phish-2",
+      "suite": "multilingual",
+      "name": "Hindi phishing email #3",
+      "passed": false,
+      "latencyMs": 6.320300000000316,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "hindi-phish-3",
+      "suite": "multilingual",
+      "name": "Hindi phishing email #4",
+      "passed": false,
+      "latencyMs": 5.79300000000012,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 78,
+      "confidence": 0.78,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 78% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "hindi-phish-4",
+      "suite": "multilingual",
+      "name": "Hindi phishing email #5",
+      "passed": false,
+      "latencyMs": 6.47440000000006,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 78,
+      "confidence": 0.78,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 78% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "hindi-phish-5",
+      "suite": "multilingual",
+      "name": "Hindi phishing email #6",
+      "passed": false,
+      "latencyMs": 6.320000000000164,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "hindi-phish-6",
+      "suite": "multilingual",
+      "name": "Hindi phishing email #7",
+      "passed": false,
+      "latencyMs": 4.685500000000047,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 78,
+      "confidence": 0.78,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 78% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "hindi-phish-7",
+      "suite": "multilingual",
+      "name": "Hindi phishing email #8",
+      "passed": false,
+      "latencyMs": 10.166400000000067,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 78,
+      "confidence": 0.78,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 78% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "telugu-phish-0",
+      "suite": "multilingual",
+      "name": "Telugu phishing email #1",
+      "passed": false,
+      "latencyMs": 6.0999000000001615,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 88,
+      "confidence": 0.88,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 88% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "telugu-phish-1",
+      "suite": "multilingual",
+      "name": "Telugu phishing email #2",
+      "passed": false,
+      "latencyMs": 6.812000000000353,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "telugu-phish-2",
+      "suite": "multilingual",
+      "name": "Telugu phishing email #3",
+      "passed": false,
+      "latencyMs": 6.714399999999841,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "telugu-phish-3",
+      "suite": "multilingual",
+      "name": "Telugu phishing email #4",
+      "passed": false,
+      "latencyMs": 5.3659999999999854,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "telugu-phish-4",
+      "suite": "multilingual",
+      "name": "Telugu phishing email #5",
+      "passed": false,
+      "latencyMs": 6.330799999999726,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "telugu-phish-5",
+      "suite": "multilingual",
+      "name": "Telugu phishing email #6",
+      "passed": false,
+      "latencyMs": 5.351599999999962,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "telugu-phish-6",
+      "suite": "multilingual",
+      "name": "Telugu phishing email #7",
+      "passed": false,
+      "latencyMs": 5.184700000000248,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "telugu-phish-7",
+      "suite": "multilingual",
+      "name": "Telugu phishing email #8",
+      "passed": false,
+      "latencyMs": 5.716899999999896,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 100,
+      "confidence": 1,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 100% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "url-analysis-0",
+      "suite": "url-analysis",
+      "name": "URL analysis catches suspicious destination #1",
+      "passed": false,
+      "latencyMs": 6.664200000000164,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 62,
+      "confidence": 0.62,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 62% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "url-analysis-1",
+      "suite": "url-analysis",
+      "name": "URL analysis catches suspicious destination #2",
+      "passed": false,
+      "latencyMs": 6.004500000000007,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 62,
+      "confidence": 0.62,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 62% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "url-analysis-2",
+      "suite": "url-analysis",
+      "name": "URL analysis catches suspicious destination #3",
+      "passed": false,
+      "latencyMs": 6.969200000000001,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 62,
+      "confidence": 0.62,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 62% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "url-analysis-3",
+      "suite": "url-analysis",
+      "name": "URL analysis catches suspicious destination #4",
+      "passed": false,
+      "latencyMs": 7.096399999999903,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 62,
+      "confidence": 0.62,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 62% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "url-analysis-4",
+      "suite": "url-analysis",
+      "name": "URL analysis catches suspicious destination #5",
+      "passed": false,
+      "latencyMs": 5.818500000000313,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 62,
+      "confidence": 0.62,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 62% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "url-analysis-5",
+      "suite": "url-analysis",
+      "name": "URL analysis catches suspicious destination #6",
+      "passed": false,
+      "latencyMs": 5.7184000000002015,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 62,
+      "confidence": 0.62,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 62% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "url-analysis-6",
+      "suite": "url-analysis",
+      "name": "URL analysis catches suspicious destination #7",
+      "passed": false,
+      "latencyMs": 6.496299999999792,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 62,
+      "confidence": 0.62,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 62% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "url-analysis-7",
+      "suite": "url-analysis",
+      "name": "URL analysis catches suspicious destination #8",
+      "passed": false,
+      "latencyMs": 4.922500000000127,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 62,
+      "confidence": 0.62,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 62% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "url-analysis-8",
+      "suite": "url-analysis",
+      "name": "URL analysis catches suspicious destination #9",
+      "passed": false,
+      "latencyMs": 5.45029999999997,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 62,
+      "confidence": 0.62,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 62% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "url-analysis-9",
+      "suite": "url-analysis",
+      "name": "URL analysis catches suspicious destination #10",
+      "passed": false,
+      "latencyMs": 6.810500000000047,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 62,
+      "confidence": 0.62,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 62% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "header-spoof-0",
+      "suite": "header-spoofing",
+      "name": "Header spoof attempt #1",
+      "passed": false,
+      "latencyMs": 5.953899999999976,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 98,
+      "confidence": 0.98,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 98% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "header-spoof-1",
+      "suite": "header-spoofing",
+      "name": "Header spoof attempt #2",
+      "passed": false,
+      "latencyMs": 7.045000000000073,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "header-spoof-2",
+      "suite": "header-spoofing",
+      "name": "Header spoof attempt #3",
+      "passed": false,
+      "latencyMs": 5.31020000000035,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "header-spoof-3",
+      "suite": "header-spoofing",
+      "name": "Header spoof attempt #4",
+      "passed": false,
+      "latencyMs": 5.848899999999958,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 72,
+      "confidence": 0.72,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 72% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "header-spoof-4",
+      "suite": "header-spoofing",
+      "name": "Header spoof attempt #5",
+      "passed": false,
+      "latencyMs": 5.906399999999849,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 98,
+      "confidence": 0.98,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 98% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "header-spoof-5",
+      "suite": "header-spoofing",
+      "name": "Header spoof attempt #6",
+      "passed": false,
+      "latencyMs": 5.731499999999869,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 96,
+      "confidence": 0.96,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 96% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "header-spoof-6",
+      "suite": "header-spoofing",
+      "name": "Header spoof attempt #7",
+      "passed": false,
+      "latencyMs": 5.580600000000231,
+      "expectedClassification": "uncertain",
+      "actualClassification": "phishing",
+      "riskScore": 98,
+      "confidence": 0.98,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 98% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "llm-fallback-midrange",
+      "suite": "llm-fallback",
+      "name": "LLM fallback is triggered for a mid-range ambiguous alert",
+      "passed": false,
+      "latencyMs": 62.43229999999994,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 88,
+      "confidence": 0.88,
+      "llmUsed": true,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 88% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "integration-safe",
+      "suite": "integration",
+      "name": "HTTP safe email analysis",
+      "passed": true,
+      "latencyMs": 109.23779999999988,
+      "expectedClassification": "safe",
+      "actualClassification": "safe",
+      "riskScore": 15,
+      "confidence": 0.15,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "integration-phishing",
+      "suite": "integration",
+      "name": "HTTP phishing analysis",
+      "passed": false,
+      "latencyMs": 40.417099999999664,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 94,
+      "confidence": 0.94,
+      "llmUsed": false,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 94% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "integration-feedback-export",
+      "suite": "integration",
+      "name": "Feedback submission and export endpoint",
+      "passed": true,
+      "latencyMs": 111.2476000000006,
+      "expectedClassification": "safe",
+      "actualClassification": "safe",
+      "issues": []
+    },
+    {
+      "caseId": "failure-backend-invalid-body",
+      "suite": "failure-handling",
+      "name": "Backend validation failure returns a structured error",
+      "passed": true,
+      "latencyMs": 23.437399999999798,
+      "expectedClassification": "safe",
+      "actualClassification": "safe",
+      "issues": [],
+      "error": "{\"error\":{\"code\":\"VALIDATION_ERROR\",\"message\":\"Invalid request body. Please provide emailText as a string.\",\"correlationId\":\"req-1775248043351-qcj2qeew9\",\"timestamp\":\"2026-04-03T20:27:23.355Z\"}}"
+    },
+    {
+      "caseId": "failure-ml-model-failure-falls-back-safely",
+      "suite": "failure-handling",
+      "name": "ML model failure falls back safely",
+      "passed": true,
+      "latencyMs": 1515.5092000000004,
+      "expectedClassification": "safe",
+      "actualClassification": "safe",
+      "issues": []
+    },
+    {
+      "caseId": "failure-transformer-api-outage-does-not-crash-analysis",
+      "suite": "failure-handling",
+      "name": "Transformer API outage does not crash analysis",
+      "passed": true,
+      "latencyMs": 1465.917699999999,
+      "expectedClassification": "safe",
+      "actualClassification": "safe",
+      "issues": []
+    },
+    {
+      "caseId": "failure-llm-timeout",
+      "suite": "failure-handling",
+      "name": "LLM timeout falls back to a valid local verdict",
+      "passed": true,
+      "latencyMs": 74.34450000000106,
+      "expectedClassification": "uncertain",
+      "actualClassification": "uncertain",
+      "riskScore": 46,
+      "confidence": 0.46,
+      "llmUsed": false,
+      "issues": []
+    },
+    {
+      "caseId": "consistency-safe",
+      "suite": "consistency",
+      "name": "Repeated safe notification stays stable",
+      "passed": true,
+      "latencyMs": 21.317000000000917,
+      "expectedClassification": "safe",
+      "actualClassification": "safe",
+      "riskScore": 24,
+      "confidence": 0.24,
+      "issues": []
+    },
+    {
+      "caseId": "consistency-uncertain",
+      "suite": "consistency",
+      "name": "Repeated borderline alert stays stable",
+      "passed": true,
+      "latencyMs": 19.59180000000015,
+      "expectedClassification": "uncertain",
+      "actualClassification": "uncertain",
+      "riskScore": 35,
+      "confidence": 0.35,
+      "issues": []
+    },
+    {
+      "caseId": "consistency-phishing",
+      "suite": "consistency",
+      "name": "Repeated phishing lure stays stable",
+      "passed": false,
+      "latencyMs": 18.77980000000025,
+      "expectedClassification": "phishing",
+      "actualClassification": "phishing",
+      "riskScore": 94,
+      "confidence": 0.94,
+      "issues": [
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 94% · High risk with strong confidence'.",
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 94% · High risk with strong confidence'.",
+        "Display label mismatch. Expected it to include 'High Risk', received '🔴 94% · High risk with strong confidence'."
+      ]
+    },
+    {
+      "caseId": "performance-batch",
+      "suite": "performance",
+      "name": "Batch performance and stability over 120 emails",
+      "passed": false,
+      "latencyMs": 707.3502000000008,
+      "expectedClassification": "safe",
+      "actualClassification": "safe",
+      "issues": [
+        "77 case(s) failed during the performance batch."
+      ]
+    }
+  ],
+  "artifacts": {
+    "jsonReportPath": "C:\\Users\\froms\\Desktop\\New folder (2)\\PhishShield\\artifacts\\api-server\\reports\\verification\\verification-report-2026-04-03T20-27-27-209Z.json",
+    "htmlReportPath": "C:\\Users\\froms\\Desktop\\New folder (2)\\PhishShield\\artifacts\\api-server\\reports\\verification\\verification-report-2026-04-03T20-27-27-209Z.html"
+  }
+}

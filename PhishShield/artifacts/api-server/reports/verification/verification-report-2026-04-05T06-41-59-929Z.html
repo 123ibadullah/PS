@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>PhishShield Verification Report</title>
+  <style>
+    body { font-family: Segoe UI, Arial, sans-serif; margin: 24px; background: #0b1220; color: #e5eefc; }
+    h1, h2, h3 { margin: 0 0 12px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 20px 0; }
+    .card { background: #131d32; border: 1px solid #263452; border-radius: 12px; padding: 16px; }
+    .ok { background: #123222; border: 1px solid #2b8a57; padding: 12px; border-radius: 10px; }
+    .fail { background: #3a1d24; border: 1px solid #d65567; padding: 12px; border-radius: 10px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 16px; background: #131d32; }
+    th, td { padding: 10px; border: 1px solid #263452; text-align: left; vertical-align: top; }
+    th { background: #1b2942; }
+    code { background: #09101d; padding: 2px 6px; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <h1>PhishShield AI Verification Report</h1>
+  <p>Generated at <code>2026-04-05T06:41:59.929Z</code> with seed <code>20260403</code>.</p>
+
+  <div class="grid">
+    <div class="card"><h3>Overall</h3><p><strong>178/207</strong> tests passed</p><p>29 failed</p></div>
+    <div class="card"><h3>Accuracy</h3><p>86.67%</p><p>Precision 100.00% · Recall 100.00%</p></div>
+    <div class="card"><h3>F1 / Error Rates</h3><p>F1 100.00%</p><p>FP 0.00% · FN 0.00%</p></div>
+    <div class="card"><h3>Performance</h3><p>Avg 2.6ms · P95 4.3ms</p><p>Throughput 379.89/sec</p></div>
+  </div>
+
+  <h2>Threshold status</h2>
+  <div class="fail"><strong>Threshold failures:</strong><ul><li>Accuracy below threshold: 86.67% < 90.00%</li></ul></div>
+
+  <h2>Suite breakdown</h2>
+  <div class="grid">
+        <div class="card">
+          <h3>basic</h3>
+          <p><strong>2/3</strong> passed</p>
+          <p>1 failed · avg latency 25.6ms</p>
+        </div>
+
+        <div class="card">
+          <h3>safe-email</h3>
+          <p><strong>20/44</strong> passed</p>
+          <p>24 failed · avg latency 3.4ms</p>
+        </div>
+
+        <div class="card">
+          <h3>phishing-detection</h3>
+          <p><strong>82/82</strong> passed</p>
+          <p>0 failed · avg latency 2.8ms</p>
+        </div>
+
+        <div class="card">
+          <h3>edge-cases</h3>
+          <p><strong>18/19</strong> passed</p>
+          <p>1 failed · avg latency 2.0ms</p>
+        </div>
+
+        <div class="card">
+          <h3>multilingual</h3>
+          <p><strong>21/21</strong> passed</p>
+          <p>0 failed · avg latency 2.4ms</p>
+        </div>
+
+        <div class="card">
+          <h3>header-spoofing</h3>
+          <p><strong>8/8</strong> passed</p>
+          <p>0 failed · avg latency 2.4ms</p>
+        </div>
+
+        <div class="card">
+          <h3>transformer-only</h3>
+          <p><strong>8/8</strong> passed</p>
+          <p>0 failed · avg latency 2.7ms</p>
+        </div>
+
+        <div class="card">
+          <h3>url-analysis</h3>
+          <p><strong>10/10</strong> passed</p>
+          <p>0 failed · avg latency 2.9ms</p>
+        </div>
+
+        <div class="card">
+          <h3>llm-fallback</h3>
+          <p><strong>1/1</strong> passed</p>
+          <p>0 failed · avg latency 19.2ms</p>
+        </div>
+
+        <div class="card">
+          <h3>integration</h3>
+          <p><strong>2/3</strong> passed</p>
+          <p>1 failed · avg latency 30.9ms</p>
+        </div>
+
+        <div class="card">
+          <h3>failure-handling</h3>
+          <p><strong>4/4</strong> passed</p>
+          <p>0 failed · avg latency 200.5ms</p>
+        </div>
+
+        <div class="card">
+          <h3>consistency</h3>
+          <p><strong>2/3</strong> passed</p>
+          <p>1 failed · avg latency 5.8ms</p>
+        </div>
+
+        <div class="card">
+          <h3>performance</h3>
+          <p><strong>0/1</strong> passed</p>
+          <p>1 failed · avg latency 315.9ms</p>
+        </div></div>
+
+  <h2>Failed cases</h2>
+  <table>
+    <thead>
+      <tr><th>Suite</th><th>Case</th><th>Expected</th><th>Actual</th><th>Score</th><th>Reason</th></tr>
+    </thead>
+    <tbody>
+      
+        <tr>
+          <td>basic</td>
+          <td>Legitimate OTP notification remains safe</td>
+          <td>safe</td>
+          <td>safe</td>
+          <td>14</td>
+          <td>Confidence level mismatch. Expected LOW, received HIGH.</td>
+        </tr>
+
+        <tr>
+          <td>safe-email</td>
+          <td>AWS SNS test notification with official unsubscribe links stays safe</td>
+          <td>safe</td>
+          <td>safe</td>
+          <td>18</td>
+          <td>Confidence level mismatch. Expected HIGH, received LOW.</td>
+        </tr>
+
+        <tr>
+          <td>safe-email</td>
+          <td>Official Hugging Face email confirmation stays safe</td>
+          <td>safe</td>
+          <td>safe</td>
+          <td>20</td>
+          <td>Confidence level mismatch. Expected HIGH, received LOW.</td>
+        </tr>
+
+        <tr>
+          <td>safe-email</td>
+          <td>Long order confirmation remains safe</td>
+          <td>safe</td>
+          <td>safe</td>
+          <td>0</td>
+          <td>Confidence level mismatch. Expected LOW, received HIGH.</td>
+        </tr>
+
+        <tr>
+          <td>safe-email</td>
+          <td>Feedback request stays safe</td>
+          <td>safe</td>
+          <td>safe</td>
+          <td>24</td>
+          <td>Confidence level mismatch. Expected LOW, received HIGH.</td>
+        </tr>
+
+        <tr>
+          <td>edge-cases</td>
+          <td>Single-line benign message remains safe</td>
+          <td>safe</td>
+          <td>safe</td>
+          <td>0</td>
+          <td>Confidence level mismatch. Expected LOW, received HIGH.</td>
+        </tr>
+
+        <tr>
+          <td>safe-email</td>
+          <td>Legitimate transactional receipt #1</td>
+          <td>safe</td>
+          <td>safe</td>
+          <td>9</td>
+          <td>Confidence level mismatch. Expected LOW, received HIGH.</td>
+        </tr>
+
+        <tr>
+          <td>safe-email</td>
+          <td>Legitimate transactional receipt #2</td>
+          <td>safe</td>
+          <td>safe</td>
+          <td>9</td>
+          <td>Confidence level mismatch. Expected LOW, received HIGH.</td>
+        </tr>
+
+        <tr>
+          <td>safe-email</td>
+          <td>Legitimate transactional receipt #3</td>
+          <td>safe</td>
+          <td>safe</td>
+          <td>12</td>
+          <td>Confidence level mismatch. Expected LOW, received HIGH.</td>
+        </tr>
+
+        <tr>
+          <td>safe-email</td>
+          <td>Legitimate transactional receipt #4</td>
+          <td>safe</td>
+          <td>safe</td>
+          <td>9</td>
+          <td>Confidence level mismatch. Expected LOW, received HIGH.</td>
+        </tr>
+
+        <tr>
+          <td>safe-email</td>
+          <td>Legitimate transactional receipt #5</td>
+          <td>safe</td>
+          <td>safe</td>
+          <td>9</td>
+          <td>Confidence level mismatch. Expected LOW, received HIGH.</td>
+        </tr>
+
+        <tr>
+          <td>safe-email</td>
+          <td>Legitimate transactional receipt #6</td>
+          <td>safe</td>
+          <td>safe</td>
+          <td>9</td>
+          <td>Confidence level mismatch. Expected LOW, received HIGH.</td>
+        </tr>
+
+        <tr>
+          <td>safe-email</td>
+          <td>Legitimate transactional receipt #7</td>
+          <td>safe</td>
+          <td>safe</td>
+          <td>0</td>
+          <td>Confidence level mismatch. Expected LOW, received HIGH.</td>
+        </tr>
+
+        <tr>
+          <td>safe-email</td>
+          <td>Legitimate transactional receipt #8</td>
+          <td>safe</td>
+          <td>safe</td>
+          <td>9</td>
+          <td>Confidence level mismatch. Expected LOW, received HIGH.</td>
+        </tr>
+
+        <tr>
+          <td>safe-email</td>
+          <td>Legitimate transactional receipt #9</td>
+          <td>safe</td>
+          <td>safe</td>
+          <td>9</td>
+          <td>Confidence level mismatch. Expected LOW, received HIGH.</td>
+        </tr>
+
+        <tr>
+          <td>safe-email</td>
+          <td>Legitimate transactional receipt #10</td>
+          <td>safe</td>
+          <td>safe</td>
+          <td>12</td>
+          <td>Confidence level mismatch. Expected LOW, received HIGH.</td>
+        </tr>
+
+        <tr>
+          <td>safe-email</td>
+          <td>Legitimate security notification #1</td>
+          <td>safe</td>
+          <td>safe</td>
+          <td>14</td>
+          <td>Confidence level mismatch. Expected LOW/MEDIUM, received HIGH.</td>
+        </tr>
+
+        <tr>
+          <td>safe-email</td>
+          <td>Legitimate security notification #2</td>
+          <td>safe</td>
+          <td>safe</td>
+          <td>14</td>
+          <td>Confidence level mismatch. Expected LOW/MEDIUM, received HIGH.</td>
+        </tr>
+
+        <tr>
+          <td>safe-email</td>
+          <td>Legitimate security notification #3</td>
+          <td>safe</td>
+          <td>safe</td>
+          <td>14</td>
+          <td>Confidence level mismatch. Expected LOW/MEDIUM, received HIGH.</td>
+        </tr>
+
+        <tr>
+          <td>safe-email</td>
+          <td>Legitimate security notification #4</td>
+          <td>safe</td>
+          <td>safe</td>
+          <td>14</td>
+          <td>Confidence level mismatch. Expected LOW/MEDIUM, received HIGH.</td>
+        </tr>
+
+        <tr>
+          <td>safe-email</td>
+          <td>Legitimate security notification #5</td>
+          <td>safe</td>
+          <td>safe</td>
+          <td>14</td>
+          <td>Confidence level mismatch. Expected LOW/MEDIUM, received HIGH.</td>
+        </tr>
+
+        <tr>
+          <td>safe-email</td>
+          <td>Legitimate security notification #6</td>
+          <td>safe</td>
+          <td>safe</td>
+          <td>14</td>
+          <td>Confidence level mismatch. Expected LOW/MEDIUM, received HIGH.</td>
+        </tr>
+
+        <tr>
+          <td>safe-email</td>
+          <td>Legitimate security notification #7</td>
+          <td>safe</td>
+          <td>safe</td>
+          <td>12</td>
+          <td>Confidence level mismatch. Expected LOW/MEDIUM, received HIGH.</td>
+        </tr>
+
+        <tr>
+          <td>safe-email</td>
+          <td>Legitimate security notification #8</td>
+          <td>safe</td>
+          <td>safe</td>
+          <td>14</td>
+          <td>Confidence level mismatch. Expected LOW/MEDIUM, received HIGH.</td>
+        </tr>
+
+        <tr>
+          <td>safe-email</td>
+          <td>Legitimate security notification #9</td>
+          <td>safe</td>
+          <td>safe</td>
+          <td>14</td>
+          <td>Confidence level mismatch. Expected LOW/MEDIUM, received HIGH.</td>
+        </tr>
+
+        <tr>
+          <td>safe-email</td>
+          <td>Legitimate security notification #10</td>
+          <td>safe</td>
+          <td>safe</td>
+          <td>14</td>
+          <td>Confidence level mismatch. Expected LOW/MEDIUM, received HIGH.</td>
+        </tr>
+
+        <tr>
+          <td>integration</td>
+          <td>HTTP safe email analysis</td>
+          <td>safe</td>
+          <td>safe</td>
+          <td>15</td>
+          <td>Confidence level mismatch. Expected LOW, received HIGH.</td>
+        </tr>
+
+        <tr>
+          <td>consistency</td>
+          <td>Repeated safe notification stays stable</td>
+          <td>safe</td>
+          <td>safe</td>
+          <td>18</td>
+          <td>Confidence level mismatch. Expected LOW, received HIGH.; Confidence level mismatch. Expected LOW, received HIGH.; Confidence level mismatch. Expected LOW, received HIGH.</td>
+        </tr>
+
+        <tr>
+          <td>performance</td>
+          <td>Batch performance and stability over 120 emails</td>
+          <td>safe</td>
+          <td>safe</td>
+          <td>-</td>
+          <td>8 case(s) failed during the performance batch.</td>
+        </tr>
+    </tbody>
+  </table>
+</body>
+</html>
