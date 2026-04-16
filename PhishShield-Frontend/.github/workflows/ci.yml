@@ -1,0 +1,42 @@
+name: PhishShield CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  build-and-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install workspace dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: PhishShield-Frontend
+
+      - name: Build monorepo
+        run: pnpm build
+        working-directory: PhishShield-Frontend
+
+      - name: Python syntax check
+        run: python -m py_compile main.py explain.py train_model.py train_indicbert.py
+        working-directory: PhisShield-Backend

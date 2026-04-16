@@ -1,7 +1,7 @@
 fastapi
 uvicorn
 requests
-scikit-learn
+scikit-learn==1.7.1
 pandas
 numpy
 python-dotenv
@@ -12,3 +12,5 @@ datasets
 accelerate
 shap
 lime
+prometheus-client>=0.20.0
+reportlab>=4.1.0

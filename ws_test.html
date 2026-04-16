@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>WebSocket Test</title>
+  <style>
+    body { font-family: monospace; margin: 20px; background: #1a1a1a; color: #fff; }
+    .log { margin: 10px 0; padding: 8px; background: #222; border-left: 3px solid #0f0; }
+    .error { border-left-color: #f00; }
+    button { padding: 10px 20px; margin: 10px 0; cursor: pointer; }
+    #status { font-weight: bold; color: #0f0; }
+  </style>
+</head>
+<body>
+  <h1>🧪 WebSocket Broadcast Test</h1>
+  <div>
+    Status: <span id="status">Connecting...</span>
+  </div>
+  <button onclick="testScan()">Trigger Test Scan</button>
+  <div id="logs"></div>
+
+  <script>
+    const logs = document.getElementById('logs');
+    const status = document.getElementById('status');
+    let ws = null;
+    const sessionId = 'test-' + Math.random().toString(36).slice(2, 9);
+
+    function log(msg, isError = false) {
+      const div = document.createElement('div');
+      div.className = 'log' + (isError ? ' error' : '');
+      div.textContent = msg;
+      logs.appendChild(div);
+      console.log(msg);
+    }
+
+    function connectWS() {
+      log(`🔌 Connecting with session: ${sessionId}`);
+      ws = new WebSocket('ws://localhost:8000/ws/feed');
+      
+      ws.onopen = () => {
+        log('✅ WebSocket CONNECTED');
+        status.textContent = '✅ Connected';
+        status.style.color = '#0f0';
+      };
+      
+      ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.type === 'ping') {
+          log(`⏰ Ping received`);
+          return;
+        }
+        
+        log(`🔔 MESSAGE: ${JSON.stringify(data)}`);
+        
+        if (data.type === 'scan_complete') {
+          log(`✅ **BROADCAST RECEIVED**`);
+          log(`   verdict: ${data.verdict}, risk: ${data.risk_score}, session: ${data.session_id}`);
+          if (data.session_id === sessionId) {
+            log(`✅✅ **SESSION MATCH - EVENT IS FOR US!**`);
+          } else {
+            log(`⚠️ Session mismatch: expected ${sessionId}, got ${data.session_id}`);
+          }
+        }
+      };
+      
+      ws.onerror = (err) => {
+        log(`❌ WebSocket ERROR: ${err}`, true);
+        status.textContent = '❌ Error';
+        status.style.color = '#f00';
+      };
+      
+      ws.onclose = () => {
+        log(`🔴 WebSocket CLOSED`);
+        status.textContent = '❌ Closed';
+        status.style.color = '#f00';
+      };
+    }
+
+    async function testScan() {
+      log(`\n📤 Posting scan with session: ${sessionId}`);
+      try {
+        const response = await fetch('http://localhost:8000/scan-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email_text: 'Subject: Test Verify\n\nClick: http://malicious-test.tk/verify',
+            session_id: sessionId
+          })
+        });
+        const result = await response.json();
+        log(`✅ Scan response: verdict=${result.verdict}, risk=${result.risk_score}, session=${result.session_id}`);
+      } catch (err) {
+        log(`❌ Scan error: ${err}`, true);
+      }
+    }
+
+    // Connect onload
+    window.onload = connectWS;
+  </script>
+</body>
+</html>
