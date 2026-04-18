@@ -1,3 +1,4 @@
 
 # Local model weights
 PhisShield-Backend/indicbert_model/*.safetensors
+.env
