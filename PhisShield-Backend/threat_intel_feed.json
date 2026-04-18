@@ -1,0 +1,36 @@
+{
+  "maliciousDomains": [
+    "amaz0n-security-login.xyz",
+    "secure-mail.top",
+    "google-auth-review.top",
+    "amazon-review-center-login.ru",
+    "google-session-validate.top",
+    "hdfc-alert-secure.xyz",
+    "sbi-login-check.top",
+    "refund-department-gov.xyz",
+    "wallet-restore-check.xyz",
+    "mobile-mail.work"
+  ],
+  "indicatorFragments": [
+    "verify-login",
+    "secure-review",
+    "wallet-restore",
+    "review-center",
+    "session-check",
+    "otp-confirm",
+    "billing-check"
+  ],
+  "shortenerDomains": [
+    "bit.ly",
+    "tinyurl.com",
+    "rb.gy",
+    "t.co",
+    "cutt.ly",
+    "tiny.one"
+  ],
+  "feedSources": [
+    "Local enterprise threat feed",
+    "CERT-style phishing indicators",
+    "Known campaign fragments"
+  ]
+}

@@ -1,0 +1,3 @@
+risk=246, strict_bec=False, header_spoof=False
+risk=100, strict_bec=False, header_spoof=False
+risk=11, strict_bec=False, header_spoof=False

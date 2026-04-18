@@ -18,7 +18,9 @@ except Exception:  # pragma: no cover - optional dependency at runtime
 STOPWORDS = {
     'the', 'and', 'for', 'with', 'your', 'this', 'that', 'from', 'have', 'please', 'dear', 'team', 'regards',
     'will', 'been', 'just', 'into', 'here', 'there', 'http', 'https', 'com', 'www', 'you', 'are', 'our', 'has',
-    'be', 'at', 'hi', 'find', 'john', 'dear', 'customer', 'account', 'please', 'net', 'org', 'in',
+    'be', 'at', 'hi', 'find', 'john', 'customer', 'account', 'net', 'org', 'in', 'hello', 'thanks', 'thank',
+    'successfully', 'review', 'update', 'notice', 'kindly', 'today', 'subject', 'page', 'display', 'help',
+    'official', 'reply', 'fast', 'html', 'amazon', 'google', 'linkedin', 'github', 'paytm', 'microsoft',
 }
 KEYWORD_HINTS = {
     'otp': 0.34,
@@ -32,6 +34,10 @@ KEYWORD_HINTS = {
     'password': 0.24,
     'pin': 0.22,
     'bank': 0.18,
+    'payment': 0.24,
+    'transfer': 0.26,
+    'beneficiary': 0.24,
+    'confidential': 0.24,
     'sbi': 0.2,
     'hdfc': 0.2,
     'icici': 0.2,

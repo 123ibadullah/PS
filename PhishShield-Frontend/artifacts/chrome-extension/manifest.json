@@ -1,0 +1,44 @@
+{
+  "manifest_version": 3,
+  "name": "PhishShield Guardian",
+  "version": "1.3.0",
+  "description": "Enterprise browser and email phishing protection with real-time review, incident workflows, and credential-guard controls.",
+
+  "permissions": ["activeTab", "storage", "tabs", "webNavigation"],
+  "host_permissions": ["https://*/*", "http://*/*"],
+
+  "background": {
+    "service_worker": "background.js"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["content.js"],
+      "run_at": "document_start"
+    }
+  ],
+
+  "web_accessible_resources": [
+    {
+      "resources": ["warning.html"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "PhishShield Guardian",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

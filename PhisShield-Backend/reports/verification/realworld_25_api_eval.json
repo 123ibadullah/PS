@@ -1,0 +1,234 @@
+{
+  "total": 25,
+  "passed": 25,
+  "accuracy_percent": 100.0,
+  "api_errors": [],
+  "failures": [],
+  "results": [
+    {
+      "id": 1,
+      "bucket": "high_risk",
+      "text": "Dear user, your SBI account has been temporarily suspended. Verify immediately: http://sbi-secure-alert-login.xyz",
+      "risk_score": 60,
+      "verdict": "Suspicious",
+      "label": "flagged",
+      "passed": true
+    },
+    {
+      "id": 2,
+      "bucket": "high_risk",
+      "text": "Your account shows unusual activity. Please confirm your login credentials now to avoid restriction.",
+      "risk_score": 72,
+      "verdict": "High Risk",
+      "label": "flagged",
+      "passed": true
+    },
+    {
+      "id": 3,
+      "bucket": "high_risk",
+      "text": "Hi, I need you to process an urgent vendor payment today. I’m in a meeting, don’t call.",
+      "risk_score": 52,
+      "verdict": "Suspicious",
+      "label": "flagged",
+      "passed": true
+    },
+    {
+      "id": 4,
+      "bucket": "high_risk",
+      "text": "Income Tax Department: Refund pending. Submit PAN and bank details to receive.",
+      "risk_score": 75,
+      "verdict": "High Risk",
+      "label": "flagged",
+      "passed": true
+    },
+    {
+      "id": 5,
+      "bucket": "high_risk",
+      "text": "Your Paytm account will be blocked. Update KYC here: http://paytm-verification-secure.xyz",
+      "risk_score": 60,
+      "verdict": "Suspicious",
+      "label": "flagged",
+      "passed": true
+    },
+    {
+      "id": 6,
+      "bucket": "high_risk",
+      "text": "OTP bhejo jaldi warna account block ho jayega abhi ke abhi",
+      "risk_score": 89,
+      "verdict": "High Risk",
+      "label": "flagged",
+      "passed": true
+    },
+    {
+      "id": 7,
+      "bucket": "high_risk",
+      "text": "Hello, we noticed a login from a new device. Confirm your password immediately.",
+      "risk_score": 59,
+      "verdict": "Suspicious",
+      "label": "flagged",
+      "passed": true
+    },
+    {
+      "id": 8,
+      "bucket": "high_risk",
+      "text": "Bro I’m stuck, can you send 10k now? I’ll return tonight.",
+      "risk_score": 79,
+      "verdict": "High Risk",
+      "label": "flagged",
+      "passed": true
+    },
+    {
+      "id": 9,
+      "bucket": "high_risk",
+      "text": "Click here to download your invoice: http://secure-invoice-download.xyz",
+      "risk_score": 60,
+      "verdict": "Suspicious",
+      "label": "flagged",
+      "passed": true
+    },
+    {
+      "id": 10,
+      "bucket": "high_risk",
+      "text": "Your bank account is locked. Share OTP to unlock immediately.",
+      "risk_score": 79,
+      "verdict": "High Risk",
+      "label": "flagged",
+      "passed": true
+    },
+    {
+      "id": 11,
+      "bucket": "high_risk",
+      "text": "Dear employee, please review attached payroll changes and confirm login credentials.",
+      "risk_score": 74,
+      "verdict": "High Risk",
+      "label": "flagged",
+      "passed": true
+    },
+    {
+      "id": 12,
+      "bucket": "high_risk",
+      "text": "Your Netflix account payment failed. Update billing info now: http://netflix-secure-update.xyz",
+      "risk_score": 60,
+      "verdict": "Suspicious",
+      "label": "flagged",
+      "passed": true
+    },
+    {
+      "id": 13,
+      "bucket": "suspicious",
+      "text": "Hi, please review the attached document and confirm.",
+      "risk_score": 55,
+      "verdict": "Suspicious",
+      "label": "flagged",
+      "passed": true
+    },
+    {
+      "id": 14,
+      "bucket": "suspicious",
+      "text": "Following up on previous request, kindly complete the action.",
+      "risk_score": 46,
+      "verdict": "Suspicious",
+      "label": "flagged",
+      "passed": true
+    },
+    {
+      "id": 15,
+      "bucket": "suspicious",
+      "text": "Urgent: Please respond as soon as possible.",
+      "risk_score": 48,
+      "verdict": "Suspicious",
+      "label": "flagged",
+      "passed": true
+    },
+    {
+      "id": 16,
+      "bucket": "suspicious",
+      "text": "Your account may need verification. Contact support.",
+      "risk_score": 58,
+      "verdict": "Suspicious",
+      "label": "flagged",
+      "passed": true
+    },
+    {
+      "id": 17,
+      "bucket": "suspicious",
+      "text": "Please confirm your identity for security reasons.",
+      "risk_score": 58,
+      "verdict": "Suspicious",
+      "label": "flagged",
+      "passed": true
+    },
+    {
+      "id": 18,
+      "bucket": "suspicious",
+      "text": "A document has been shared with you. Access it here: http://drive-secure-access.xyz",
+      "risk_score": 60,
+      "verdict": "Suspicious",
+      "label": "flagged",
+      "passed": true
+    },
+    {
+      "id": 19,
+      "bucket": "safe",
+      "text": "Your OTP is 482991. Do not share it with anyone.",
+      "risk_score": 20,
+      "verdict": "Safe",
+      "label": "safe",
+      "passed": true
+    },
+    {
+      "id": 20,
+      "bucket": "safe",
+      "text": "Your Amazon order has been delivered successfully.",
+      "risk_score": 20,
+      "verdict": "Safe",
+      "label": "safe",
+      "passed": true
+    },
+    {
+      "id": 21,
+      "bucket": "safe",
+      "text": "Payment of ₹5,000 received successfully.",
+      "risk_score": 24,
+      "verdict": "Safe",
+      "label": "safe",
+      "passed": true
+    },
+    {
+      "id": 22,
+      "bucket": "safe",
+      "text": "Meeting scheduled tomorrow at 10 AM.",
+      "risk_score": 20,
+      "verdict": "Safe",
+      "label": "safe",
+      "passed": true
+    },
+    {
+      "id": 23,
+      "bucket": "safe",
+      "text": "Invoice attached for your review.",
+      "risk_score": 24,
+      "verdict": "Safe",
+      "label": "safe",
+      "passed": true
+    },
+    {
+      "id": 24,
+      "bucket": "safe",
+      "text": "Your account statement is ready.",
+      "risk_score": 24,
+      "verdict": "Safe",
+      "label": "safe",
+      "passed": true
+    },
+    {
+      "id": 25,
+      "bucket": "safe",
+      "text": "Welcome to our platform! Your account setup is complete.",
+      "risk_score": 24,
+      "verdict": "Safe",
+      "label": "safe",
+      "passed": true
+    }
+  ]
+}

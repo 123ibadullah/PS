@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "PhishShield AI"
+version = "1.0.0"
+id = "artifacts/phishshield"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+localPort = 23273
+name = "web"
+paths = ["/"]
+
+[services.development]
+run = "pnpm --filter @workspace/phishshield run dev"
+
+[services.env]
+PORT = "23273"
+BASE_PATH = "/"
+
+[services.production]
+build = ["pnpm", "--filter", "@workspace/phishshield", "run", "build"]
+publicDir = "artifacts/phishshield/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"

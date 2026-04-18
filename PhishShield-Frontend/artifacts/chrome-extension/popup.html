@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PhishShield Guardian</title>
+  <style>
+    :root {
+      --bg: #020617;
+      --panel: #0f172a;
+      --panel-2: #111c31;
+      --line: rgba(148, 163, 184, 0.18);
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --red: #ef4444;
+      --amber: #f59e0b;
+      --green: #22c55e;
+      --sky: #38bdf8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      width: 360px;
+      min-height: 510px;
+      color: var(--text);
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(56, 189, 248, 0.18), transparent 0 36%),
+        radial-gradient(circle at top right, rgba(168, 85, 247, 0.12), transparent 0 30%),
+        linear-gradient(180deg, #020617 0%, #08101d 55%, #0f172a 100%);
+    }
+
+    .app-shell {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      animation: fadeUp 0.35s ease;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      border: 1px solid rgba(56, 189, 248, 0.16);
+      border-radius: 20px;
+      background: rgba(15, 23, 42, 0.82);
+      box-shadow: 0 20px 45px rgba(2, 6, 23, 0.35);
+      backdrop-filter: blur(14px);
+    }
+
+    .brand-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.24), rgba(14, 116, 144, 0.2));
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      box-shadow: 0 10px 20px rgba(56, 189, 248, 0.14);
+      font-size: 18px;
+    }
+
+    .brand-title { font-size: 15px; font-weight: 800; letter-spacing: -0.02em; }
+    .brand-sub { margin-top: 2px; font-size: 11px; color: var(--muted); }
+    .brand-status {
+      margin-left: auto;
+      border-radius: 999px;
+      padding: 5px 9px;
+      border: 1px solid rgba(34, 197, 94, 0.28);
+      background: rgba(34, 197, 94, 0.12);
+      color: #bbf7d0;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .trust-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .trust-pill {
+      flex: 1;
+      min-width: 92px;
+      padding: 9px 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(148, 163, 184, 0.14);
+      background: rgba(15, 23, 42, 0.75);
+      color: #dbeafe;
+      font-size: 10px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .loading-card,
+    .panel {
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      background: rgba(15, 23, 42, 0.88);
+      box-shadow: 0 18px 45px rgba(2, 6, 23, 0.34);
+      backdrop-filter: blur(16px);
+    }
+
+    .loading-card {
+      padding: 34px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 12px;
+      color: var(--muted);
+    }
+
+    #state-result,
+    #state-safe {
+      display: none;
+    }
+
+    .spinner {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 2px solid rgba(56, 189, 248, 0.15);
+      border-top-color: var(--sky);
+      animation: spin 0.75s linear infinite;
+    }
+
+    .panel {
+      padding: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(135deg, rgba(255,255,255,0.04), transparent 55%);
+    }
+
+    .panel[data-state="phishing"] {
+      border-color: rgba(239, 68, 68, 0.34);
+      box-shadow: 0 18px 50px rgba(239, 68, 68, 0.12), 0 18px 45px rgba(2, 6, 23, 0.34);
+    }
+
+    .panel[data-state="suspicious"] {
+      border-color: rgba(245, 158, 11, 0.34);
+      box-shadow: 0 18px 50px rgba(245, 158, 11, 0.12), 0 18px 45px rgba(2, 6, 23, 0.34);
+    }
+
+    .panel[data-state="safe"] {
+      border-color: rgba(34, 197, 94, 0.34);
+      box-shadow: 0 18px 50px rgba(34, 197, 94, 0.12), 0 18px 45px rgba(2, 6, 23, 0.34);
+    }
+
+    .eyebrow-row,
+    .hero-row,
+    .meta-row,
+    .actions {
+      position: relative;
+      z-index: 1;
+    }
+
+    .eyebrow-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      gap: 10px;
+    }
+
+    .eyebrow {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .confidence-pill {
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #e2e8f0;
+    }
+
+    .hero-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .result-headline {
+      font-size: 21px;
+      line-height: 1.1;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      margin-bottom: 4px;
+    }
+
+    .score-label {
+      font-size: 12px;
+      color: #cbd5e1;
+    }
+
+    .score-block {
+      min-width: 94px;
+      border-radius: 18px;
+      padding: 14px 12px;
+      text-align: right;
+      background: rgba(2, 6, 23, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+
+    .score-block .score-number {
+      display: block;
+      font-size: 42px;
+      line-height: 0.95;
+      font-weight: 900;
+      letter-spacing: -0.06em;
+    }
+
+    .score-block small {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .summary {
+      position: relative;
+      z-index: 1;
+      margin-bottom: 12px;
+      font-size: 13px;
+      line-height: 1.55;
+      color: #e2e8f0;
+    }
+
+    .meta-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(2, 6, 23, 0.54);
+      border: 1px solid rgba(148, 163, 184, 0.16);
+      color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      word-break: break-all;
+    }
+
+    .chips {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .chip {
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.05);
+      color: #e2e8f0;
+    }
+
+    .risk-meter {
+      position: relative;
+      z-index: 1;
+      margin-bottom: 12px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(2, 6, 23, 0.52);
+      border: 1px solid rgba(148, 163, 184, 0.16);
+    }
+
+    .risk-meter-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .risk-track {
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.18);
+      overflow: hidden;
+    }
+
+    .risk-fill {
+      height: 100%;
+      width: 22%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #22c55e, #16a34a);
+      transition: width 0.18s ease;
+    }
+
+    .next-step {
+      position: relative;
+      z-index: 1;
+      margin-bottom: 14px;
+      padding: 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.16);
+      background: rgba(2, 6, 23, 0.52);
+    }
+
+    .next-step-title {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .next-step-text {
+      margin-top: 6px;
+      font-size: 12px;
+      line-height: 1.55;
+      color: #e2e8f0;
+    }
+
+    .panel[data-state="phishing"] .result-headline,
+    .panel[data-state="phishing"] .score-number {
+      color: var(--red);
+    }
+
+    .panel[data-state="phishing"] .chip {
+      border-color: rgba(239, 68, 68, 0.34);
+      background: rgba(239, 68, 68, 0.13);
+      color: #fecaca;
+    }
+
+    .panel[data-state="phishing"] .risk-fill {
+      background: linear-gradient(90deg, #fb7185, #ef4444);
+    }
+
+    .panel[data-state="phishing"] .next-step {
+      border-color: rgba(239, 68, 68, 0.24);
+      background: rgba(127, 29, 29, 0.18);
+    }
+
+    .panel[data-state="suspicious"] .result-headline,
+    .panel[data-state="suspicious"] .score-number {
+      color: var(--amber);
+    }
+
+    .panel[data-state="suspicious"] .chip {
+      border-color: rgba(245, 158, 11, 0.34);
+      background: rgba(245, 158, 11, 0.13);
+      color: #fde68a;
+    }
+
+    .panel[data-state="suspicious"] .risk-fill {
+      background: linear-gradient(90deg, #fbbf24, #f59e0b);
+    }
+
+    .panel[data-state="suspicious"] .next-step {
+      border-color: rgba(245, 158, 11, 0.24);
+      background: rgba(120, 53, 15, 0.18);
+    }
+
+    .panel[data-state="safe"] .result-headline,
+    .panel[data-state="safe"] .score-number {
+      color: var(--green);
+    }
+
+    .panel[data-state="safe"] .chip {
+      border-color: rgba(34, 197, 94, 0.34);
+      background: rgba(34, 197, 94, 0.13);
+      color: #bbf7d0;
+    }
+
+    .details {
+      position: relative;
+      z-index: 1;
+      margin-bottom: 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.16);
+      background: rgba(2, 6, 23, 0.52);
+      overflow: hidden;
+    }
+
+    .details summary {
+      list-style: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 11px 12px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #e2e8f0;
+    }
+
+    .details summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .details small {
+      font-size: 10px;
+      letter-spacing: 0.04em;
+      text-transform: none;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .details[open] summary {
+      border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+    }
+
+    .details-body {
+      padding: 10px 12px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .insight-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .insight-card,
+    .feedback-note {
+      border-radius: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.16);
+      background: rgba(2, 6, 23, 0.52);
+      padding: 11px 12px;
+    }
+
+    .insight-title {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .insight-list {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .analysis-row,
+    .breakdown-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 11px;
+      line-height: 1.5;
+      color: #cbd5e1;
+    }
+
+    .analysis-row strong {
+      color: #e2e8f0;
+      min-width: 88px;
+    }
+
+    .analysis-row span {
+      text-align: right;
+      color: #cbd5e1;
+    }
+
+    .breakdown-row {
+      align-items: center;
+    }
+
+    .breakdown-text {
+      flex: 1;
+      color: #e2e8f0;
+    }
+
+    .breakdown-impact {
+      flex-shrink: 0;
+      border-radius: 999px;
+      padding: 3px 8px;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+    }
+
+    .breakdown-impact.positive {
+      background: rgba(239, 68, 68, 0.14);
+      color: #fecaca;
+    }
+
+    .breakdown-impact.negative {
+      background: rgba(34, 197, 94, 0.14);
+      color: #bbf7d0;
+    }
+
+    .comparison-copy {
+      font-size: 11px;
+      line-height: 1.6;
+      color: #cbd5e1;
+    }
+
+    .feedback-note {
+      font-size: 11px;
+      line-height: 1.55;
+      color: #cbd5e1;
+      margin-bottom: 14px;
+    }
+
+    .feedback-note strong {
+      color: #e2e8f0;
+    }
+
+    .detail-row {
+      display: flex;
+      gap: 8px;
+      font-size: 11px;
+      line-height: 1.5;
+      color: #cbd5e1;
+    }
+
+    .detail-dot {
+      color: var(--sky);
+      font-weight: 900;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn {
+      flex: 1 1 calc(50% - 5px);
+      min-width: 0;
+      border: none;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.16s ease, box-shadow 0.16s ease, opacity 0.16s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px) scale(1.01);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #38bdf8, #2563eb);
+      color: #04111f;
+      box-shadow: 0 12px 22px rgba(37, 99, 235, 0.26);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.06);
+      color: #e2e8f0;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .footer {
+      text-align: center;
+      padding-top: 2px;
+      color: #64748b;
+      font-size: 10px;
+      letter-spacing: 0.04em;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div class="brand">
+      <div class="brand-icon">🛡</div>
+      <div>
+        <div class="brand-title">PhishShield Guardian</div>
+        <div class="brand-sub">Enterprise browser and mail protection</div>
+      </div>
+      <div class="brand-status">Protected</div>
+    </div>
+
+    <div class="trust-strip">
+      <div class="trust-pill">Inline protection</div>
+      <div class="trust-pill">Auditable verdicts</div>
+      <div class="trust-pill">Incident workflow</div>
+    </div>
+
+    <div id="state-loading" class="loading-card">
+      <div class="spinner"></div>
+      <div>Checking the current page…</div>
+    </div>
+
+    <div id="state-result">
+      <div class="panel" id="result-panel" data-state="phishing">
+        <div class="eyebrow-row">
+          <span class="eyebrow">Current assessment</span>
+          <span class="confidence-pill" id="result-confidence">High confidence</span>
+        </div>
+
+        <div class="hero-row">
+          <div>
+            <div class="result-headline" id="result-headline">High-Risk Destination</div>
+            <div class="score-label" id="score-label">Risk score · 87/100</div>
+          </div>
+          <div class="score-block">
+            <span class="score-number" id="score-num">87</span>
+            <small>/100</small>
+          </div>
+        </div>
+
+        <div class="summary" id="result-explanation">This page or email shows strong phishing indicators and should not be trusted.</div>
+
+        <div class="meta-row">
+          <span>🌐</span>
+          <span id="domain-text">example.com</span>
+        </div>
+
+        <div class="risk-meter">
+          <div class="risk-meter-top">
+            <span>Recommended action</span>
+            <span id="result-meter-label">Escalate now</span>
+          </div>
+          <div class="risk-track"><div class="risk-fill" id="result-risk-fill"></div></div>
+        </div>
+
+        <div class="chips" id="flags-wrap"></div>
+
+        <div class="next-step">
+          <div class="next-step-title" id="result-next-step-title">Recommended action</div>
+          <div class="next-step-text" id="result-next-step-text">Do not authenticate, reply, or submit payment details until verified through a trusted channel.</div>
+        </div>
+
+        <div class="insight-grid">
+          <div class="insight-card">
+            <div class="insight-title">Score breakdown</div>
+            <div class="insight-list" id="result-breakdown-list">
+              <div class="breakdown-row"><span class="breakdown-text">Live score factors will appear here.</span><span class="breakdown-impact positive">+0</span></div>
+            </div>
+          </div>
+          <div class="insight-card">
+            <div class="insight-title">Threat analysis</div>
+            <div class="insight-list" id="result-analysis-list">
+              <div class="analysis-row"><strong>Category</strong><span>Awaiting latest scan</span></div>
+            </div>
+          </div>
+          <div class="insight-card">
+            <div class="insight-title" id="result-comparison-title">What could have gone wrong?</div>
+            <div class="comparison-copy" id="result-comparison-copy">PhishShield will explain how a real phishing attempt would differ from a normal message.</div>
+          </div>
+        </div>
+
+        <div class="feedback-note" id="result-feedback-note"><strong>Your feedback improves detection.</strong> Feedback system is available when backend is connected.</div>
+
+        <details class="details">
+          <summary>
+            <span>Details</span>
+            <small>decision trace</small>
+          </summary>
+          <div class="details-body" id="result-details-list">
+            <div class="detail-row"><span class="detail-dot">•</span><span>Opening the strongest reasons behind this verdict.</span></div>
+          </div>
+        </details>
+
+        <div class="actions">
+          <button class="btn btn-primary" id="btn-recheck">Refresh analysis</button>
+          <button class="btn btn-secondary" id="btn-copy">Copy summary</button>
+          <button class="btn btn-secondary" id="btn-official">Open trusted site</button>
+          <button class="btn btn-secondary" id="btn-report">Report incident</button>
+          <button class="btn btn-secondary" id="btn-dismiss">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="state-safe">
+      <div class="panel" id="safe-panel" data-state="safe">
+        <div class="eyebrow-row">
+          <span class="eyebrow">Current assessment</span>
+          <span class="confidence-pill" id="safe-confidence">Protected</span>
+        </div>
+
+        <div class="hero-row">
+          <div>
+            <div class="result-headline" id="safe-headline">Protected Communication</div>
+            <div class="score-label" id="safe-score-label">Protected · trusted communication</div>
+          </div>
+          <div class="score-block">
+            <span class="score-number" id="safe-score">12</span>
+            <small>/100</small>
+          </div>
+        </div>
+
+        <div class="summary" id="safe-summary">No risky behavior detected. This is a trusted message.</div>
+
+        <div class="meta-row">
+          <span>🌐</span>
+          <span id="safe-domain-text">This page</span>
+        </div>
+
+        <div class="risk-meter">
+          <div class="risk-meter-top">
+            <span>Recommended action</span>
+            <span id="safe-meter-label">Protected</span>
+          </div>
+          <div class="risk-track"><div class="risk-fill" id="safe-risk-fill"></div></div>
+        </div>
+
+        <div class="chips" id="safe-flags-wrap">
+          <span class="chip">Trusted sender</span>
+        </div>
+
+        <div class="next-step">
+          <div class="next-step-title" id="safe-next-step-title">Recommended action</div>
+          <div class="next-step-text" id="safe-next-step-text">This appears to be a routine business communication. Continue normally, but still use the trusted site for sign-ins or billing changes.</div>
+        </div>
+
+        <div class="insight-grid">
+          <div class="insight-card">
+            <div class="insight-title">Score breakdown</div>
+            <div class="insight-list" id="safe-breakdown-list">
+              <div class="breakdown-row"><span class="breakdown-text">Protective score factors will appear here.</span><span class="breakdown-impact negative">-0</span></div>
+            </div>
+          </div>
+          <div class="insight-card">
+            <div class="insight-title">Threat analysis</div>
+            <div class="insight-list" id="safe-analysis-list">
+              <div class="analysis-row"><strong>Category</strong><span>Awaiting latest scan</span></div>
+            </div>
+          </div>
+          <div class="insight-card">
+            <div class="insight-title" id="safe-comparison-title">Why this looks safe</div>
+            <div class="comparison-copy" id="safe-comparison-copy">PhishShield will explain the protective signals behind this verdict.</div>
+          </div>
+        </div>
+
+        <div class="feedback-note" id="safe-feedback-note"><strong>Your feedback improves detection.</strong> Feedback system is available when backend is connected.</div>
+
+        <details class="details">
+          <summary>
+            <span>Details</span>
+            <small>low-risk signals</small>
+          </summary>
+          <div class="details-body" id="safe-details-list">
+            <div class="detail-row"><span class="detail-dot">•</span><span>Protection signals will appear here after each scan.</span></div>
+          </div>
+        </details>
+
+        <div class="actions">
+          <button class="btn btn-primary" id="btn-recheck-safe">Refresh analysis</button>
+          <button class="btn btn-secondary" id="btn-copy-safe">Copy summary</button>
+          <button class="btn btn-secondary" id="btn-official-safe">Open trusted site</button>
+          <button class="btn btn-secondary" id="btn-report-safe">Report incident</button>
+          <button class="btn btn-secondary" id="btn-dismiss-safe">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">Enterprise protection console · privacy-first verdicts · low-noise review</div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

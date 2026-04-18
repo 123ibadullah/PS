@@ -1,0 +1,1636 @@
+
+
+Skip to content
+Using Gmail with screen readers
+1 of 1,001
+Volvo Group is hiring - Apply now!
+Inbox
+
+Jia from Unstop <noreply@dare2compete.news> Unsubscribe
+Fri 17 Apr, 18:53 (6 hours ago)
+to me
+
+from:	Jia from Unstop <noreply@dare2compete.news>
+reply-to:	noreply@dare2compete.news
+to:	mohdibadullah13@gmail.com
+date:	17 Apr 2026, 18:53
+subject:	Volvo Group is hiring - Apply now!
+mailed-by:	eu-west-1.amazonses.com
+Signed by:	dare2compete.news
+security:	 Standard encryption (TLS) Learn more
+Golden Opportunity Alert!
+
+Volvo Group is hiring for the role of Interns!
+
+What’s in it for you?
+
+
+Application Link: Click Here
+Stipend: INR 30,000 per month
+Regards,
+Team Unstop
+
+Unsubscribe Here
+
+
+
+Skip to content
+Using Gmail with screen readers
+2 of 1,001
+[Few Hours] Poonawalla Hiring: Win PPOs, Internships & 10 Lakhs
+Inbox
+
+Team Unstop <noreply@unstop.news> Unsubscribe
+Fri 17 Apr, 16:31 (8 hours ago)
+to me
+
+from:	Team Unstop <noreply@unstop.news>
+reply-to:	noreply@unstop.news
+to:	mohdibadullah13@gmail.com
+date:	17 Apr 2026, 16:31
+subject:	[Few Hours] Poonawalla Hiring: Win PPOs, Internships & 10 Lakhs
+mailed-by:	delivery.unstop.news
+Signed by:	unstop.news
+security:	 Standard encryption (TLS) Learn more
+Hi Mohd,
+
+Only a few hours left!
+
+Applications for the TenZorX National AI Hackathon by Poonawalla Fincorp are closing shortly.
+
+Apply Now
+
+Rewards:
+
+Pre-placement offers opportunities | CTC: INR 10-14 LPA
+Internship opportunities with Poonawalla Fincorp
+Prize pool worth INR 10 Lakhs
+Top 20 referrers win Amazon Vouchers worth INR 2,500 each
+Eligibility: Engineering students [Batch 2026 & 2027]
+
+Best Regards,
+Team Unstop
+
+
+
+This email was sent to mohdibadullah13@gmail.com because you subscribed to updates from Unstop. If you no longer wish to receive these emails, unsubscribe here.
+
+
+
+Skip to content
+Using Gmail with screen readers
+3 of 1,001
+Earn INR 10k stipend + Free pizzas + goodies & more!
+Inbox
+
+Jia from Unstop <noreply@dare2compete.news> Unsubscribe
+Fri 17 Apr, 12:06 (13 hours ago)
+to me
+
+from:	Jia from Unstop <noreply@dare2compete.news>
+reply-to:	noreply@dare2compete.news
+to:	mohdibadullah13@gmail.com
+date:	17 Apr 2026, 12:06
+subject:	Earn INR 10k stipend + Free pizzas + goodies & more!
+mailed-by:	eu-west-1.amazonses.com
+Signed by:	dare2compete.news
+security:	 Standard encryption (TLS) Learn more
+Yes you heard it right!
+
+Unstop is bringing you India’s Tastiest Internship!
+
+Application Link: Click Here
+
+Perks you’ll love:
+
+
+Stipend: INR 10,000 per month
+Pizza vouchers worth INR 10,000
+Goodies, certificate & more!
+Regards,
+Team Unstop
+
+Unsubscribe Here
+
+
+
+Skip to content
+Using Gmail with screen readers
+4 of 1,001
+Workflows beta, startup credits, sandboxes waitlist
+Inbox
+
+Render <hello@render.com> Unsubscribe
+Fri 17 Apr, 05:32 (19 hours ago)
+to me
+
+from:	Render <hello@render.com>
+reply-to:	feedback@render.com
+to:	mohdibadullah13@gmail.com
+date:	17 Apr 2026, 05:32
+subject:	Workflows beta, startup credits, sandboxes waitlist
+mailed-by:	21532664m.render.com
+Signed by:	render.com
+unsubscribe:	Unsubscribe from this sender
+security:	 Standard encryption (TLS) Learn more
+View in browser
+Render Logo
+Render Recap
+April 2026
+Just a quarter into 2026, the developer landscape has already shifted since January. Based on our signup and usage data, it's clear that:
+
+The backend is back in. AI workloads need real, reliable computational muscle behind them.
+Software is shipping software. Teams are handing the deployment keys to their agents, and those agents need to know how to drive.
+On a mildly related note, here's what we've been up to at Render.
+
+Headlines_
+Workflows icon
+Queue up, scale out
+Render Workflows: chainable tasks for apps and agents
+Now in public beta, Render Workflows replaces scattered queues, workers, and custom retry logic with an intuitive SDK.
+
+Define chains of tasks in your code, and rapidly spin them up on distributed compute with built-in retries and observability.
+
+Learn more about workflows in the blog post, then get started in minutes with the docs.
+
+Keep production clean
+Request early access for Render Sandboxes
+Agents are constantly creating and transforming application code. They need isolated, ephemeral environments to test changes safely without touching production.
+
+We're building Render Sandboxes to support this new pace of iteration. Join the waitlist for early access.
+
+For the long run
+Render's $100M Series C-1
+We're investing this extension of our Series C into delivering a unified runtime for apps and agents, expanding the core platform with capabilities like object storage, and supporting the next wave of teams scaling on Render.
+
+Expect continued improvements across long-running compute, durable execution, and day-to-day developer experience for teams building modern software.
+
+Improvements_
+Terminal icon
+Terminal velocity
+Create services from the command line
+We've been expanding the Render CLI's surface area to give you more programmatic control. Now you can:
+
+Create new services
+Install Render's official skills
+Validate your Blueprint YAML
+Run one-off database queries
+For more, see the full CLI changelog and command reference.
+
+Code à la carte
+Deploy a Render template
+Looking for some infra inspiration? Our new template library gets you up and running with a smorgasbord of multi-service stacks:
+
+Ship your own MCP server in TypeScript or Python
+Host your own Cursor cloud agents
+Launch a Workflows-powered voice agent using LiveKit
+There's plenty more on the full menu: browse our templates.
+
+Opportunities_
+Sprouting plant icon
+Credits where credit's due
+Apply to Render for Startups
+Building an AI-native or fast-growing web product? Our partner program gives you runway to ship rapidly on infrastructure that scales with you.
+
+Get started with credits from $500 up to $100K (tier-dependent), plus onboarding resources and partner-backed offers for eligible startups. Apply now.
+
+Render IRL
+Catch us at a conference
+Our team is on the circuit, showing off workflows and all the latest in production infrastructure. Come chat with us at:
+
+AI Council San Francisco, May 12-14
+Cascadia JS Seattle, June 1-2
+TechLead Conf Amsterdam, June 11-12
+Can't make it in person? Join our virtual community on Discord.
+
+Jobs to be done
+Software Engineer, Growth
+Own full-stack growth features that reduce ops work, make onboarding effortless, and help more teams embark on their Render journey.
+
+We're hiring across multiple roles and teams. Check out our careers page.
+
+For all the latest updates, see the changelog. More soon.
+
+Render, Inc., 525 Brannan St., San Francisco, California
+
+Unsubscribe Manage preferences
+
+
+
+Skip to content
+Using Gmail with screen readers
+5 of 1,001
+PM Internship Scheme 2026 is LIVE!
+Inbox
+
+Jia from Unstop <noreply@dare2compete.news> Unsubscribe
+Thu 16 Apr, 22:11 (2 days ago)
+to me
+
+from:	Jia from Unstop <noreply@dare2compete.news>
+reply-to:	noreply@dare2compete.news
+to:	mohdibadullah13@gmail.com
+date:	16 Apr 2026, 22:11
+subject:	PM Internship Scheme 2026 is LIVE!
+mailed-by:	eu-west-1.amazonses.com
+Signed by:	dare2compete.news
+security:	 Standard encryption (TLS) Learn more
+Golden Opportunity Alert!
+
+PM Internship Scheme 2026 is LIVE!
+
+What’s in it for you?
+
+
+Application Link: Click Here
+Stipend: upto INR 1,00,000 per month
+Regards,
+Team Unstop
+
+Unsubscribe Here
+
+
+
+Skip to content
+Using Gmail with screen readers
+6 of 1,001
+[Final Call] Poonawalla Hiring: Win PPOs, Internships & 10 Lakhs
+Inbox
+
+Team Unstop <noreply@unstop.news> Unsubscribe
+Thu 16 Apr, 17:31 (2 days ago)
+to me
+
+from:	Team Unstop <noreply@unstop.news>
+reply-to:	noreply@unstop.news
+to:	mohdibadullah13@gmail.com
+date:	16 Apr 2026, 17:31
+subject:	[Final Call] Poonawalla Hiring: Win PPOs, Internships & 10 Lakhs
+mailed-by:	delivery.unstop.news
+Signed by:	unstop.news
+security:	 Standard encryption (TLS) Learn more
+Hi Mohd,
+
+Final Call Alert!
+
+Applications for the TenZorX AI Hackathon by Poonawalla Fincorp are closing shortly.
+
+Apply Now
+
+Rewards:
+
+Pre-placement offers opportunities | CTC: INR 10-14 LPA
+Internship opportunities with Poonawalla Fincorp
+Prize pool worth INR 10 Lakhs
+Top 20 referrers win Amazon Vouchers worth INR 2,500 each
+Eligibility: Engineering students [Batch 2026 & 2027]
+
+Best Regards,
+Team Unstop
+
+
+
+This email was sent to mohdibadullah13@gmail.com because you subscribed to updates from Unstop. If you no longer wish to receive these emails, unsubscribe here.
+
+
+
+Skip to content
+Using Gmail with screen readers
+7 of 1,001
+New: Claude + Codex courses are here
+Inbox
+
+The Educative Team <support@educative.io>
+Thu 16 Apr, 13:46 (2 days ago)
+to me
+
+from:	The Educative Team <support@educative.io>
+reply-to:	support@educative.io
+to:	mohdibadullah13@gmail.com
+date:	16 Apr 2026, 13:46
+subject:	New: Claude + Codex courses are here
+mailed-by:	4740448t.educative.io
+Signed by:	educative.io
+security:	 Standard encryption (TLS) Learn more
+Educative
+Mohd, your new courses are here
+Build agentic AI skills using OpenAI & Anthropic
+
+*Note: You are receiving this platform-related update because you have an active Educative account. If you wish to unsubscribe from product or other updates related to your account, you can do so anytime.
+
+NEW COURSE
+
+Mastering OpenAI Codex for Agentic Coding
+Start Learning →
+Learn how to use OpenAI Codex to delegate multi-step development tasks through an agentic workflow. Go from basic CLI setup to building a full Flask application using AGENTS.md files, Skills, Automations, and MCP servers.
+
+NEW COURSE
+
+Claude Everywhere: The Complete Ecosystem Guide
+Start Learning →
+Learn how to use Claude's full ecosystem — from Claude.ai and Desktop to Cowork and MCP — to build a personalized workflow for writing, research, data analysis, and multi-step task delegation.
+
+Learn on the Go
+
+App Store	Google Play
+Happy learning!
+
+The Educative Team
+
+educative.io
+
+Educative, 12280 NE District Way, Bellevue, WA, 98005 United States
+
+Email Preferences
+
+
+
+Skip to content
+Using Gmail with screen readers
+8 of 1,001
+Competition Launch: The IJCAI-ECAI 2026 NeuroGolf Challenge
+Inbox
+
+Kaggle <no-reply@kaggle.com> Unsubscribe
+Thu 16 Apr, 03:35 (2 days ago)
+to me
+
+from:	Kaggle <no-reply@kaggle.com>
+reply-to:	Kaggle <no-reply@kaggle.com>
+to:	mohdibadullah13@gmail.com
+date:	16 Apr 2026, 03:35
+subject:	Competition Launch: The IJCAI-ECAI 2026 NeuroGolf Challenge
+mailing list:	<d3d572f2a797bc005fbf0c631ac17de03856ef11.google.com> Filter messages from this mailing list
+mailed-by:	scoutcamp.bounces.google.com
+Signed by:	kaggle.com
+security:	 Standard encryption (TLS) Learn more
+Kaggle
+Hi Mohd Ibadullah11,
+
+What does it really take to solve an AI task?
+
+Today’s AI systems handle familiar tasks well but often struggle with new ones. The ARC-AGI benchmark highlights this gap by using simple grid transformations that require reasoning rather than pattern matching.
+
+In this competition, you’ll design the smallest possible neural networks to solve ARC-AGI tasks—and see how much computation they actually need.
+
+Total Prizes:
+$50,000
+
+ 
+Entry Deadline:
+July 8, 2026
+
+Learn More
+Your work could shape how much computation these tasks need and spark more efficient approaches.
+
+Good luck,
+
+Walter Reade
+Kaggle Competitions
+
+Kaggle, Inc 1600 Amphitheatre Pkwy Mountain View, CA 94043
+
+This email was sent to mohdibadullah13@gmail.com because you indicated that you'd like to receive news and updates about Kaggle. If you don't want to receive these emails in the future, please unsubscribe here. You can also change your preferences on your account's profile page by logging in at kaggle.com.
+
+
+
+
+Skip to content
+Using Gmail with screen readers
+9 of 1,001
+Server failure detected on Peacefull spaces
+Inbox
+
+Render <no-reply@render.com>
+Wed 15 Apr, 19:32 (3 days ago)
+to me
+
+from:	Render <no-reply@render.com>
+to:	mohdibadullah13@gmail.com
+date:	15 Apr 2026, 19:32
+subject:	Server failure detected on Peacefull spaces
+mailed-by:	bounces.render.com
+Signed by:	render.com
+security:	 Standard encryption (TLS) Learn more
+Render
+We recently detected a server failure for Peacefull spaces:
+
+Exited with status 127
+
+This alert means one of the instances running your service became unavailable. In many cases, this issue resolves automatically.
+
+If your service has multiple instances, traffic may have continued uninterrupted.
+Render may have already restarted or replaced the affected instance automatically.
+Recommended next steps:
+Review your recent logs
+Read our uptime best practices
+The Render Team
+
+Don't want to receive these emails? You can change your notification settings for your workspace or just this service.
+
+Need more help? Contact our Support team.
+
+© 2026 Render, 525 Brannan St #300, San Francisco, CA 94107
+
+
+
+
+Skip to content
+Using Gmail with screen readers
+10 of 1,001
+Server failure detected on Peacefull spaces
+Inbox
+
+Render <no-reply@render.com>
+Tue 14 Apr, 04:18 (4 days ago)
+to me
+
+from:	Render <no-reply@render.com>
+to:	mohdibadullah13@gmail.com
+date:	14 Apr 2026, 04:18
+subject:	Server failure detected on Peacefull spaces
+mailed-by:	bounces.render.com
+Signed by:	render.com
+security:	 Standard encryption (TLS) Learn more
+Render
+We recently detected a server failure for Peacefull spaces:
+
+Exited with status 1
+
+This alert means one of the instances running your service became unavailable. In many cases, this issue resolves automatically.
+
+If your service has multiple instances, traffic may have continued uninterrupted.
+Render may have already restarted or replaced the affected instance automatically.
+Recommended next steps:
+Review your recent logs
+Read our uptime best practices
+The Render Team
+
+Don't want to receive these emails? You can change your notification settings for your workspace or just this service.
+
+Need more help? Contact our Support team.
+
+© 2026 Render, 525 Brannan St #300, San Francisco, CA 94107
+
+
+
+
+Skip to content
+Using Gmail with screen readers
+11 of 1,001
+Thanks for filling in this form: B.Tech III Year (KR23) II Semester REGULAR SEMESTER END EXAMINATIONS (SEE) - JUNE 2026
+Inbox
+
+Forms response receipts <forms-receipts-noreply@google.com>
+Mon 13 Apr, 23:19 (5 days ago)
+to me
+
+from:	Forms response receipts <forms-receipts-noreply@google.com>
+to:	mohdibadullah13@gmail.com
+date:	13 Apr 2026, 23:19
+subject:	Thanks for filling in this form: B.Tech III Year (KR23) II Semester REGULAR SEMESTER END EXAMINATIONS (SEE) - JUNE 2026
+mailed-by:	trix.bounces.google.com
+Signed by:	google.com
+security:	 Standard encryption (TLS) Learn more
+:	Important according to Google magic.
+Google Forms
+Thanks for filling in this form: B.Tech III Year (KR23) II Semester REGULAR SEMESTER END EXAMINATIONS (SEE) - JUNE 2026
+Here's what was received.
+B.Tech III Year (KR23) II Semester REGULAR SEMESTER END EXAMINATIONS (SEE) - JUNE 2026
+KMIT (BD) AUTONOMOUS EXAMINATION BRANCH - FEE PAYMENT GOOGLE FORM FOR STUDENTS 
+Your email address (mohdibadullah13@gmail.com) was recorded when you submitted this form.
+FEE PAYMENT SCHEDULE FOR STUDENTS
+Captionless Image
+HALL TICKET NUMBER *
+24BD5A6610
+  REGULAR EXAMINATION FEE PAYMENT GOOGLE FORM FOR STUDENTS   
+B.Tech III Year (KR23) II Semester REGULAR SEMESTER END EXAMINATIONS (SEE) - JUNE 2026
+STUDENT NAME *
+MOHD IBADULLAH
+MOBILE NUMBER *
+9030605408
+DEPARTMENT & SECTION *
+CSE (AI & ML) - B
+REGISTRATION FEE *
+Captionless Image
+EXAM REGISTRATION WITHOUT LATE FEE
+LATE EXAM REGISTRATION FEE: ₹ 100/-
+LATE EXAM REGISTRATION FEE: ₹ 1,000/-
+LATE EXAM REGISTRATION FEE: ₹ 2,000/-
+LATE EXAM REGISTRATION FEE: ₹ 5,000/-
+LATE EXAM REGISTRATION FEE: ₹ 10,000/-
+PH STUDENTS: FEE EXEMPTION - FEE ₹ 1,500/-
+SCAN QR CODE FOR FEE PAYMENT
+Captionless Image
+TOTAL FEE AMOUNT PAID *
+2000
+ENTER HT.NO FOLLOWED BY YOUR REFERENCE ID / UTR NO. *
+EX: 22BD1AXXX - 121857474049
+Captionless Image
+227902306220
+UPLOAD THE FEE TRANSACTION RECEIPT (SCREEN SHOT OR PDF FORMAT) *
+***NOTE: FILE SHOULD IN JPEG / JPG / PDF FORMAT AND SIZE SHOULD IN LESS THAN 1MB
+Captionless Image
+Submitted files
+Image		IMG-20260413-WA0003 - 610.jpg
+Create your own Google Form
+Does this form look suspicious? Report
+
+
+Skip to content
+Using Gmail with screen readers
+12 of 1,001
+My honest review of Claude Code vs Codex
+Inbox
+
+Fahim at Educative <fahim.u@educative.io> Unsubscribe
+Mon 13 Apr, 23:05 (5 days ago)
+to me
+
+from:	Fahim at Educative <fahim.u@educative.io>
+reply-to:	fahim.u@educative.io
+to:	mohdibadullah13@gmail.com
+date:	13 Apr 2026, 23:05
+subject:	My honest review of Claude Code vs Codex
+mailed-by:	4740448m.educative.io
+Signed by:	educative.io
+unsubscribe:	Unsubscribe from this sender
+security:	 Standard encryption (TLS) Learn more
+Educative
+Claude Code vs Codex
+Here's my honest opinion
+
+Mohd, I've been using Claude Code and Codex for a little while now. And the question I keep getting from developers, from other founders, and from members of our own engineering team is always some version of: 
+
+"... which one is better?" 
+
+I get why people frame it that way. It’s in our nature to pick sides (and I wouldn’t be surprised if this becomes the next ‘Messi vs. Ronaldo’ debate). But after spending a good amount of time building with both, I think that framing misses the point. 
+
+So if you're wondering whether you should use Claude Code or Codex, I’d highly encourage you to experiment with each. And here’s why.
+
+Claude Code is the better tool when context is everything.
+It holds a model of your codebase across sessions, gives real-time feedback as you work, and handles the kind of multi-file, architectural reasoning that most tools flatten into autocomplete. 
+
+When I'm debugging something genuinely complex or refactoring a module that touches twelve files, Claude is what I reach for. It understands relationships between components I didn't explicitly point it to. And when it gets something wrong, I know immediately, because I'm watching.
+
+Codex is the better tool when you want to delegate and move on.
+Its roots are in cloud-sandboxed execution: describe a task, let it run in the background, come back to a pull request. That async model is powerful for parallel work. Queue four TypeScript migrations, let them run simultaneously, review the output.
+
+But Codex has grown beyond the sandbox. OpenAI has shipped an open-source CLI that runs locally on your machine, a desktop app for macOS and Windows, and IDE extensions. It's no longer just a cloud tool. Both platforms have converged on similar surfaces. The real difference is philosophy: Claude is built for pair programming, Codex is built for task delegation.
+
+The limitations of each ⬇️
+Claude Code can lose the thread on long, sprawling sessions. The deeper you go, the more it can drift from earlier decisions and earlier context. You can manage it, but it takes discipline.
+
+Codex's cloud agent still works on a snapshot of your repo, not your live environment. You can't course-correct mid-execution. If the initial prompt was ambiguous, you won't find out until the task finishes. And I'll be direct about cost, because it matters. Anthropic has endured a bit of a rough stretch lately. 
+
+• In March, Claude Code users across paid tiers reported usage limits draining far faster than expected. Power users paying $100 or $200 a month were hitting caps in under two hours.
+
+• OpenAI responded by doubling Codex rate limits across all paid plans and temporarily opening access to free tiers. The competitive dynamic is real, and a lot of developers started experimenting with Codex who might not have otherwise.
+
+The honest read is that neither platform has fully figured out the balance between capability and cost at scale. Which is exactly why learning both matters.
+
+The engineers getting the most out of these tools aren't choosing one. They're building a workflow that uses both: Claude for the work that rewards presence (debugging, refactoring, architectural decisions) and Codex for the work that rewards delegation (migrations, test generation, repetitive refactors across many files). Some teams even use Claude for planning and Codex as a final code reviewer before merging.
+
+My last piece of advice? Have some fun with it
+These tools are becoming table stakes for developer workflows. I'm already prioritizing engineers who know how to use them.
+
+If you haven't started with either, pick a real project and get to building:
+
+Refactor a real codebase with Claude Code and document your decisions Use Codex to automate a repetitive workflow and show the before/after.
+
+Or build something using both, and explain where each one helped We built two courses this month to help you go deeper on both:
+
+• Claude Everywhere is already live and covers the full Claude ecosystem: when to use the desktop app, the terminal — and how they fit together.
+
+• Mastering OpenAI Codex will be launching this Wednesday. It covers parallel execution, task scoping, and the workflows that make Codex powerful when you use it for the right problems.
+
+The best part? Both are included in our AI April sale — along with 50% off across our AI catalog. The tools are here. The advantage goes to the people who master them early.
+
+See your offer →
+Learn on the Go
+
+App Store	Google Play
+Happy building!
+
+Fahim ul Haq
+Fahim ul Haq
+
+CEO & Co-founder
+
+educative.io
+
+Educative, 12280 NE District Way, Bellevue, WA, 98005 United States
+
+Email Preferences
+
+
+
+Skip to content
+Using Gmail with screen readers
+13 of 1,001
+Next up, Copilot prompts that get work done
+Inbox
+
+GitHub <marketing@github.com> Unsubscribe
+Mon 13 Apr, 17:33 (5 days ago)
+to me
+
+from:	GitHub <marketing@github.com>
+reply-to:	GitHub <marketing@github.com>
+to:	mohdibadullah13@gmail.com
+date:	13 Apr 2026, 17:33
+subject:	Next up, Copilot prompts that get work done
+mailed-by:	resources.github.com
+Signed by:	github.com
+unsubscribe:	Unsubscribe from this sender
+security:	 Standard encryption (TLS) Learn more
+GitHub
+Copilot IRL
+So far we’ve gone through how to set up Copilot Pro, tips for writing effective prompts, and choosing the right model for your job. Now, it’s time to really dig into what Copilot can accomplish in your workflow — and see it in action.
+
+⚡ Lightning fast foundations
+By asking Copilot to draft an issue, you can quickly design a clear plan for your project. Then you can assign that issue directly to the new GitHub Copilot coding agent, which will asynchronously work to execute on the task at hand and give you a PR.
+
+Kick things off fast with Copilot
+🔍 Review and refactor
+In any development project, maintaining a clean and efficient codebase is crucial for making future work easier. But in reality, things can quickly become messy when your priorities are elsewhere (it happens!). That’s where Copilot can be useful. It doesn’t just assist in writing code, it also makes the review and refactoring process smoother and more efficient. Here’s how.
+
+Review and refactor with Copilot
+🤖 Dig deeper into agent mode
+GitHub Copilot agent mode is a synchronous collaborator that performs multi-step coding tasks based on natural-language prompts. More simply, it’s a problem solver that understands your intent, builds a solution, and iterates until it gets things right.
+
+Learn more about agent mode
+X   Instagram   YouTube   LinkedIn   GitHub
+
+Privacy policy  •  Terms of use  •  Contact us  •  Unsubscribe
+
+GitHub, Inc.  •  88 Colin P Kelly Jr Street  •  San Francisco, CA 94107
+
+
+
+
+Skip to content
+Using Gmail with screen readers
+14 of 1,001
+Groww is hiring interns.
+Inbox
+
+Team Unstop <noreply@dare2compete.news> Unsubscribe
+Sun 12 Apr, 23:50 (6 days ago)
+to me
+
+from:	Team Unstop <noreply@dare2compete.news>
+reply-to:	Team Unstop <noreply@dare2compete.news>
+to:	mohdibadullah13@gmail.com
+date:	12 Apr 2026, 23:50
+subject:	Groww is hiring interns.
+mailed-by:	delivery.dare2compete.news
+Signed by:	dare2compete.news
+security:	 Standard encryption (TLS) Learn more
+
+Golden Opportunity Alert!
+
+Groww is hiring for the role of Intern!
+
+What’s in it for you?
+
+Stipend: up to INR 10,000/month
+Application Link: Click Here
+Regards,
+Team Unstop
+
+
+--
+Click Here to unsubscribe from this newsletter.
+
+
+
+
+Skip to content
+Using Gmail with screen readers
+15 of 1,001
+[GitHub] A third-party OAuth application has been added to your account
+Inbox
+
+GitHub <noreply@github.com>
+Sun 12 Apr, 17:57 (6 days ago)
+to me
+
+from:	GitHub <noreply@github.com>
+to:	Mohd Ibadullah <mohdibadullah13@gmail.com>
+date:	12 Apr 2026, 17:57
+subject:	[GitHub] A third-party OAuth application has been added to your account
+mailed-by:	github.com
+Signed by:	github.com
+security:	 Standard encryption (TLS) Learn more
+Hey 123ibadullah!
+
+A third-party OAuth application (Educative) with read:user and user:email scopes was recently authorized to access your account.
+Visit https://github.com/settings/connections/applications/8be266428cc0904f5718 for more information.
+
+To see this and other security events for your account, visit https://github.com/settings/security-log
+
+If you run into problems, please contact support by visiting https://github.com/contact
+
+Thanks,
+The GitHub Team
+
+
+
+GitHub <noreply@github.com>
+Sun 12 Apr, 17:57 (6 days ago)
+to me
+
+Hey 123ibadullah!
+
+A third-party OAuth application (Educative) with read:user scopes was recently authorized to access your account.
+Visit https://github.com/settings/connections/applications/54495e9bf1e6551a9381 for more information.
+
+
+Skip to content
+Using Gmail with screen readers
+16 of 1,001
+Cisco is hiring!
+Inbox
+
+Team Unstop <noreply@dare2compete.news> Unsubscribe
+Sun 12 Apr, 00:07 (6 days ago)
+to me
+
+from:	Team Unstop <noreply@dare2compete.news>
+reply-to:	Team Unstop <noreply@dare2compete.news>
+to:	mohdibadullah13@gmail.com
+date:	12 Apr 2026, 00:07
+subject:	Cisco is hiring!
+mailed-by:	delivery.dare2compete.news
+Signed by:	dare2compete.news
+security:	 Standard encryption (TLS) Learn more
+
+Golden Opportunity Alert!
+
+Cisco is hiring for the role of Intern!
+
+What’s in it for you?
+
+Stipend: up to INR 30,000/month
+Application Link: Click Here
+Regards,
+Team Unstop
+
+
+--
+Click Here to unsubscribe from this newsletter.
+
+
+
+
+Skip to content
+Using Gmail with screen readers
+17 of 1,001
+Cheers! You've leveled up!
+Inbox
+
+Team Unstop <noreply@dare2compete.news> Unsubscribe
+Sat 11 Apr, 21:43 (7 days ago)
+to me
+
+from:	Team Unstop <noreply@dare2compete.news>
+reply-to:	noreply@dare2compete.news
+to:	mohdibadullah13@gmail.com
+date:	11 Apr 2026, 21:43
+subject:	Cheers! You've leveled up!
+mailed-by:	delivery.dare2compete.news
+Signed by:	dare2compete.news
+security:	 Standard encryption (TLS) Learn more
+Unstop Banner
+ 
+Hey Mohd,
+
+Congrats! Your consistent efforts are paying off.
+
+Every attempt, challenge, and activity pushed you ahead on the leaderboard.
+
+Want to see the progress you made?
+
+Check My Rank
+P.S: You’re on a roll. Keep the streak alive and aim higher on the leaderboard.
+
+Regards,
+Team Unstop
+
+Unstop Logo
+ 
+This email was sent to mohdibadullah13@gmail.com because you subscribed to updates from Unstop.
+To stop receiving these emails, unsubscribe here .
+ 
+
+
+
+Skip to content
+Using Gmail with screen readers
+18 of 1,001
+The countdown is beginning ⏳
+Inbox
+
+Zomato Unsubscribe
+Fri 10 Apr, 14:03 (8 days ago)
+to me
+
+from:	Zomato <noreply@mailers.zomato.com>
+to:	mohdibadullah13@gmail.com
+date:	10 Apr 2026, 14:03
+subject:	The countdown is beginning ⏳
+mailed-by:	em9311.mailers.zomato.com
+Signed by:	mailers.zomato.com
+security:	 Standard encryption (TLS) Learn more
+Zomato
+Facebook	X	Instagram	Linkedin	YouTube
+Click here to unsubscribe - unsubscribe here.
+
+
+
+
+
+Skip to content
+Using Gmail with screen readers
+19 of 1,001
+Get Copilot started on your todo list
+Inbox
+
+GitHub <marketing@github.com> Unsubscribe
+Thu 9 Apr, 20:26 (9 days ago)
+to me
+
+from:	GitHub <marketing@github.com>
+reply-to:	GitHub <marketing@github.com>
+to:	mohdibadullah13@gmail.com
+date:	9 Apr 2026, 20:26
+subject:	Get Copilot started on your todo list
+mailed-by:	resources.github.com
+Signed by:	github.com
+unsubscribe:	Unsubscribe from this sender
+security:	 Standard encryption (TLS) Learn more
+GitHub
+Copilot IRL
+So far we’ve gone through how to set up Copilot Pro, tips for writing effective prompts, and choosing the right model for your job. Now, it’s time to really dig into what Copilot can accomplish in your workflow — and see it in action.
+
+⚡ Lightning fast foundations
+By asking Copilot to draft an issue, you can quickly design a clear plan for your project. Then you can assign that issue directly to the new GitHub Copilot coding agent, which will asynchronously work to execute on the task at hand and give you a PR.
+
+Kick things off fast with Copilot
+🔍 Review and refactor
+In any development project, maintaining a clean and efficient codebase is crucial for making future work easier. But in reality, things can quickly become messy when your priorities are elsewhere (it happens!). That’s where Copilot can be useful. It doesn’t just assist in writing code, it also makes the review and refactoring process smoother and more efficient. Here’s how.
+
+Review and refactor with Copilot
+🤖 Dig deeper into agent mode
+GitHub Copilot agent mode is a synchronous collaborator that performs multi-step coding tasks based on natural-language prompts. More simply, it’s a problem solver that understands your intent, builds a solution, and iterates until it gets things right.
+
+Learn more about agent mode
+X   Instagram   YouTube   LinkedIn   GitHub
+
+Privacy policy  •  Terms of use  •  Contact us  •  Unsubscribe
+
+GitHub, Inc.  •  88 Colin P Kelly Jr Street  •  San Francisco, CA 94107
+
+
+
+
+Skip to content
+Using Gmail with screen readers
+20 of 1,001
+Security alert for officialibadbtech@gmail.com
+Inbox
+
+Google <no-reply@accounts.google.com>
+Thu 9 Apr, 15:00 (9 days ago)
+to me
+
+from:	Google <no-reply@accounts.google.com>
+to:	mohdibadullah13@gmail.com
+date:	9 Apr 2026, 15:00
+subject:	Security alert for officialibadbtech@gmail.com
+mailed-by:	identity-reachout.bounces.google.com
+Signed by:	accounts.google.com
+security:	 Standard encryption (TLS) Learn more
+		This is a copy of a security alert sent to officialibadbtech@gmail.com. mohdibadullah13@gmail.com is the recovery email for this account. If you don't recognize this account, remove it.
+Google
+A new sign-in on Windows
+	officialibadbtech@gmail.com
+We noticed a new sign-in to your Google Account on a Windows device. If this was you, you don’t need to do anything. If not, we’ll help you secure your account.
+Check activity
+You can also see security activity at
+https://myaccount.google.com/notifications
+You received this email to let you know about important changes to your Google Account and services.
+© 2026 Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA
+
+
+Skip to content
+Using Gmail with screen readers
+21 of 1,001
+Put Copilot to work with effective prompts
+Inbox
+
+GitHub <marketing@github.com> Unsubscribe
+Wed 8 Apr, 20:26 (10 days ago)
+to me
+
+from:	GitHub <marketing@github.com>
+reply-to:	GitHub <marketing@github.com>
+to:	mohdibadullah13@gmail.com
+date:	8 Apr 2026, 20:26
+subject:	Put Copilot to work with effective prompts
+mailed-by:	resources.github.com
+Signed by:	github.com
+unsubscribe:	Unsubscribe from this sender
+security:	 Standard encryption (TLS) Learn more
+GitHub
+Level up with Copilot ⬆️
+Now that you’ve got GitHub Copilot ready to go, today we’re going to help you take advantage of its many capabilities.
+
+Below, we’ve gathered resources to amp up your productivity with our AI pair programmer, from a blog post about the basics of prompt engineering to a guide that’ll help you figure out which AI model is right for your task.
+
+Consider your todo list done.
+
+📝 The power of prompts
+Effective prompts make all the difference and we've pulled together a guide for GitHub Copilot prompt engineering. Whether you're experienced with AI prompts or new, this will help you get familiar with Copilot and prompt with confidence.
+
+Get the basics of prompt engineering
+🧑‍🍳 Get cooking with Copilot
+The Copilot Chat cookbook is our library of sample prompts you can use to save time and effort with Copilot Chat. Explore our example prompts for generating unit tests, debugging invalid JSON, or making sense of legacy code.
+
+Read the cookbook
+❓ How to choose the right AI model
+We’re continuously adding support for new AI models to GitHub Copilot. That being said, we know it can be hard to keep up with so many new models being released all the time. So which model should you use? This guide will help you decide.
+
+Get our framework
+X   Instagram   YouTube   LinkedIn   GitHub
+
+Privacy policy  •  Terms of use  •  Contact us  •  Unsubscribe
+
+GitHub, Inc.  •  88 Colin P Kelly Jr Street  •  San Francisco, CA 94107
+
+
+
+
+Skip to content
+Using Gmail with screen readers
+22 of 1,001
+Security alert for officialibadbtech@gmail.com
+Inbox
+
+Google <no-reply@accounts.google.com>
+Tue 7 Apr, 19:46 (11 days ago)
+to me
+
+from:	Google <no-reply@accounts.google.com>
+to:	mohdibadullah13@gmail.com
+date:	7 Apr 2026, 19:46
+subject:	Security alert for officialibadbtech@gmail.com
+mailed-by:	identity-reachout.bounces.google.com
+Signed by:	accounts.google.com
+security:	 Standard encryption (TLS) Learn more
+		This is a copy of a security alert sent to officialibadbtech@gmail.com. mohdibadullah13@gmail.com is the recovery email for this account. If you don't recognize this account, remove it.
+Google
+New sign-in to your account
+	officialibadbtech@gmail.com
+We noticed a new sign-in to your Google Account. If this was you, you don’t need to do anything. If not, we’ll help you secure your account.
+Check activity
+You can also see security activity at
+https://myaccount.google.com/notifications
+You received this email to let you know about important changes to your Google Account and services.
+© 2026 Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA
+
+
+Skip to content
+Using Gmail with screen readers
+23 of 1,001
+Your MongoDB Atlas M0 cluster will be automatically paused in 7 days
+Inbox
+
+MongoDB Atlas <mongodb-atlas@mongodb.com>
+Tue 7 Apr, 14:42 (11 days ago)
+to me
+
+from:	MongoDB Atlas <mongodb-atlas@mongodb.com>
+reply-to:	cloud-manager-support@mongodb.com
+to:	mohdibadullah13@gmail.com
+date:	7 Apr 2026, 14:42
+subject:	Your MongoDB Atlas M0 cluster will be automatically paused in 7 days
+mailed-by:	amazonses.com
+Signed by:	mongodb.com
+security:	 Standard encryption (TLS) Learn more
+
+ORGANIZATION
+Mohd's Org - 2023-11-05
+PROJECT
+Project 0
+ 
+Hi 610,
+
+Your M0 free tier cluster, Cluster0, has been inactive since 2026/03/09. MongoDB Atlas will automatically pause this cluster after 30 days of inactivity, at 5:12 AM EDT on 2026/04/14.
+
+To prevent this cluster from being paused, initiate a connection to your cluster before 2026/04/14. View our documentation for instructions on how to connect to your cluster.
+
+Once a cluster is paused, you can visit your project to resume the cluster. If you don't plan on using the cluster over the next few weeks, we recommend exporting the data and terminating the cluster. Exporting your data ensures you can easily restore it later if you decide to resume using MongoDB Atlas.
+
+View Cluster
+This message was sent from MongoDB, Inc., 1633 Broadway, 38th floor, NY, NY 10019
+
+
+
+Skip to content
+Using Gmail with screen readers
+24 of 1,001
+Wow, look at your certificate | VNR Design-A-Thon 2026
+Inbox
+
+Unstop Events <updates@unstop.events>
+Mon 6 Apr, 20:46 (12 days ago)
+to me
+
+from:	Unstop Events <updates@unstop.events>
+to:	mohdibadullah13@gmail.com
+date:	6 Apr 2026, 20:46
+subject:	Wow, look at your certificate | VNR Design-A-Thon 2026
+mailed-by:	emails.unstop.events
+Signed by:	unstop.events
+security:	 Standard encryption (TLS) Learn more
+
+Woohoo!
+Time to become
+a celebrity on
+social media!
+Certificate email
+Congratulations, here is your certificate for
+VNR Design-A-Thon 2026
+
+Certificate of
+Participation
+download
+Share them on social media & show the world your spirit of competitiveness that is going to reap you amazing rewards.
+
+Whatsapp Icon Linkedin Icon Facebook Icon Twitter Icon
+Unstop pro logo
+Join our evergrowing unstoppable community
+
+Instagram Icon Linkedin Icon Telegram Icon Youtube Icon
+Get the Unstop app
+
+Play Store Icon App Store Icon
+Queries? We're just one email away: support@unstop.com © 2026 Unstop. All rights reserved
+
+
+Skip to content
+Using Gmail with screen readers
+25 of 1,001
+Next up, Copilot prompts that get work done
+Inbox
+
+GitHub <marketing@github.com> Unsubscribe
+Mon 6 Apr, 20:25 (12 days ago)
+to me
+
+from:	GitHub <marketing@github.com>
+reply-to:	GitHub <marketing@github.com>
+to:	mohdibadullah13@gmail.com
+date:	6 Apr 2026, 20:25
+subject:	Next up, Copilot prompts that get work done
+mailed-by:	resources.github.com
+Signed by:	github.com
+unsubscribe:	Unsubscribe from this sender
+security:	 Standard encryption (TLS) Learn more
+:	Important according to Google magic.
+GitHub
+Level up with Copilot ⬆️
+Now that you’ve got GitHub Copilot ready to go, today we’re going to help you take advantage of its many capabilities.
+
+Below, we’ve gathered resources to amp up your productivity with our AI pair programmer, from a blog post about the basics of prompt engineering to a guide that’ll help you figure out which AI model is right for your task.
+
+Consider your todo list done.
+
+📝 The power of prompts
+Effective prompts make all the difference and we've pulled together a guide for GitHub Copilot prompt engineering. Whether you're experienced with AI prompts or new, this will help you get familiar with Copilot and prompt with confidence.
+
+Get the basics of prompt engineering
+🧑‍🍳 Get cooking with Copilot
+The Copilot Chat cookbook is our library of sample prompts you can use to save time and effort with Copilot Chat. Explore our example prompts for generating unit tests, debugging invalid JSON, or making sense of legacy code.
+
+Read the cookbook
+❓ How to choose the right AI model
+We’re continuously adding support for new AI models to GitHub Copilot. That being said, we know it can be hard to keep up with so many new models being released all the time. So which model should you use? This guide will help you decide.
+
+Get our framework
+X   Instagram   YouTube   LinkedIn   GitHub
+
+Privacy policy  •  Terms of use  •  Contact us  •  Unsubscribe
+
+GitHub, Inc.  •  88 Colin P Kelly Jr Street  •  San Francisco, CA 94107
+
+
+
+
+Skip to content
+Using Gmail with screen readers
+26 of 1,001
+So, how did this email find you? 📧
+Inbox
+
+Zomato Unsubscribe
+Mon 6 Apr, 15:29 (12 days ago)
+to me
+
+from:	Zomato <noreply@mailers.zomato.com>
+to:	mohdibadullah13@gmail.com
+date:	6 Apr 2026, 15:29
+subject:	So, how did this email find you? 📧
+mailed-by:	em9311.mailers.zomato.com
+Signed by:	mailers.zomato.com
+security:	 Standard encryption (TLS) Learn more
+Zomato
+Facebook	X	Instagram	Linkedin	YouTube
+Click here to unsubscribe - unsubscribe here.
+
+
+
+
+
+Skip to content
+Using Gmail with screen readers
+31 of 1,001
+[ngrok news] Sam made an interactive post about LLM quantization and it's a banger
+Inbox
+
+Joel @ ngrok <team@m.ngrok.com>
+Wed 1 Apr, 12:03
+to me
+
+from:	Joel @ ngrok <team@m.ngrok.com>
+reply-to:	team@m.ngrok.com
+to:	mohdibadullah13@gmail.com
+date:	1 Apr 2026, 12:03
+subject:	[ngrok news] Sam made an interactive post about LLM quantization and it's a banger
+mailed-by:	21124867m.ngrok.com
+Signed by:	m.ngrok.com
+unsubscribe:	Unsubscribe from this sender
+security:	 Standard encryption (TLS) Learn more
+View in browser
+ngrok
+Hi, Mohd Ibadullah!
+Apparently, March is all about depth... both in infra and learning. We shipped region pinning, faster certs, Kubernetes identity variables, and a new way to use the AI Gateway without juggling provider accounts. Oh, and a visual/interactive banger on LLM quantization. Let's get into it.
+
+Stop juggling separate AI provider keys and tracking spend in two places. Instead of signing up at OpenAI and Anthropic and managing different accounts, you can now create an ngrok.ai API key, load up on credits, and point your SDK at the gateway. That's one key plus one bill for every model in the catalog.
+
+See how API keys and credits work ->
+Trust your agent to expose local services with our new skill: expose-localhost. It's a packaged set of instructions that AI coding agents can install to learn how to expose your local services with ngrok, including some Traffic Policy goodies like auth. Tell your agent share my app on port 3000 with Google login and it knows what to do. One npx skills add ngrok/agent-skills and you're set.
+
+Browse the repo ->
+You can now pin your domains to specific ngrok regions for data residency and compliance. If GDPR or CCPA means your European traffic can't touch a U.S. server, for example, control exactly which PoP(s) serve your traffic. If you pick several, ngrok still optimizes for latency within the boundaries you set.
+
+Pin a domain to regions ->
+Traffic Policy on Kubernetes can now read pod identity at connection time. With v0.22.1 of the ngrok Operator, policies can enforce access based on not just IP addresses, but pod name, namespace, UID, and annotations. If a compromised pod in namespace-a tries to reach a service in namespace-b, the connection gets rejected before it touches your upstream.
+
+See how pod identity variables work ->
+Okay, product updates done. Now for the fun one.
+
+Sam Rose went deep—really deep—on how quantization makes LLMs 4x smaller and 2x faster. Interactive, visual, from-the-ground-up, follow along on how model parameters are stored, how precision gets traded for size, and why you can lose only 5-10% accuracy while cutting memory by 75%.
+
+Explore quantization from the ground up ->
+
+That's the month. If any of this made you think "wait, I should try that" or "I didn't know ngrok did that," then get out there and do it... and if you get stuck, hit reply. I read 'em all!
+
+~ Joel at ngrok
+
+ 
+Your trust in us matters. Learn more about security at ngrok.
+GitHub	LinkedIn	X	YouTube
+ngrok Inc.   2261 Market Street  STE 71467  San Francisco  California   94114   United States
+Unsubscribe  Manage preferences
+
+
+
+Skip to content
+Using Gmail with screen readers
+34 of 1,001
+610, create music, try Nano Banana 2 and more
+Inbox
+
+Google Gemini <google-gemini-noreply@google.com> Unsubscribe
+Tue 31 Mar, 20:53
+to me
+
+from:	Google Gemini <google-gemini-noreply@google.com>
+reply-to:	Google Gemini <google-gemini-noreply@google.com>
+to:	mohdibadullah13@gmail.com
+date:	31 Mar 2026, 20:53
+subject:	610, create music, try Nano Banana 2 and more
+mailing list:	<cef1f48f119f3f0f6cadbaf09618d7f4c2d29d39.google.com> Filter messages from this mailing list
+mailed-by:	scoutcamp.bounces.google.com
+Signed by:	google.com
+security:	 Standard encryption (TLS) Learn more
+Follow us	Instagram	Discord	X
+
+Here's everything
+new that Gemini can do
+Try something new
+
+ 
+Turn your ideas into custom soundtracks and create music for any moment
+Create a track
+First, ask me about a superpower that I wish that I had. Once you know my superpower, create a catchy mainstream pop track with a modern production polish. The track should feature a bouncing bass line with guitar. Use a female vocal profile and include lyrics that emphasise joy in having that superpower.
+Bring your wildest ideas to life faster with the new and improved Nano Banana 2
+Try Nano Banana 2
+First, ask me to upload a selfie. Then, turn the image into delicate latte art made of microfoam on top of a cappuccino. The final result should have rich espresso tones and soft white foam, complete with tiny bubbles and a dusting of cocoa.
+Find the exact evidence that you're looking for with accurate APA citations
+Explore scientific papers
+Find me research papers that discuss how autophagy regulates cancer cell fate. Show references in APA style.
+Discover all-new features
+
+© 2026 Google LLC
+1600 Amphitheatre Parkway,
+Mountain View, CA 94043
+Compatibility and availability vary. 18+. Create responsibly.
+Add google-gemini-noreply@google.com to your address book to ensure that you receive Gemini emails in your inbox. This message was sent to mohdibadullah13@gmail.com to keep you up to date with the latest news and features related to Gemini. If you do not wish to receive these emails, please unsubscribe here.
+
+None selected 
+
+Skip to content
+Using Gmail with screen readers
+in:spam
+1 of 7
+Prove your idea works
+Spam
+Maddy <maddy@hey.emergenthq.io>
+Thu 16 Apr, 12:25 (2 days ago)
+to me
+
+from:	Maddy <maddy@hey.emergenthq.io>
+reply-to:	hey@emergentagent.com
+to:	mohdibadullah13@gmail.com
+date:	16 Apr 2026, 12:25
+subject:	Prove your idea works
+mailed-by:	eoe.hey.emergenthq.io
+Signed by:	hey.emergenthq.io
+security:	 Standard encryption (TLS) Learn more
+Why is this message in spam? This message is similar to messages that were identified as spam in the past.
+Report as not spam
+Standard Plan at $1
+Hey there,
+
+You signed up for Emergent with something in mind - an app, a landing page, an ecommerce store, or a tool to make your work run smoother.
+
+But sometimes the gap between thinking and building is just getting started.
+
+If credits were the only thing in the way, here's your in: our Standard Plan starts at $1 (100 credits), to start bringing whatever you had in mind to life.
+
+
+[Upgrade & Start building →]
+
+We're genuinely curious to see what you build, and we're here to help you get there.
+
+Warmly,
+Maddy
+
+Unsubscribe
+
+
+None selected 
+
+Skip to content
+Using Gmail with screen readers
+in:spam
+2 of 7
+USD Career Development Session | Build a Network That Actually Gets You Hired
+Spam
+Alefiya Magar <grad@gradright.co.in>
+Sat 11 Apr, 17:27 (7 days ago)
+to me
+
+from:	Alefiya Magar <grad@gradright.co.in>
+reply-to:	alefiya@gradright.com
+to:	mohdibadullah13@gmail.com
+date:	11 Apr 2026, 17:27
+subject:	USD Career Development Session | Build a Network That Actually Gets You Hired
+mailed-by:	em8398.gradright.co.in
+Signed by:	gradright.co.in
+security:	 Standard encryption (TLS) Learn more
+Why is this message in spam? This message is similar to messages that were identified as spam in the past.
+Report as not spam
+Hi Mohammad Ibadullah Ibadullah Mohammad Ibadullah Ibadullah,
+
+ 
+
+At the University of San Diego (USD), career outcomes are shaped not just by what you study, but how you engage with the ecosystem around you. 
+
+ 
+
+If you are planning to build a strong career during your time at USD, we invite you to a Career Development Session led by Alexander Lo.
+
+ 
+
+Register Now
+
+ 
+
+📅 Date: Saturday, 11th April, 2026
+
+🕗 Time: 8:00 – 9:00 PM IST
+
+ 
+
+As the Assistant Director for Transfer, International, and Graduate Student Networks at USD, Alexander Lo works closely with students to help them navigate career pathways, build meaningful connections, and access opportunities across the university ecosystem.
+
+ 
+
+Designed to provide a clear direction on building career outcomes, Alexander will cover:
+
+ 
+
+Mapping your career options as an international student using USD’s student networks
+Connecting with peers, alumni, and faculty who can open doors
+Building a 6–12 month action plan to move your career forward
+Using USD’s programs and mentorships to access internships, research, and leadership opportunities
+Developing the skills and experiences that help USD students get hired
+ 
+
+Register Here
+
+ 
+
+We encourage you to attend and explore how to make the most of your time at USD to build a strong and actionable career pathway.
+
+ 
+
+Regards,
+
+Alefiya Magar
+
+
+None selected 
+
+Skip to content
+Using Gmail with screen readers
+in:spam
+3 of 7
+Live Project in Investment Banking
+Spam
+Finlatics Application <learn@finlaticstraining.institute>
+Sat 11 Apr, 14:11 (7 days ago)
+to me
+
+from:	Finlatics Application <learn@finlaticstraining.institute>
+to:	mohdibadullah13@gmail.com
+date:	11 Apr 2026, 14:11
+subject:	Live Project in Investment Banking
+mailed-by:	finlaticstraining.institute
+security:	 Standard encryption (TLS) Learn more
+Why is this message in spam? This message is similar to messages that were identified as spam in the past.
+Report as not spam
+Hi Mohd Ibadullah,
+
+We are pleased to open applications for the Finlatics Investment Banking Experience Program (IBEP) — a 1 to 2-month online live project offering experiential learning in Start-Up Valuation, Venture Capital & Private Equity.
+
+Gain hands-on exposure to business evaluation, funding analysis, and investment strategies through training, mentoring & live sessions.
+
+The program concludes with a Certificate and a Letter of Recommendation.
+
+No prior background is needed.
+
+The program is offered at reputed campuses such as IIM Ahmedabad, IIM Bangalore, IIT Madras, and NMIMS Mumbai.
+
+If selected, the induction fee is ₹1999 or ₹2999 (based on your choice).
+
+Apply here (takes 2-3 min):
+
+https://www.finlatics.com/ibep_application?src=sl5
+Best regards,
+Team Finlatics
++91 9372298192
+
+line
+None selected 
+
+Skip to content
+Using Gmail with screen readers
+in:spam
+4 of 7
+Your app could start earning today
+Spam
+Maddy <maddy@hey.emergenthq.io>
+Sat 11 Apr, 13:30 (7 days ago)
+to me
+
+from:	Maddy <maddy@hey.emergenthq.io>
+reply-to:	hey@emergentagent.com
+to:	mohdibadullah13@gmail.com
+date:	11 Apr 2026, 13:30
+subject:	Your app could start earning today
+mailed-by:	eoe.hey.emergenthq.io
+Signed by:	hey.emergenthq.io
+security:	 Standard encryption (TLS) Learn more
+Why is this message in spam? This message is similar to messages that were identified as spam in the past.
+Report as not spam
+Image
+Hey there,
+
+Your 10 free credits are still waiting on Emergent whenever you’re ready to start building. We’re sure you signed up with something interesting in mind.
+
+
+If you’d like help getting started, the tutorials page is a good place to begin.
+
+
+For many people, the blocker at this stage isn’t the idea itself. It’s not being fully sure what’s actually possible once you start building i.e., the vision.
+
+So here’s a real snapshot:
+
+A small IT services firm in Chile spun up a functional prototype on Emergent in about 25 minutes during a live conversation and used it to win a $100K enterprise contract.
+
+A US-based staffing and AI business built an app on Emergent that went on to cross $300K ARR in six months.
+Different teams. Different goals. Same starting point.
+
+
+[Start building your app →]
+
+
+Let's build,
+
+Maddy
+
+CTO, Emergent
+
+
+Unsubscribe
+
+
+None selected 
+
+Skip to content
+Using Gmail with screen readers
+in:spam
+5 of 7
+You've got 10 free credits to get started
+Spam
+Maddy <maddy@hey.emergenthq.io>
+Fri 10 Apr, 13:29 (8 days ago)
+to me
+
+from:	Maddy <maddy@hey.emergenthq.io>
+reply-to:	hey@emergentagent.com
+to:	mohdibadullah13@gmail.com
+date:	10 Apr 2026, 13:29
+subject:	You've got 10 free credits to get started
+mailed-by:	eoe.hey.emergenthq.io
+Signed by:	hey.emergenthq.io
+security:	 Standard encryption (TLS) Learn more
+Why is this message in spam? This message is similar to messages that were identified as spam in the past.
+Report as not spam
+Image
+Hey Builder,
+
+
+We noticed you haven't started building yet, just wanted to check in.
+
+
+Most people who sign up have a real idea they want to bring to life. The hard part isn't building it. It's starting. And the longer you wait, the easier it is to talk yourself out of it.
+
+
+You have 10 free credits. No code, no setup - just describe what you want and watch it come to life.
+
+
+[Build your first app now →]
+
+
+If you're stuck and don't know where to start, here are 3 prompts you can copy-paste right now to build your first web or mobile app:
+
+Idea Logger App: "Create an idea logger app inspired by Notion UI that lets users add, edit, categorize, and archive ideas. Support search, tagging, and a clean list view.
+Social Media Scheduler: "Build a social media scheduling app where users can create posts, schedule them for different platforms (Facebook, Twitter, Instagram), and track engagement. Include an analytics dashboard."
+
+Mobile Fitness App: "Create a mobile fitness app that lets users log workouts, track progress, set goals, and get personalized exercise recommendations. Include a simple calendar view for workout tracking."
+[Try them out now →]
+
+
+These are just starting points. Imagine the possibilities once you customize and expand on them!
+
+
+
+
+Best,
+
+Maddy
+
+CTO, Emergent
+
+
+Unsubscribe
+
+
+None selected 
+
+Skip to content
+Using Gmail with screen readers
+in:spam
+6 of 7
+The secret to a perfect first build
+Spam
+Maddy <maddy@hey.emergenthq.io>
+Thu 9 Apr, 13:28 (9 days ago)
+to me
+
+from:	Maddy <maddy@hey.emergenthq.io>
+reply-to:	hey@emergentagent.com
+to:	mohdibadullah13@gmail.com
+date:	9 Apr 2026, 13:28
+subject:	The secret to a perfect first build
+mailed-by:	eoe.hey.emergenthq.io
+Signed by:	hey.emergenthq.io
+security:	 Standard encryption (TLS) Learn more
+Why is this message in spam? This message is similar to messages that were identified as spam in the past.
+Report as not spam
+Image
+Hey builder,
+
+If you’ve signed up but haven’t started building yet and haven't used your 10 free credits effectively, here's our 2 cents.
+
+For most people, the blocker isn’t the idea. It’s not being sure how to prompt the AI in a way that feels natural and gets good results.
+
+We’ve put together a detailed Prompting Guide that goes deeper into this. It’ll help you vibe-code better and get a clear sense of how the agents work before you start.
+
+Here's a quick tl;dr of the top tips you'll find inside:
+
+Start with what you want to exist: Describe the app in plain language. Who it’s for, what it should do, and what problem it solves. You don’t need to think about code at all.
+
+Add a bit of context: A sentence or two about why you’re building it or how it should behave. It helps the agents understand your intent much more clearly.
+
+Treat prompting as a conversation: Your first prompt doesn’t have to be perfect. Start simple, then refine the app step by step with follow-up prompts.
+Ready to put it into practice?
+
+
+
+[Start building your app now →]
+
+
+Genuinely curious to see what you'll build.
+
+
+
+Warmly,
+
+Maddy
+
+CTO, Emergent
+
+
+Unsubscribe
+
+
+None selected 
+
+Skip to content
+Using Gmail with screen readers
+in:spam
+7 of 7
+You're officially now a Vibecoder
+Spam
+Maddy <team@hello.emergenthq.io>
+Thu 9 Apr, 12:27 (9 days ago)
+to me
+
+from:	Maddy <team@hello.emergenthq.io>
+reply-to:	hey@emergentagent.com
+to:	mohdibadullah13@gmail.com
+date:	9 Apr 2026, 12:27
+subject:	You're officially now a Vibecoder
+mailed-by:	poe.hello.emergenthq.io
+Signed by:	hello.emergenthq.io
+security:	 Standard encryption (TLS) Learn more
+Why is this message in spam? This message is similar to messages that were identified as spam in the past.
+Report as not spam
+Image
+Hey Builder,
+
+Every generation of software made building simpler and faster by abstracting complexity. This generation is no different.
+
+Ideas move faster than teams, but most never get built. Emergent exists to close that gap.
+
+You might be thinking this is just another AI wrapper. That’s a fair instinct. But here's what makes Emergent different:
+
+Production-Grade Software: What you build isn't a demo or a mockup. It's a real, full-stack application, designed to work for actual users and scale.
+
+Emergent Mobile App: We're the only platform where you can build iOS and Android apps right from your phone, and publish directly to the App Store and Play Store without writing a single line of code.
+[Download Emergent Mobile →]
+
+Advanced Agents: Our AI agents work like a world-class engineer, not a code generator. When you interact with them, you'll see exactly what we mean - every decision, every step, in real time.
+If you’re wondering where to start, here’s my honest advice: Don’t overthink it. Start small. Be clear about what you want to build.
+
+
+[Build your app now →]
+
+We’re excited to see what you create.
+
+Warmly,
+Maddy
+CTO, Emergent
+
+
+
+If you'd like to unsubscribe and stop receiving these emails click here
+
