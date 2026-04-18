@@ -33,6 +33,14 @@ PhishShield is a containerized full-stack cybersecurity project featuring a Reac
 | ML Analysis | FastAPI, Python 3.12, IndicBERT | `PhisShield-Backend/` |
 | Browser Extension | Chrome Extension API | `PhishShield-Frontend/artifacts/chrome-extension/` |
 
+## Key Features
+
+- **Hybrid AI Engine**: Combines **IndicBERT** (semantic NLP) with **TF-IDF + LR** (lexical analysis) for 97%+ accuracy.
+- **Advanced Threat Analysis**: Production-ready detection for **Thread Hijacking**, **Malicious Attachments**, and **QR Code lures**.
+- **India-Focused Defense**: Native support for English, Hindi, Telugu, and Hinglish script detection with local brand protection (SBI, HDFC, UPI, etc.).
+- **Explainable Verdicts**: Real-time risk scoring (0-100) with detailed signal highlighting and confidence intervals.
+- **Active Learning**: Built-in human-in-the-loop feedback system that improves model performance with real-world user data.
+
 ---
 
 ## Docker Quickstart

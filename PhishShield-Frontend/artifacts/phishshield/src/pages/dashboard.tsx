@@ -320,7 +320,7 @@ function deriveDetectedSignals(result?: { reasons?: Array<{ category: string; de
     if (!signals.includes(signal)) signals.push(signal);
   };
 
-  for (const reason of result.reasons) {
+  for (const reason of (result?.reasons || [])) {
     const description = String(reason.description || '');
     if (reason.category === 'urgency') addSignal('Urgent or pressuring language');
     else if (reason.category === 'financial') addSignal(/invoice|payment|transfer|beneficiary/i.test(reason.description) ? 'Payment or money request' : 'Financial lure or reward language');
@@ -2525,7 +2525,7 @@ export default function Dashboard() {
     ),
   );
   const topReasons = result
-    ? [...result.reasons]
+    ? [...(result.reasons || [])]
         .sort((a, b) => ({ high: 3, medium: 2, low: 1 }[b.severity] - { high: 3, medium: 2, low: 1 }[a.severity]))
     : [];
   const primaryWordIndicators = displayClassification === 'safe'
@@ -4141,8 +4141,8 @@ export default function Dashboard() {
                     )}
 
                     {/* 4. Reason cards — grouped explanation of each flag */}
-                    {result.reasons.length > 0 && (() => {
-                      const groups = result.reasons.reduce<Record<string, DashboardReason[]>>((acc, r) => {
+                    {(result.reasons?.length || 0) > 0 && (() => {
+                      const groups = (result.reasons || []).reduce<Record<string, DashboardReason[]>>((acc, r) => {
                         const cat = getDetailedReasonGroup(r);
                         if (!acc[cat]) acc[cat] = [];
                         acc[cat].push(r);

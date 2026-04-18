@@ -1,24 +1,41 @@
 {
   "cycle": 1,
-  "timestamp_utc": "2026-04-15T12:26:31.365276+00:00",
+  "timestamp_utc": "2026-04-17T14:24:43.221646+00:00",
   "dataset_size": 115,
-  "accuracy_percent": 100.0,
+  "accuracy_percent": 99.13,
   "false_positives": 0,
   "false_negatives": 0,
   "critical_false_negatives": 0,
-  "average_risk_score": 34.77,
-  "top_issues": [],
+  "average_risk_score": 48.97,
+  "top_issues": [
+    {
+      "issue": "score_instability",
+      "count": 3,
+      "examples": [
+        "safe-google",
+        "safe-amazon",
+        "safe-paytm"
+      ]
+    },
+    {
+      "issue": "suspicious_over_escalated",
+      "count": 1,
+      "examples": [
+        "SUS-034"
+      ]
+    }
+  ],
   "checks": {
     "accuracy_gte_98": true,
     "no_critical_false_negatives": true,
     "safe_false_positive_free": true,
     "brand_spoof_detected": true,
     "otp_high_risk_detected": true,
-    "consistency_stable": true,
-    "explain_dataset_working": true,
-    "explain_paths_valid": true
+    "consistency_stable": false,
+    "explain_dataset_working": false,
+    "explain_paths_valid": false
   },
-  "meets_success_criteria": true,
+  "meets_success_criteria": false,
   "coverage": {
     "brand_spoof": {
       "total": 9,
@@ -41,59 +58,81 @@
       "percent": 100.0
     }
   },
-  "consistency_issues": [],
+  "consistency_issues": [
+    {
+      "group": "safe-google",
+      "score_spread": 20,
+      "verdicts": [
+        "Safe"
+      ],
+      "cases": [
+        "SAFE-001",
+        "SAFE-003",
+        "SAFE-005",
+        "SAFE-002",
+        "SAFE-004"
+      ]
+    },
+    {
+      "group": "safe-amazon",
+      "score_spread": 21,
+      "verdicts": [
+        "Safe"
+      ],
+      "cases": [
+        "SAFE-022",
+        "SAFE-023",
+        "SAFE-021",
+        "SAFE-024",
+        "SAFE-025"
+      ]
+    },
+    {
+      "group": "safe-paytm",
+      "score_spread": 21,
+      "verdicts": [
+        "Safe"
+      ],
+      "cases": [
+        "SAFE-027",
+        "SAFE-026",
+        "SAFE-030",
+        "SAFE-028",
+        "SAFE-029"
+      ]
+    }
+  ],
   "explain_validation": {
     "dataset": {
       "total": 115,
-      "success": 115,
-      "success_percent": 100.0,
-      "verdict_alignment_success": 75,
-      "verdict_alignment_percent": 65.22,
-      "failures": [
-        "explanation_verdict_mismatch:SUS-040",
-        "explanation_verdict_mismatch:SUS-022",
-        "explanation_verdict_mismatch:SUS-035",
-        "explanation_verdict_mismatch:SUS-021",
-        "explanation_verdict_mismatch:SUS-014",
-        "explanation_verdict_mismatch:SUS-036",
-        "explanation_verdict_mismatch:SUS-017",
-        "explanation_verdict_mismatch:SUS-034",
-        "explanation_verdict_mismatch:SUS-015",
-        "explanation_verdict_mismatch:SUS-026",
-        "explanation_verdict_mismatch:SUS-008",
-        "explanation_verdict_mismatch:SUS-037",
-        "explanation_verdict_mismatch:SUS-001",
-        "explanation_verdict_mismatch:SUS-005",
-        "explanation_verdict_mismatch:SUS-027",
-        "explanation_verdict_mismatch:SUS-038",
-        "explanation_verdict_mismatch:SUS-028",
-        "explanation_verdict_mismatch:SUS-025",
-        "explanation_verdict_mismatch:SUS-004",
-        "explanation_verdict_mismatch:SUS-013"
-      ]
+      "success": 0,
+      "success_percent": 0.0,
+      "verdict_alignment_success": 115,
+      "verdict_alignment_percent": 100.0,
+      "failures": []
     },
     "paths": {
       "fallback_missing_key": {
-        "source": "fallback",
-        "fallback_reason": "missing_openrouter_key",
-        "pass": true
+        "source": "rule_based",
+        "fallback_reason": null,
+        "pass": false
       },
       "openrouter_available_path": {
-        "source": "openrouter",
-        "fallback_used": false,
-        "pass": true
+        "source": "rule_based",
+        "fallback_used": null,
+        "pass": false
       },
       "fallback_on_openrouter_failure": {
-        "source": "fallback",
-        "fallback_reason": "openrouter_exception",
-        "pass": true
+        "source": "rule_based",
+        "fallback_reason": null,
+        "pass": false
       },
       "live_openrouter_attempt": {
-        "source": "openrouter",
+        "source": "rule_based",
         "fallback_used": false,
-        "pass": true
+        "pass": false
       },
-      "all_paths_valid": true
+      "all_paths_valid": false
     }
   },
   "results": [
@@ -101,10 +140,12 @@
       "case_id": "SAFE-011",
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
-      "risk_score": 0,
-      "confidence": 5,
-      "scan_id": "89dbee50e5ea",
-      "matched_signals": [],
+      "risk_score": 3,
+      "confidence": 72,
+      "scan_id": "69747365d14c",
+      "matched_signals": [
+        "Link included in message"
+      ],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
         "safe",
@@ -119,10 +160,12 @@
       "case_id": "SAFE-017",
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
-      "risk_score": 0,
-      "confidence": 5,
-      "scan_id": "f3c71ed03c55",
-      "matched_signals": [],
+      "risk_score": 4,
+      "confidence": 73,
+      "scan_id": "b026fe35b024",
+      "matched_signals": [
+        "Link included in message"
+      ],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
         "safe",
@@ -137,10 +180,12 @@
       "case_id": "SAFE-016",
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
-      "risk_score": 0,
-      "confidence": 5,
-      "scan_id": "8d466fcac807",
-      "matched_signals": [],
+      "risk_score": 3,
+      "confidence": 72,
+      "scan_id": "13ab3159406d",
+      "matched_signals": [
+        "Link included in message"
+      ],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
         "safe",
@@ -155,13 +200,18 @@
       "case_id": "SUS-040",
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
-      "risk_score": 25,
-      "confidence": 73,
-      "scan_id": "0f89676a1434",
+      "risk_score": 60,
+      "confidence": 78,
+      "scan_id": "6c8456e019d0",
       "matched_signals": [
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "OTP request detected",
+        "Link included in message",
+        "Suspicious verification link",
+        "Shortened link hides the final destination",
+        "Unknown sender pattern"
       ],
-      "explanation": "Sender authenticity checks contain spoofing indicators. One or more authentication checks failed; Reply-To domain mismatch detected.",
+      "explanation": "Sender authenticity checks contain spoofing indicators; OTP request detected; Link included in message. One or more authentication checks failed; Reply-To domain mismatch detected.",
       "tags": [
         "suspicious",
         "short_link",
@@ -176,14 +226,17 @@
       "case_id": "SUS-022",
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
-      "risk_score": 25,
-      "confidence": 82,
-      "scan_id": "de9452280a97",
+      "risk_score": 60,
+      "confidence": 76,
+      "scan_id": "90ebb8bf4b00",
       "matched_signals": [
         "Soft-pressure details confirmation request from untrusted sender",
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "Urgency language",
+        "Known phishing campaign pattern matched",
+        "Unknown sender pattern"
       ],
-      "explanation": "Soft-pressure details confirmation request from untrusted sender; Sender authenticity checks contain spoofing indicators. One or more authentication checks failed.",
+      "explanation": "Soft-pressure details confirmation request from untrusted sender; Sender authenticity checks contain spoofing indicators; Urgency language. One or more authentication checks failed.",
       "tags": [
         "suspicious",
         "clean_content_bad_domain",
@@ -202,13 +255,16 @@
       "case_id": "HR-034",
       "expected_verdict": "High Risk",
       "actual_verdict": "High Risk",
-      "risk_score": 82,
-      "confidence": 90,
-      "scan_id": "39d640282523",
+      "risk_score": 85,
+      "confidence": 91,
+      "scan_id": "84e17b0d8619",
       "matched_signals": [
         "Credential-harvesting pattern (sensitive request plus urgency or link)",
         "OTP-harvesting pattern (OTP request plus urgency or link)",
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "OTP request detected",
+        "Urgency language",
+        "Unknown sender pattern"
       ],
       "explanation": "Credential-harvesting pattern (sensitive request plus urgency or link); OTP-harvesting pattern (OTP request plus urgency or link); Sender authenticity checks contain spoofing indicators. One or more authentication checks failed; Reply-To domain mismatch detected.",
       "tags": [
@@ -228,13 +284,17 @@
       "case_id": "SUS-035",
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
-      "risk_score": 48,
-      "confidence": 88,
-      "scan_id": "ed2125419132",
+      "risk_score": 60,
+      "confidence": 77,
+      "scan_id": "f399ccf24167",
       "matched_signals": [
         "High-risk TLD detected (.tk/.ml/.xyz)",
         "Sender domain uses high-risk TLD (.tk/.ml/.xyz)",
-        "Multiple high-risk TLD domains detected"
+        "Multiple high-risk TLD domains detected",
+        "Indian brand impersonation",
+        "Link included in message",
+        "Suspicious verification link",
+        "Unknown sender pattern"
       ],
       "explanation": "High-risk TLD detected (.tk/.ml/.xyz); Sender domain uses high-risk TLD (.tk/.ml/.xyz); Multiple high-risk TLD domains detected. Sender authenticity not verifiable from SPF/DKIM/DMARC (all none or neutral).",
       "tags": [
@@ -254,14 +314,20 @@
       "case_id": "HR-028",
       "expected_verdict": "High Risk",
       "actual_verdict": "High Risk",
-      "risk_score": 82,
-      "confidence": 88,
-      "scan_id": "ec09a583ab04",
+      "risk_score": 85,
+      "confidence": 90,
+      "scan_id": "863836f05715",
       "matched_signals": [
         "OTP-harvesting pattern (OTP request plus urgency or link)",
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender domain resembles a known brand (lookalike spoof)",
+        "Sender lookalike paired with account-access lure",
+        "Sender domain uses risky brand-action keyword pattern",
+        "Sender authenticity checks contain spoofing indicators",
+        "OTP request detected",
+        "Urgency language",
+        "Unknown sender pattern"
       ],
-      "explanation": "OTP-harvesting pattern (OTP request plus urgency or link); Sender authenticity checks contain spoofing indicators. One or more authentication checks failed; Reply-To domain mismatch detected.",
+      "explanation": "OTP-harvesting pattern (OTP request plus urgency or link); Sender domain resembles a known brand (lookalike spoof); Sender lookalike paired with account-access lure. One or more authentication checks failed; Reply-To domain mismatch detected.",
       "tags": [
         "high_risk",
         "unicode_domain",
@@ -281,10 +347,12 @@
       "case_id": "SAFE-010",
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
-      "risk_score": 0,
-      "confidence": 5,
-      "scan_id": "408ae569bf38",
-      "matched_signals": [],
+      "risk_score": 3,
+      "confidence": 72,
+      "scan_id": "7b908912e30b",
+      "matched_signals": [
+        "Link included in message"
+      ],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
         "safe",
@@ -299,15 +367,24 @@
       "case_id": "HR-021",
       "expected_verdict": "High Risk",
       "actual_verdict": "High Risk",
-      "risk_score": 75,
-      "confidence": 88,
-      "scan_id": "655585c6acc2",
+      "risk_score": 88,
+      "confidence": 91,
+      "scan_id": "a0bfb7e28537",
       "matched_signals": [
         "Credential-harvesting pattern (sensitive request plus urgency or link)",
         "OTP-harvesting pattern (OTP request plus urgency or link)",
         "Brand impersonation pattern (brand cue plus domain mismatch/lookalike)",
         "Urgency plus branded link pressure",
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "OTP request detected",
+        "Urgency language",
+        "Indian brand impersonation",
+        "Suspicious phishing keywords",
+        "Link included in message",
+        "Suspicious verification link",
+        "Bank credential harvesting pattern",
+        "Shortened link hides the final destination",
+        "Unknown sender pattern"
       ],
       "explanation": "Credential-harvesting pattern (sensitive request plus urgency or link); OTP-harvesting pattern (OTP request plus urgency or link); Brand impersonation pattern (brand cue plus domain mismatch/lookalike). One or more authentication checks failed; Reply-To domain mismatch detected.",
       "tags": [
@@ -327,13 +404,14 @@
       "case_id": "SUS-021",
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
-      "risk_score": 22,
-      "confidence": 73,
-      "scan_id": "f2f7b1346e1d",
+      "risk_score": 57,
+      "confidence": 74,
+      "scan_id": "3d0878ecab51",
       "matched_signals": [
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "Known phishing campaign pattern matched"
       ],
-      "explanation": "Sender authenticity checks contain spoofing indicators. One or more authentication checks failed.",
+      "explanation": "Sender authenticity checks contain spoofing indicators; Known phishing campaign pattern matched. One or more authentication checks failed.",
       "tags": [
         "suspicious",
         "clean_content_bad_domain",
@@ -352,10 +430,12 @@
       "case_id": "SAFE-014",
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
-      "risk_score": 0,
-      "confidence": 5,
-      "scan_id": "8855e1756215",
-      "matched_signals": [],
+      "risk_score": 3,
+      "confidence": 72,
+      "scan_id": "508f97c826c0",
+      "matched_signals": [
+        "Link included in message"
+      ],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
         "safe",
@@ -370,14 +450,16 @@
       "case_id": "SUS-014",
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
-      "risk_score": 25,
-      "confidence": 82,
-      "scan_id": "b517f7b586b5",
+      "risk_score": 60,
+      "confidence": 76,
+      "scan_id": "c085a6d7e474",
       "matched_signals": [
         "Soft-pressure details confirmation request from untrusted sender",
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "Urgency language",
+        "Unknown sender pattern"
       ],
-      "explanation": "Soft-pressure details confirmation request from untrusted sender; Sender authenticity checks contain spoofing indicators. One or more authentication checks failed.",
+      "explanation": "Soft-pressure details confirmation request from untrusted sender; Sender authenticity checks contain spoofing indicators; Urgency language. One or more authentication checks failed.",
       "tags": [
         "suspicious",
         "clean_content_bad_domain",
@@ -396,10 +478,13 @@
       "case_id": "SAFE-001",
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
-      "risk_score": 0,
-      "confidence": 5,
-      "scan_id": "2677124a3d82",
-      "matched_signals": [],
+      "risk_score": 4,
+      "confidence": 71,
+      "scan_id": "751cc3d6be95",
+      "matched_signals": [
+        "Known brand mentioned",
+        "Link included in message"
+      ],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
         "safe",
@@ -414,13 +499,16 @@
       "case_id": "SUS-036",
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
-      "risk_score": 48,
-      "confidence": 88,
-      "scan_id": "5f97fd94ce72",
+      "risk_score": 60,
+      "confidence": 77,
+      "scan_id": "422e408b19d8",
       "matched_signals": [
         "High-risk TLD detected (.tk/.ml/.xyz)",
         "Sender domain uses high-risk TLD (.tk/.ml/.xyz)",
-        "Multiple high-risk TLD domains detected"
+        "Multiple high-risk TLD domains detected",
+        "Link included in message",
+        "Suspicious verification link",
+        "Unknown sender pattern"
       ],
       "explanation": "High-risk TLD detected (.tk/.ml/.xyz); Sender domain uses high-risk TLD (.tk/.ml/.xyz); Multiple high-risk TLD domains detected. Sender authenticity not verifiable from SPF/DKIM/DMARC (all none or neutral).",
       "tags": [
@@ -440,16 +528,22 @@
       "case_id": "HR-013",
       "expected_verdict": "High Risk",
       "actual_verdict": "High Risk",
-      "risk_score": 85,
-      "confidence": 90,
-      "scan_id": "b8ede589dfd2",
+      "risk_score": 89,
+      "confidence": 91,
+      "scan_id": "68202581f609",
       "matched_signals": [
         "OTP-harvesting pattern (OTP request plus urgency or link)",
         "Sender domain resembles a known brand (lookalike spoof)",
         "Sender lookalike paired with account-access lure",
         "Sender domain uses risky brand-action keyword pattern",
         "Brand impersonation pattern (brand cue plus domain mismatch/lookalike)",
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "OTP request detected",
+        "OTP sharing request detected",
+        "Urgency language",
+        "Indian brand impersonation",
+        "Bank credential harvesting pattern",
+        "Unknown sender pattern"
       ],
       "explanation": "OTP-harvesting pattern (OTP request plus urgency or link); Sender domain resembles a known brand (lookalike spoof); Sender lookalike paired with account-access lure. One or more authentication checks failed; Reply-To domain mismatch detected; Return-Path domain mismatch detected.",
       "tags": [
@@ -470,13 +564,14 @@
       "case_id": "SUS-017",
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
-      "risk_score": 22,
-      "confidence": 73,
-      "scan_id": "de1a32678be9",
+      "risk_score": 59,
+      "confidence": 75,
+      "scan_id": "ea368ea161be",
       "matched_signals": [
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "Known phishing campaign pattern matched"
       ],
-      "explanation": "Sender authenticity checks contain spoofing indicators. One or more authentication checks failed.",
+      "explanation": "Sender authenticity checks contain spoofing indicators; Known phishing campaign pattern matched. One or more authentication checks failed.",
       "tags": [
         "suspicious",
         "clean_content_bad_domain",
@@ -494,14 +589,17 @@
     {
       "case_id": "SUS-034",
       "expected_verdict": "Suspicious",
-      "actual_verdict": "Suspicious",
-      "risk_score": 46,
-      "confidence": 86,
-      "scan_id": "cd819fb3802c",
+      "actual_verdict": "High Risk",
+      "risk_score": 78,
+      "confidence": 88,
+      "scan_id": "16c4026514ee",
       "matched_signals": [
         "High-risk TLD detected (.tk/.ml/.xyz)",
         "Sender domain uses high-risk TLD (.tk/.ml/.xyz)",
-        "Multiple high-risk TLD domains detected"
+        "Multiple high-risk TLD domains detected",
+        "Indian brand impersonation",
+        "Link included in message",
+        "Unknown sender pattern"
       ],
       "explanation": "High-risk TLD detected (.tk/.ml/.xyz); Sender domain uses high-risk TLD (.tk/.ml/.xyz); Multiple high-risk TLD domains detected. Sender authenticity not verifiable from SPF/DKIM/DMARC (all none or neutral).",
       "tags": [
@@ -514,17 +612,19 @@
         "suspicious"
       ],
       "consistency_group": null,
-      "passed": true,
+      "passed": false,
       "error": null
     },
     {
       "case_id": "SAFE-039",
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
-      "risk_score": 0,
-      "confidence": 5,
-      "scan_id": "59be7438837c",
-      "matched_signals": [],
+      "risk_score": 5,
+      "confidence": 69,
+      "scan_id": "d8073f8f6664",
+      "matched_signals": [
+        "Urgency language"
+      ],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
         "safe",
@@ -540,10 +640,14 @@
       "case_id": "SAFE-003",
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
-      "risk_score": 0,
-      "confidence": 5,
-      "scan_id": "59c079e88fec",
-      "matched_signals": [],
+      "risk_score": 24,
+      "confidence": 63,
+      "scan_id": "83f0009a1ba6",
+      "matched_signals": [
+        "OTP request detected",
+        "Indian brand impersonation",
+        "Link included in message"
+      ],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
         "safe",
@@ -558,9 +662,9 @@
       "case_id": "SUS-015",
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
-      "risk_score": 22,
-      "confidence": 72,
-      "scan_id": "e288f80dbf8c",
+      "risk_score": 58,
+      "confidence": 74,
+      "scan_id": "548d7c8c2923",
       "matched_signals": [
         "Sender authenticity checks contain spoofing indicators"
       ],
@@ -583,10 +687,13 @@
       "case_id": "SAFE-022",
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
-      "risk_score": 0,
-      "confidence": 23,
-      "scan_id": "6cdc26cb5bf4",
-      "matched_signals": [],
+      "risk_score": 3,
+      "confidence": 69,
+      "scan_id": "e95ea2d92da2",
+      "matched_signals": [
+        "Known brand mentioned",
+        "Link included in message"
+      ],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
         "safe",
@@ -601,9 +708,9 @@
       "case_id": "HR-003",
       "expected_verdict": "High Risk",
       "actual_verdict": "High Risk",
-      "risk_score": 78,
-      "confidence": 88,
-      "scan_id": "e58b4ab17ca9",
+      "risk_score": 82,
+      "confidence": 89,
+      "scan_id": "f297880eea72",
       "matched_signals": [
         "Sender domain resembles a known brand (lookalike spoof)",
         "Linked domain resembles a known brand (lookalike spoof)",
@@ -612,7 +719,17 @@
         "Brand impersonation pattern (brand cue plus domain mismatch/lookalike)",
         "High-risk TLD detected (.tk/.ml/.xyz)",
         "Sender domain uses high-risk TLD (.tk/.ml/.xyz)",
-        "Multiple high-risk TLD domains detected"
+        "Multiple high-risk TLD domains detected",
+        "OTP request detected",
+        "Urgency language",
+        "Indian brand impersonation",
+        "Suspicious phishing keywords",
+        "Aadhaar KYC requirement",
+        "Link included in message",
+        "Suspicious verification link",
+        "Bank credential harvesting pattern",
+        "Known phishing campaign pattern matched",
+        "Unknown sender pattern"
       ],
       "explanation": "Sender domain resembles a known brand (lookalike spoof); Linked domain resembles a known brand (lookalike spoof); Sender lookalike paired with account-access lure. One or more authentication checks failed; Reply-To domain mismatch detected.",
       "tags": [
@@ -636,9 +753,9 @@
       "case_id": "HR-004",
       "expected_verdict": "High Risk",
       "actual_verdict": "High Risk",
-      "risk_score": 78,
-      "confidence": 88,
-      "scan_id": "fa900be6ddc9",
+      "risk_score": 88,
+      "confidence": 91,
+      "scan_id": "a82abbf4fb38",
       "matched_signals": [
         "Credential-harvesting pattern (sensitive request plus urgency or link)",
         "OTP-harvesting pattern (OTP request plus urgency or link)",
@@ -647,7 +764,14 @@
         "Sender lookalike paired with account-access lure",
         "Sender domain uses risky brand-action keyword pattern",
         "Brand impersonation pattern (brand cue plus domain mismatch/lookalike)",
-        "High-risk TLD detected (.tk/.ml/.xyz)"
+        "High-risk TLD detected (.tk/.ml/.xyz)",
+        "OTP request detected",
+        "Urgency language",
+        "Indian brand impersonation",
+        "Link included in message",
+        "Suspicious verification link",
+        "Bank credential harvesting pattern",
+        "Known phishing campaign pattern matched"
       ],
       "explanation": "Credential-harvesting pattern (sensitive request plus urgency or link); OTP-harvesting pattern (OTP request plus urgency or link); Sender domain resembles a known brand (lookalike spoof). One or more authentication checks failed; Reply-To domain mismatch detected.",
       "tags": [
@@ -671,14 +795,16 @@
       "case_id": "SUS-026",
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
-      "risk_score": 25,
-      "confidence": 82,
-      "scan_id": "b175a9934224",
+      "risk_score": 60,
+      "confidence": 76,
+      "scan_id": "950f6678d4df",
       "matched_signals": [
         "Soft-pressure details confirmation request from untrusted sender",
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "Urgency language",
+        "Unknown sender pattern"
       ],
-      "explanation": "Soft-pressure details confirmation request from untrusted sender; Sender authenticity checks contain spoofing indicators. One or more authentication checks failed.",
+      "explanation": "Soft-pressure details confirmation request from untrusted sender; Sender authenticity checks contain spoofing indicators; Urgency language. One or more authentication checks failed.",
       "tags": [
         "suspicious",
         "clean_content_bad_domain",
@@ -697,10 +823,13 @@
       "case_id": "SAFE-027",
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
-      "risk_score": 0,
-      "confidence": 23,
-      "scan_id": "b6810670c640",
-      "matched_signals": [],
+      "risk_score": 3,
+      "confidence": 69,
+      "scan_id": "8dc89ec2de7d",
+      "matched_signals": [
+        "Known brand mentioned",
+        "Link included in message"
+      ],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
         "safe",
@@ -715,10 +844,14 @@
       "case_id": "SAFE-023",
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
-      "risk_score": 0,
-      "confidence": 23,
-      "scan_id": "93343e407910",
-      "matched_signals": [],
+      "risk_score": 24,
+      "confidence": 61,
+      "scan_id": "813cb2650c9f",
+      "matched_signals": [
+        "OTP request detected",
+        "Indian brand impersonation",
+        "Link included in message"
+      ],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
         "safe",
@@ -733,9 +866,9 @@
       "case_id": "HR-002",
       "expected_verdict": "High Risk",
       "actual_verdict": "High Risk",
-      "risk_score": 78,
-      "confidence": 88,
-      "scan_id": "e7a84dac6865",
+      "risk_score": 88,
+      "confidence": 91,
+      "scan_id": "05e124d35cef",
       "matched_signals": [
         "OTP-harvesting pattern (OTP request plus urgency or link)",
         "Sender domain resembles a known brand (lookalike spoof)",
@@ -744,7 +877,16 @@
         "Sender domain uses risky brand-action keyword pattern",
         "Brand impersonation pattern (brand cue plus domain mismatch/lookalike)",
         "High-risk TLD detected (.tk/.ml/.xyz)",
-        "Sender domain uses high-risk TLD (.tk/.ml/.xyz)"
+        "Sender domain uses high-risk TLD (.tk/.ml/.xyz)",
+        "OTP request detected",
+        "OTP sharing request detected",
+        "Urgency language",
+        "Indian brand impersonation",
+        "Link included in message",
+        "Suspicious verification link",
+        "Bank credential harvesting pattern",
+        "Known phishing campaign pattern matched",
+        "Sender has a risky history"
       ],
       "explanation": "OTP-harvesting pattern (OTP request plus urgency or link); Sender domain resembles a known brand (lookalike spoof); Linked domain resembles a known brand (lookalike spoof). One or more authentication checks failed; Reply-To domain mismatch detected.",
       "tags": [
@@ -768,10 +910,13 @@
       "case_id": "SAFE-026",
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
-      "risk_score": 0,
-      "confidence": 23,
-      "scan_id": "139dfcd1bf27",
-      "matched_signals": [],
+      "risk_score": 3,
+      "confidence": 69,
+      "scan_id": "8b830e94d399",
+      "matched_signals": [
+        "Known brand mentioned",
+        "Link included in message"
+      ],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
         "safe",
@@ -786,16 +931,22 @@
       "case_id": "HR-026",
       "expected_verdict": "High Risk",
       "actual_verdict": "High Risk",
-      "risk_score": 82,
-      "confidence": 89,
-      "scan_id": "19cd5065b336",
+      "risk_score": 88,
+      "confidence": 91,
+      "scan_id": "3fbf01333c3c",
       "matched_signals": [
         "OTP-harvesting pattern (OTP request plus urgency or link)",
         "Reward or prize scam lure detected",
         "High-risk TLD detected (.tk/.ml/.xyz)",
         "Sender domain uses high-risk TLD (.tk/.ml/.xyz)",
         "Multiple high-risk TLD domains detected",
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "OTP request detected",
+        "OTP sharing request detected",
+        "Mixed-language phishing phrasing",
+        "Link included in message",
+        "Suspicious verification link",
+        "Unknown sender pattern"
       ],
       "explanation": "OTP-harvesting pattern (OTP request plus urgency or link); Reward or prize scam lure detected; High-risk TLD detected (.tk/.ml/.xyz). One or more authentication checks failed; Reply-To domain mismatch detected.",
       "tags": [
@@ -817,10 +968,12 @@
       "case_id": "SAFE-034",
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
-      "risk_score": 0,
-      "confidence": 5,
-      "scan_id": "44a2866f9e63",
-      "matched_signals": [],
+      "risk_score": 3,
+      "confidence": 72,
+      "scan_id": "654ac4777a84",
+      "matched_signals": [
+        "Link included in message"
+      ],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
         "safe",
@@ -835,9 +988,9 @@
       "case_id": "SUS-008",
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
-      "risk_score": 22,
-      "confidence": 73,
-      "scan_id": "1f4addcd91d8",
+      "risk_score": 59,
+      "confidence": 75,
+      "scan_id": "6e49f15d1873",
       "matched_signals": [
         "Sender authenticity checks contain spoofing indicators"
       ],
@@ -860,14 +1013,18 @@
       "case_id": "HR-020",
       "expected_verdict": "High Risk",
       "actual_verdict": "High Risk",
-      "risk_score": 75,
-      "confidence": 87,
-      "scan_id": "9c4698fe4504",
+      "risk_score": 88,
+      "confidence": 91,
+      "scan_id": "21aea793372a",
       "matched_signals": [
         "Credential-harvesting pattern (sensitive request plus urgency or link)",
         "OTP-harvesting pattern (OTP request plus urgency or link)",
         "Sender authenticity checks contain spoofing indicators",
-        "Brand impersonation combined with suspicious link and urgency"
+        "OTP request detected",
+        "Urgency language",
+        "Link included in message",
+        "Suspicious verification link",
+        "Shortened link hides the final destination"
       ],
       "explanation": "Credential-harvesting pattern (sensitive request plus urgency or link); OTP-harvesting pattern (OTP request plus urgency or link); Sender authenticity checks contain spoofing indicators. One or more authentication checks failed; Reply-To domain mismatch detected.",
       "tags": [
@@ -887,10 +1044,12 @@
       "case_id": "SAFE-031",
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
-      "risk_score": 0,
-      "confidence": 5,
-      "scan_id": "5e15077903f7",
-      "matched_signals": [],
+      "risk_score": 3,
+      "confidence": 72,
+      "scan_id": "18270f5f04fb",
+      "matched_signals": [
+        "Link included in message"
+      ],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
         "safe",
@@ -905,13 +1064,17 @@
       "case_id": "SUS-037",
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
-      "risk_score": 25,
-      "confidence": 73,
-      "scan_id": "d5f1d5f420a9",
+      "risk_score": 60,
+      "confidence": 77,
+      "scan_id": "9889e73c5ec2",
       "matched_signals": [
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "OTP request detected",
+        "Link included in message",
+        "Suspicious verification link",
+        "Shortened link hides the final destination"
       ],
-      "explanation": "Sender authenticity checks contain spoofing indicators. One or more authentication checks failed; Reply-To domain mismatch detected.",
+      "explanation": "Sender authenticity checks contain spoofing indicators; OTP request detected; Link included in message. One or more authentication checks failed; Reply-To domain mismatch detected.",
       "tags": [
         "suspicious",
         "short_link",
@@ -926,10 +1089,13 @@
       "case_id": "SAFE-030",
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
-      "risk_score": 0,
-      "confidence": 23,
-      "scan_id": "b57e6e527a4d",
-      "matched_signals": [],
+      "risk_score": 3,
+      "confidence": 69,
+      "scan_id": "c9ad6369ae71",
+      "matched_signals": [
+        "Known brand mentioned",
+        "Link included in message"
+      ],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
         "safe",
@@ -944,10 +1110,13 @@
       "case_id": "SAFE-005",
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
-      "risk_score": 0,
-      "confidence": 5,
-      "scan_id": "6df92caaebae",
-      "matched_signals": [],
+      "risk_score": 4,
+      "confidence": 71,
+      "scan_id": "04802f711257",
+      "matched_signals": [
+        "Known brand mentioned",
+        "Link included in message"
+      ],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
         "safe",
@@ -962,10 +1131,13 @@
       "case_id": "SAFE-018",
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
-      "risk_score": 0,
-      "confidence": 5,
-      "scan_id": "a113cfa33cb9",
-      "matched_signals": [],
+      "risk_score": 9,
+      "confidence": 69,
+      "scan_id": "7f566b7c2d0b",
+      "matched_signals": [
+        "OTP request detected",
+        "Link included in message"
+      ],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
         "safe",
@@ -980,16 +1152,22 @@
       "case_id": "HR-015",
       "expected_verdict": "High Risk",
       "actual_verdict": "High Risk",
-      "risk_score": 85,
-      "confidence": 90,
-      "scan_id": "6b8bb6cd05f3",
+      "risk_score": 89,
+      "confidence": 91,
+      "scan_id": "d422c478f8ab",
       "matched_signals": [
         "OTP-harvesting pattern (OTP request plus urgency or link)",
         "Sender domain resembles a known brand (lookalike spoof)",
         "Sender lookalike paired with account-access lure",
         "Sender domain uses risky brand-action keyword pattern",
         "Brand impersonation pattern (brand cue plus domain mismatch/lookalike)",
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "OTP request detected",
+        "OTP sharing request detected",
+        "Urgency language",
+        "Indian brand impersonation",
+        "Bank credential harvesting pattern",
+        "Unknown sender pattern"
       ],
       "explanation": "OTP-harvesting pattern (OTP request plus urgency or link); Sender domain resembles a known brand (lookalike spoof); Sender lookalike paired with account-access lure. One or more authentication checks failed; Reply-To domain mismatch detected; Return-Path domain mismatch detected.",
       "tags": [
@@ -1010,9 +1188,9 @@
       "case_id": "SUS-001",
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
-      "risk_score": 27,
-      "confidence": 82,
-      "scan_id": "9cc5dae8c378",
+      "risk_score": 57,
+      "confidence": 74,
+      "scan_id": "f9f9bba81538",
       "matched_signals": [
         "Sender domain uses risky brand-action keyword pattern",
         "Sender authenticity checks contain spoofing indicators"
@@ -1036,16 +1214,22 @@
       "case_id": "HR-018",
       "expected_verdict": "High Risk",
       "actual_verdict": "High Risk",
-      "risk_score": 85,
-      "confidence": 90,
-      "scan_id": "a00adc3ed932",
+      "risk_score": 89,
+      "confidence": 91,
+      "scan_id": "5fe2beb789c6",
       "matched_signals": [
         "OTP-harvesting pattern (OTP request plus urgency or link)",
         "Sender domain resembles a known brand (lookalike spoof)",
         "Sender lookalike paired with account-access lure",
         "Sender domain uses risky brand-action keyword pattern",
         "Brand impersonation pattern (brand cue plus domain mismatch/lookalike)",
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "OTP request detected",
+        "OTP sharing request detected",
+        "Urgency language",
+        "Indian brand impersonation",
+        "Bank credential harvesting pattern",
+        "Unknown sender pattern"
       ],
       "explanation": "OTP-harvesting pattern (OTP request plus urgency or link); Sender domain resembles a known brand (lookalike spoof); Sender lookalike paired with account-access lure. One or more authentication checks failed; Reply-To domain mismatch detected; Return-Path domain mismatch detected.",
       "tags": [
@@ -1066,9 +1250,9 @@
       "case_id": "SUS-005",
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
-      "risk_score": 22,
-      "confidence": 73,
-      "scan_id": "bbcc0f3fc9f6",
+      "risk_score": 59,
+      "confidence": 75,
+      "scan_id": "ea8931748f91",
       "matched_signals": [
         "Sender authenticity checks contain spoofing indicators"
       ],
@@ -1091,17 +1275,22 @@
       "case_id": "HR-014",
       "expected_verdict": "High Risk",
       "actual_verdict": "High Risk",
-      "risk_score": 85,
-      "confidence": 90,
-      "scan_id": "1faee792dd05",
+      "risk_score": 89,
+      "confidence": 91,
+      "scan_id": "df1330b03a90",
       "matched_signals": [
         "OTP-harvesting pattern (OTP request plus urgency or link)",
         "Sender domain resembles a known brand (lookalike spoof)",
         "Sender lookalike paired with account-access lure",
         "Sender domain uses risky brand-action keyword pattern",
         "Brand impersonation pattern (brand cue plus domain mismatch/lookalike)",
-        "Numeric character substitution brand spoof",
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "OTP request detected",
+        "OTP sharing request detected",
+        "Urgency language",
+        "Indian brand impersonation",
+        "Bank credential harvesting pattern",
+        "Unknown sender pattern"
       ],
       "explanation": "OTP-harvesting pattern (OTP request plus urgency or link); Sender domain resembles a known brand (lookalike spoof); Sender lookalike paired with account-access lure. One or more authentication checks failed; Reply-To domain mismatch detected; Return-Path domain mismatch detected.",
       "tags": [
@@ -1122,10 +1311,14 @@
       "case_id": "SAFE-028",
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
-      "risk_score": 0,
-      "confidence": 23,
-      "scan_id": "3b1cf68ac81e",
-      "matched_signals": [],
+      "risk_score": 24,
+      "confidence": 62,
+      "scan_id": "6b535dac84a3",
+      "matched_signals": [
+        "OTP request detected",
+        "Indian brand impersonation",
+        "Link included in message"
+      ],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
         "safe",
@@ -1140,9 +1333,9 @@
       "case_id": "SUS-027",
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
-      "risk_score": 22,
-      "confidence": 72,
-      "scan_id": "4b68af79cf58",
+      "risk_score": 58,
+      "confidence": 74,
+      "scan_id": "714993a8d91b",
       "matched_signals": [
         "Sender authenticity checks contain spoofing indicators"
       ],
@@ -1165,13 +1358,18 @@
       "case_id": "SUS-038",
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
-      "risk_score": 25,
-      "confidence": 73,
-      "scan_id": "4234fccfbeb8",
+      "risk_score": 60,
+      "confidence": 78,
+      "scan_id": "dc578a88773a",
       "matched_signals": [
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "OTP request detected",
+        "Link included in message",
+        "Suspicious verification link",
+        "Shortened link hides the final destination",
+        "Sender has a risky history"
       ],
-      "explanation": "Sender authenticity checks contain spoofing indicators. One or more authentication checks failed; Reply-To domain mismatch detected.",
+      "explanation": "Sender authenticity checks contain spoofing indicators; OTP request detected; Link included in message. One or more authentication checks failed; Reply-To domain mismatch detected.",
       "tags": [
         "suspicious",
         "short_link",
@@ -1186,10 +1384,13 @@
       "case_id": "SAFE-021",
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
-      "risk_score": 0,
-      "confidence": 23,
-      "scan_id": "71cbfe93f3ea",
-      "matched_signals": [],
+      "risk_score": 3,
+      "confidence": 69,
+      "scan_id": "8c7f918fa6b9",
+      "matched_signals": [
+        "Known brand mentioned",
+        "Link included in message"
+      ],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
         "safe",
@@ -1204,9 +1405,9 @@
       "case_id": "HR-008",
       "expected_verdict": "High Risk",
       "actual_verdict": "High Risk",
-      "risk_score": 78,
-      "confidence": 88,
-      "scan_id": "fe96c765716c",
+      "risk_score": 88,
+      "confidence": 91,
+      "scan_id": "23a12495c6a6",
       "matched_signals": [
         "Credential-harvesting pattern (sensitive request plus urgency or link)",
         "OTP-harvesting pattern (OTP request plus urgency or link)",
@@ -1215,7 +1416,14 @@
         "Sender lookalike paired with account-access lure",
         "Sender domain uses risky brand-action keyword pattern",
         "Brand impersonation pattern (brand cue plus domain mismatch/lookalike)",
-        "High-risk TLD detected (.tk/.ml/.xyz)"
+        "High-risk TLD detected (.tk/.ml/.xyz)",
+        "OTP request detected",
+        "Urgency language",
+        "Indian brand impersonation",
+        "Link included in message",
+        "Suspicious verification link",
+        "Bank credential harvesting pattern",
+        "Unknown sender pattern"
       ],
       "explanation": "Credential-harvesting pattern (sensitive request plus urgency or link); OTP-harvesting pattern (OTP request plus urgency or link); Sender domain resembles a known brand (lookalike spoof). One or more authentication checks failed; Reply-To domain mismatch detected.",
       "tags": [
@@ -1239,13 +1447,14 @@
       "case_id": "SUS-028",
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
-      "risk_score": 22,
-      "confidence": 73,
-      "scan_id": "7de85e1ccda2",
+      "risk_score": 58,
+      "confidence": 75,
+      "scan_id": "7029aab24536",
       "matched_signals": [
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "Sender has a risky history"
       ],
-      "explanation": "Sender authenticity checks contain spoofing indicators. One or more authentication checks failed.",
+      "explanation": "Sender authenticity checks contain spoofing indicators; Sender has a risky history. One or more authentication checks failed.",
       "tags": [
         "suspicious",
         "clean_content_bad_domain",
@@ -1264,10 +1473,13 @@
       "case_id": "SAFE-033",
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
-      "risk_score": 0,
-      "confidence": 5,
-      "scan_id": "6eca81ccf00a",
-      "matched_signals": [],
+      "risk_score": 9,
+      "confidence": 69,
+      "scan_id": "d4284eacde92",
+      "matched_signals": [
+        "OTP request detected",
+        "Link included in message"
+      ],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
         "safe",
@@ -1282,13 +1494,14 @@
       "case_id": "SUS-025",
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
-      "risk_score": 22,
-      "confidence": 73,
-      "scan_id": "12dc36a732d9",
+      "risk_score": 59,
+      "confidence": 75,
+      "scan_id": "2a873d5777e1",
       "matched_signals": [
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "Sender has a risky history"
       ],
-      "explanation": "Sender authenticity checks contain spoofing indicators. One or more authentication checks failed.",
+      "explanation": "Sender authenticity checks contain spoofing indicators; Sender has a risky history. One or more authentication checks failed.",
       "tags": [
         "suspicious",
         "clean_content_bad_domain",
@@ -1307,9 +1520,9 @@
       "case_id": "SUS-004",
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
-      "risk_score": 27,
-      "confidence": 82,
-      "scan_id": "9b6cd52546e5",
+      "risk_score": 57,
+      "confidence": 74,
+      "scan_id": "f76489e969cd",
       "matched_signals": [
         "Sender domain uses risky brand-action keyword pattern",
         "Sender authenticity checks contain spoofing indicators"
@@ -1333,14 +1546,17 @@
       "case_id": "HR-027",
       "expected_verdict": "High Risk",
       "actual_verdict": "High Risk",
-      "risk_score": 82,
-      "confidence": 88,
-      "scan_id": "0466f0e79b97",
+      "risk_score": 85,
+      "confidence": 90,
+      "scan_id": "a265f21aacf6",
       "matched_signals": [
         "OTP-harvesting pattern (OTP request plus urgency or link)",
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "OTP request detected",
+        "Urgency language",
+        "Unknown sender pattern"
       ],
-      "explanation": "OTP-harvesting pattern (OTP request plus urgency or link); Sender authenticity checks contain spoofing indicators. One or more authentication checks failed; Reply-To domain mismatch detected.",
+      "explanation": "OTP-harvesting pattern (OTP request plus urgency or link); Sender authenticity checks contain spoofing indicators; OTP request detected. One or more authentication checks failed; Reply-To domain mismatch detected.",
       "tags": [
         "high_risk",
         "unicode_domain",
@@ -1360,15 +1576,18 @@
       "case_id": "HR-029",
       "expected_verdict": "High Risk",
       "actual_verdict": "High Risk",
-      "risk_score": 82,
-      "confidence": 89,
-      "scan_id": "6b644d39b77e",
+      "risk_score": 85,
+      "confidence": 90,
+      "scan_id": "10cb88205955",
       "matched_signals": [
         "OTP-harvesting pattern (OTP request plus urgency or link)",
         "Sender domain resembles a known brand (lookalike spoof)",
         "Sender lookalike paired with account-access lure",
         "Sender domain uses risky brand-action keyword pattern",
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "OTP request detected",
+        "Urgency language",
+        "Unknown sender pattern"
       ],
       "explanation": "OTP-harvesting pattern (OTP request plus urgency or link); Sender domain resembles a known brand (lookalike spoof); Sender lookalike paired with account-access lure. One or more authentication checks failed; Reply-To domain mismatch detected.",
       "tags": [
@@ -1390,9 +1609,9 @@
       "case_id": "HR-007",
       "expected_verdict": "High Risk",
       "actual_verdict": "High Risk",
-      "risk_score": 78,
-      "confidence": 88,
-      "scan_id": "9f2a7b50f67d",
+      "risk_score": 82,
+      "confidence": 89,
+      "scan_id": "f28fc7a9c599",
       "matched_signals": [
         "Sender domain resembles a known brand (lookalike spoof)",
         "Linked domain resembles a known brand (lookalike spoof)",
@@ -1401,7 +1620,15 @@
         "Brand impersonation pattern (brand cue plus domain mismatch/lookalike)",
         "High-risk TLD detected (.tk/.ml/.xyz)",
         "Sender domain uses high-risk TLD (.tk/.ml/.xyz)",
-        "Multiple high-risk TLD domains detected"
+        "Multiple high-risk TLD domains detected",
+        "OTP request detected",
+        "Urgency language",
+        "Indian brand impersonation",
+        "Suspicious phishing keywords",
+        "Aadhaar KYC requirement",
+        "Link included in message",
+        "Suspicious verification link",
+        "Bank credential harvesting pattern"
       ],
       "explanation": "Sender domain resembles a known brand (lookalike spoof); Linked domain resembles a known brand (lookalike spoof); Sender lookalike paired with account-access lure. One or more authentication checks failed; Reply-To domain mismatch detected.",
       "tags": [
@@ -1425,10 +1652,12 @@
       "case_id": "SAFE-012",
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
-      "risk_score": 0,
-      "confidence": 5,
-      "scan_id": "0f578edfcc95",
-      "matched_signals": [],
+      "risk_score": 4,
+      "confidence": 73,
+      "scan_id": "398fa7fb551d",
+      "matched_signals": [
+        "Link included in message"
+      ],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
         "safe",
@@ -1443,10 +1672,13 @@
       "case_id": "SAFE-013",
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
-      "risk_score": 0,
-      "confidence": 5,
-      "scan_id": "aecff268e4a2",
-      "matched_signals": [],
+      "risk_score": 10,
+      "confidence": 70,
+      "scan_id": "c22828932596",
+      "matched_signals": [
+        "OTP request detected",
+        "Link included in message"
+      ],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
         "safe",
@@ -1461,13 +1693,14 @@
       "case_id": "SUS-013",
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
-      "risk_score": 22,
-      "confidence": 73,
-      "scan_id": "cb8afaee67ce",
+      "risk_score": 55,
+      "confidence": 74,
+      "scan_id": "c100a39bda4c",
       "matched_signals": [
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "Sender has a risky history"
       ],
-      "explanation": "Sender authenticity checks contain spoofing indicators. One or more authentication checks failed.",
+      "explanation": "Sender authenticity checks contain spoofing indicators; Sender has a risky history. One or more authentication checks failed.",
       "tags": [
         "suspicious",
         "clean_content_bad_domain",
@@ -1486,10 +1719,12 @@
       "case_id": "SAFE-032",
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
-      "risk_score": 0,
-      "confidence": 5,
-      "scan_id": "0dd2b0ee69c2",
-      "matched_signals": [],
+      "risk_score": 4,
+      "confidence": 73,
+      "scan_id": "5af7d26b46ac",
+      "matched_signals": [
+        "Link included in message"
+      ],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
         "safe",
@@ -1504,10 +1739,12 @@
       "case_id": "SAFE-015",
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
-      "risk_score": 0,
-      "confidence": 5,
-      "scan_id": "fa0fcfd0842f",
-      "matched_signals": [],
+      "risk_score": 4,
+      "confidence": 73,
+      "scan_id": "9ff6f4b459e1",
+      "matched_signals": [
+        "Link included in message"
+      ],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
         "safe",
@@ -1522,9 +1759,9 @@
       "case_id": "HR-005",
       "expected_verdict": "High Risk",
       "actual_verdict": "High Risk",
-      "risk_score": 78,
-      "confidence": 88,
-      "scan_id": "17e986f13234",
+      "risk_score": 88,
+      "confidence": 91,
+      "scan_id": "1327f602e3d4",
       "matched_signals": [
         "Credential-harvesting pattern (sensitive request plus urgency or link)",
         "OTP-harvesting pattern (OTP request plus urgency or link)",
@@ -1533,7 +1770,14 @@
         "Sender lookalike paired with account-access lure",
         "Sender domain uses risky brand-action keyword pattern",
         "Brand impersonation pattern (brand cue plus domain mismatch/lookalike)",
-        "High-risk TLD detected (.tk/.ml/.xyz)"
+        "High-risk TLD detected (.tk/.ml/.xyz)",
+        "OTP request detected",
+        "Urgency language",
+        "Indian brand impersonation",
+        "Link included in message",
+        "Suspicious verification link",
+        "Bank credential harvesting pattern",
+        "Sender has a risky history"
       ],
       "explanation": "Credential-harvesting pattern (sensitive request plus urgency or link); OTP-harvesting pattern (OTP request plus urgency or link); Sender domain resembles a known brand (lookalike spoof). One or more authentication checks failed; Reply-To domain mismatch detected.",
       "tags": [
@@ -1557,10 +1801,12 @@
       "case_id": "SAFE-020",
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
-      "risk_score": 0,
-      "confidence": 5,
-      "scan_id": "83dd7a3cb0c4",
-      "matched_signals": [],
+      "risk_score": 4,
+      "confidence": 73,
+      "scan_id": "82a798ad1229",
+      "matched_signals": [
+        "Link included in message"
+      ],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
         "safe",
@@ -1575,9 +1821,9 @@
       "case_id": "HR-011",
       "expected_verdict": "High Risk",
       "actual_verdict": "High Risk",
-      "risk_score": 78,
-      "confidence": 88,
-      "scan_id": "c3d59a7ae962",
+      "risk_score": 82,
+      "confidence": 89,
+      "scan_id": "22b9ae71de19",
       "matched_signals": [
         "Sender domain resembles a known brand (lookalike spoof)",
         "Linked domain resembles a known brand (lookalike spoof)",
@@ -1586,7 +1832,16 @@
         "High-risk TLD detected (.tk/.ml/.xyz)",
         "Sender domain uses high-risk TLD (.tk/.ml/.xyz)",
         "Multiple high-risk TLD domains detected",
-        "Urgency plus branded link pressure"
+        "Urgency plus branded link pressure",
+        "OTP request detected",
+        "Urgency language",
+        "Indian brand impersonation",
+        "Suspicious phishing keywords",
+        "Aadhaar KYC requirement",
+        "Link included in message",
+        "Suspicious verification link",
+        "Bank credential harvesting pattern",
+        "Unknown sender pattern"
       ],
       "explanation": "Sender domain resembles a known brand (lookalike spoof); Linked domain resembles a known brand (lookalike spoof); Sender lookalike paired with account-access lure. One or more authentication checks failed; Reply-To domain mismatch detected.",
       "tags": [
@@ -1610,15 +1865,16 @@
       "case_id": "SUS-012",
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
-      "risk_score": 60,
-      "confidence": 99,
-      "scan_id": "2ea98afd7e43",
+      "risk_score": 57,
+      "confidence": 76,
+      "scan_id": "be83e004e4d2",
       "matched_signals": [
         "Sender domain resembles a known brand (lookalike spoof)",
         "Sender lookalike paired with account-access lure",
         "Sender domain uses risky brand-action keyword pattern",
         "Brand impersonation pattern (brand cue plus domain mismatch/lookalike)",
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "Indian brand impersonation"
       ],
       "explanation": "Sender domain resembles a known brand (lookalike spoof); Sender lookalike paired with account-access lure; Sender domain uses risky brand-action keyword pattern. One or more authentication checks failed.",
       "tags": [
@@ -1639,10 +1895,12 @@
       "case_id": "SAFE-007",
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
-      "risk_score": 0,
-      "confidence": 5,
-      "scan_id": "58c7384cd75e",
-      "matched_signals": [],
+      "risk_score": 4,
+      "confidence": 73,
+      "scan_id": "f539abb7df1f",
+      "matched_signals": [
+        "Link included in message"
+      ],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
         "safe",
@@ -1657,14 +1915,18 @@
       "case_id": "HR-019",
       "expected_verdict": "High Risk",
       "actual_verdict": "High Risk",
-      "risk_score": 75,
-      "confidence": 87,
-      "scan_id": "d663be7521f7",
+      "risk_score": 88,
+      "confidence": 91,
+      "scan_id": "87ea381cd145",
       "matched_signals": [
         "Credential-harvesting pattern (sensitive request plus urgency or link)",
         "OTP-harvesting pattern (OTP request plus urgency or link)",
         "Sender authenticity checks contain spoofing indicators",
-        "Brand impersonation combined with suspicious link and urgency"
+        "OTP request detected",
+        "Urgency language",
+        "Link included in message",
+        "Shortened link hides the final destination",
+        "Sender has a risky history"
       ],
       "explanation": "Credential-harvesting pattern (sensitive request plus urgency or link); OTP-harvesting pattern (OTP request plus urgency or link); Sender authenticity checks contain spoofing indicators. One or more authentication checks failed; Reply-To domain mismatch detected.",
       "tags": [
@@ -1686,12 +1948,15 @@
       "actual_verdict": "High Risk",
       "risk_score": 82,
       "confidence": 89,
-      "scan_id": "509d1bb1ae14",
+      "scan_id": "34d3e71768ed",
       "matched_signals": [
         "High-risk TLD detected (.tk/.ml/.xyz)",
         "Sender domain uses high-risk TLD (.tk/.ml/.xyz)",
         "Multiple high-risk TLD domains detected",
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "OTP request detected",
+        "Link included in message",
+        "Suspicious verification link"
       ],
       "explanation": "High-risk TLD detected (.tk/.ml/.xyz); Sender domain uses high-risk TLD (.tk/.ml/.xyz); Multiple high-risk TLD domains detected. One or more authentication checks failed; Reply-To domain mismatch detected.",
       "tags": [
@@ -1713,13 +1978,14 @@
       "case_id": "SUS-016",
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
-      "risk_score": 22,
-      "confidence": 73,
-      "scan_id": "7defeff639b0",
+      "risk_score": 56,
+      "confidence": 74,
+      "scan_id": "eaa49d12389e",
       "matched_signals": [
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "Sender has a risky history"
       ],
-      "explanation": "Sender authenticity checks contain spoofing indicators. One or more authentication checks failed.",
+      "explanation": "Sender authenticity checks contain spoofing indicators; Sender has a risky history. One or more authentication checks failed.",
       "tags": [
         "suspicious",
         "clean_content_bad_domain",
@@ -1738,14 +2004,17 @@
       "case_id": "HR-033",
       "expected_verdict": "High Risk",
       "actual_verdict": "High Risk",
-      "risk_score": 82,
-      "confidence": 88,
-      "scan_id": "ac7f32eb9595",
+      "risk_score": 85,
+      "confidence": 90,
+      "scan_id": "bded07d7aa32",
       "matched_signals": [
         "OTP-harvesting pattern (OTP request plus urgency or link)",
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "OTP request detected",
+        "OTP sharing request detected",
+        "Urgency language"
       ],
-      "explanation": "OTP-harvesting pattern (OTP request plus urgency or link); Sender authenticity checks contain spoofing indicators. One or more authentication checks failed; Reply-To domain mismatch detected.",
+      "explanation": "OTP-harvesting pattern (OTP request plus urgency or link); Sender authenticity checks contain spoofing indicators; OTP request detected. One or more authentication checks failed; Reply-To domain mismatch detected.",
       "tags": [
         "high_risk",
         "no_link_phishing",
@@ -1763,10 +2032,12 @@
       "case_id": "SAFE-037",
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
-      "risk_score": 0,
-      "confidence": 23,
-      "scan_id": "665387aee001",
-      "matched_signals": [],
+      "risk_score": 4,
+      "confidence": 68,
+      "scan_id": "7e8b914eda12",
+      "matched_signals": [
+        "Urgency language"
+      ],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
         "safe",
@@ -1782,14 +2053,16 @@
       "case_id": "SUS-030",
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
-      "risk_score": 25,
-      "confidence": 82,
-      "scan_id": "96e7937ff22b",
+      "risk_score": 60,
+      "confidence": 76,
+      "scan_id": "e77a4b07bffe",
       "matched_signals": [
         "Soft-pressure details confirmation request from untrusted sender",
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "Urgency language",
+        "Unknown sender pattern"
       ],
-      "explanation": "Soft-pressure details confirmation request from untrusted sender; Sender authenticity checks contain spoofing indicators. One or more authentication checks failed.",
+      "explanation": "Soft-pressure details confirmation request from untrusted sender; Sender authenticity checks contain spoofing indicators; Urgency language. One or more authentication checks failed.",
       "tags": [
         "suspicious",
         "clean_content_bad_domain",
@@ -1808,9 +2081,9 @@
       "case_id": "HR-001",
       "expected_verdict": "High Risk",
       "actual_verdict": "High Risk",
-      "risk_score": 78,
-      "confidence": 88,
-      "scan_id": "660446253387",
+      "risk_score": 88,
+      "confidence": 91,
+      "scan_id": "9de11b08e237",
       "matched_signals": [
         "Credential-harvesting pattern (sensitive request plus urgency or link)",
         "OTP-harvesting pattern (OTP request plus urgency or link)",
@@ -1819,7 +2092,15 @@
         "Sender lookalike paired with account-access lure",
         "Sender domain uses risky brand-action keyword pattern",
         "Brand impersonation pattern (brand cue plus domain mismatch/lookalike)",
-        "High-risk TLD detected (.tk/.ml/.xyz)"
+        "High-risk TLD detected (.tk/.ml/.xyz)",
+        "OTP request detected",
+        "Urgency language",
+        "Indian brand impersonation",
+        "Link included in message",
+        "Suspicious verification link",
+        "Bank credential harvesting pattern",
+        "Known phishing campaign pattern matched",
+        "Sender has a risky history"
       ],
       "explanation": "Credential-harvesting pattern (sensitive request plus urgency or link); OTP-harvesting pattern (OTP request plus urgency or link); Sender domain resembles a known brand (lookalike spoof). One or more authentication checks failed; Reply-To domain mismatch detected.",
       "tags": [
@@ -1843,9 +2124,9 @@
       "case_id": "HR-009",
       "expected_verdict": "High Risk",
       "actual_verdict": "High Risk",
-      "risk_score": 78,
-      "confidence": 88,
-      "scan_id": "cdafecd0d1e4",
+      "risk_score": 88,
+      "confidence": 91,
+      "scan_id": "c0b0bc5419c7",
       "matched_signals": [
         "Credential-harvesting pattern (sensitive request plus urgency or link)",
         "OTP-harvesting pattern (OTP request plus urgency or link)",
@@ -1854,7 +2135,13 @@
         "Sender lookalike paired with account-access lure",
         "Brand impersonation pattern (brand cue plus domain mismatch/lookalike)",
         "High-risk TLD detected (.tk/.ml/.xyz)",
-        "Sender domain uses high-risk TLD (.tk/.ml/.xyz)"
+        "Sender domain uses high-risk TLD (.tk/.ml/.xyz)",
+        "OTP request detected",
+        "Urgency language",
+        "Indian brand impersonation",
+        "Link included in message",
+        "Suspicious verification link",
+        "Bank credential harvesting pattern"
       ],
       "explanation": "Credential-harvesting pattern (sensitive request plus urgency or link); OTP-harvesting pattern (OTP request plus urgency or link); Sender domain resembles a known brand (lookalike spoof). One or more authentication checks failed; Reply-To domain mismatch detected.",
       "tags": [
@@ -1878,13 +2165,14 @@
       "case_id": "SUS-019",
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
-      "risk_score": 22,
-      "confidence": 73,
-      "scan_id": "9ff74b81b034",
+      "risk_score": 59,
+      "confidence": 75,
+      "scan_id": "0c9a17b973d5",
       "matched_signals": [
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "Known phishing campaign pattern matched"
       ],
-      "explanation": "Sender authenticity checks contain spoofing indicators. One or more authentication checks failed.",
+      "explanation": "Sender authenticity checks contain spoofing indicators; Known phishing campaign pattern matched. One or more authentication checks failed.",
       "tags": [
         "suspicious",
         "clean_content_bad_domain",
@@ -1903,10 +2191,13 @@
       "case_id": "SAFE-002",
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
-      "risk_score": 0,
-      "confidence": 5,
-      "scan_id": "92bf985e3bbb",
-      "matched_signals": [],
+      "risk_score": 4,
+      "confidence": 72,
+      "scan_id": "b8150fefae2f",
+      "matched_signals": [
+        "Known brand mentioned",
+        "Link included in message"
+      ],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
         "safe",
@@ -1921,15 +2212,20 @@
       "case_id": "HR-023",
       "expected_verdict": "High Risk",
       "actual_verdict": "High Risk",
-      "risk_score": 85,
-      "confidence": 90,
-      "scan_id": "51d1c8780811",
+      "risk_score": 82,
+      "confidence": 89,
+      "scan_id": "541a238548c3",
       "matched_signals": [
         "High-risk TLD detected (.tk/.ml/.xyz)",
         "Sender domain uses high-risk TLD (.tk/.ml/.xyz)",
         "Multiple high-risk TLD domains detected",
         "Sender authenticity checks contain spoofing indicators",
-        "Brand impersonation combined with suspicious link and urgency"
+        "OTP request detected",
+        "Mixed-language phishing phrasing",
+        "Link included in message",
+        "Suspicious verification link",
+        "Known phishing campaign pattern matched",
+        "Sender has a risky history"
       ],
       "explanation": "High-risk TLD detected (.tk/.ml/.xyz); Sender domain uses high-risk TLD (.tk/.ml/.xyz); Multiple high-risk TLD domains detected. One or more authentication checks failed; Reply-To domain mismatch detected.",
       "tags": [
@@ -1951,16 +2247,22 @@
       "case_id": "HR-017",
       "expected_verdict": "High Risk",
       "actual_verdict": "High Risk",
-      "risk_score": 85,
-      "confidence": 90,
-      "scan_id": "7290d23a901f",
+      "risk_score": 89,
+      "confidence": 91,
+      "scan_id": "514756f16ad3",
       "matched_signals": [
         "OTP-harvesting pattern (OTP request plus urgency or link)",
         "Sender domain resembles a known brand (lookalike spoof)",
         "Sender lookalike paired with account-access lure",
         "Sender domain uses risky brand-action keyword pattern",
         "Brand impersonation pattern (brand cue plus domain mismatch/lookalike)",
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "OTP request detected",
+        "OTP sharing request detected",
+        "Urgency language",
+        "Indian brand impersonation",
+        "Bank credential harvesting pattern",
+        "Unknown sender pattern"
       ],
       "explanation": "OTP-harvesting pattern (OTP request plus urgency or link); Sender domain resembles a known brand (lookalike spoof); Sender lookalike paired with account-access lure. One or more authentication checks failed; Reply-To domain mismatch detected; Return-Path domain mismatch detected.",
       "tags": [
@@ -1981,16 +2283,22 @@
       "case_id": "HR-016",
       "expected_verdict": "High Risk",
       "actual_verdict": "High Risk",
-      "risk_score": 85,
-      "confidence": 90,
-      "scan_id": "6faf48ebda12",
+      "risk_score": 89,
+      "confidence": 91,
+      "scan_id": "48ba4773199a",
       "matched_signals": [
         "OTP-harvesting pattern (OTP request plus urgency or link)",
         "Sender domain resembles a known brand (lookalike spoof)",
         "Sender lookalike paired with account-access lure",
         "Sender domain uses risky brand-action keyword pattern",
         "Brand impersonation pattern (brand cue plus domain mismatch/lookalike)",
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "OTP request detected",
+        "OTP sharing request detected",
+        "Urgency language",
+        "Indian brand impersonation",
+        "Bank credential harvesting pattern",
+        "Unknown sender pattern"
       ],
       "explanation": "OTP-harvesting pattern (OTP request plus urgency or link); Sender domain resembles a known brand (lookalike spoof); Sender lookalike paired with account-access lure. One or more authentication checks failed; Reply-To domain mismatch detected; Return-Path domain mismatch detected.",
       "tags": [
@@ -2011,10 +2319,13 @@
       "case_id": "SAFE-008",
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
-      "risk_score": 0,
-      "confidence": 5,
-      "scan_id": "d38f7f84b7dc",
-      "matched_signals": [],
+      "risk_score": 10,
+      "confidence": 70,
+      "scan_id": "1612c2e73f20",
+      "matched_signals": [
+        "OTP request detected",
+        "Link included in message"
+      ],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
         "safe",
@@ -2029,14 +2340,16 @@
       "case_id": "SUS-006",
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
-      "risk_score": 30,
-      "confidence": 84,
-      "scan_id": "d707fd009619",
+      "risk_score": 60,
+      "confidence": 77,
+      "scan_id": "4951bb62d056",
       "matched_signals": [
         "Soft-pressure details confirmation request from untrusted sender",
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "Urgency language",
+        "Sender has a risky history"
       ],
-      "explanation": "Soft-pressure details confirmation request from untrusted sender; Sender authenticity checks contain spoofing indicators. One or more authentication checks failed.",
+      "explanation": "Soft-pressure details confirmation request from untrusted sender; Sender authenticity checks contain spoofing indicators; Urgency language. One or more authentication checks failed.",
       "tags": [
         "suspicious",
         "clean_content_bad_domain",
@@ -2057,13 +2370,18 @@
       "actual_verdict": "High Risk",
       "risk_score": 82,
       "confidence": 90,
-      "scan_id": "56e450eb8c05",
+      "scan_id": "ff2ba8037e0d",
       "matched_signals": [
         "High-risk TLD detected (.tk/.ml/.xyz)",
         "Sender domain uses high-risk TLD (.tk/.ml/.xyz)",
         "Multiple high-risk TLD domains detected",
         "Sender authenticity checks contain spoofing indicators",
-        "Brand impersonation combined with suspicious link and urgency"
+        "OTP request detected",
+        "Urgency language",
+        "Suspicious phishing keywords",
+        "Link included in message",
+        "Suspicious verification link",
+        "Sender has a risky history"
       ],
       "explanation": "High-risk TLD detected (.tk/.ml/.xyz); Sender domain uses high-risk TLD (.tk/.ml/.xyz); Multiple high-risk TLD domains detected. One or more authentication checks failed; Reply-To domain mismatch detected.",
       "tags": [
@@ -2085,10 +2403,13 @@
       "case_id": "SAFE-029",
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
-      "risk_score": 0,
-      "confidence": 23,
-      "scan_id": "391e9eeee349",
-      "matched_signals": [],
+      "risk_score": 4,
+      "confidence": 70,
+      "scan_id": "8412fcbf345c",
+      "matched_signals": [
+        "Known brand mentioned",
+        "Link included in message"
+      ],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
         "safe",
@@ -2103,13 +2424,15 @@
       "case_id": "SUS-024",
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
-      "risk_score": 22,
-      "confidence": 73,
-      "scan_id": "25c150649713",
+      "risk_score": 60,
+      "confidence": 75,
+      "scan_id": "9b22eaa30895",
       "matched_signals": [
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "Known phishing campaign pattern matched",
+        "Sender has a risky history"
       ],
-      "explanation": "Sender authenticity checks contain spoofing indicators. One or more authentication checks failed.",
+      "explanation": "Sender authenticity checks contain spoofing indicators; Known phishing campaign pattern matched; Sender has a risky history. One or more authentication checks failed.",
       "tags": [
         "suspicious",
         "clean_content_bad_domain",
@@ -2128,13 +2451,15 @@
       "case_id": "SUS-023",
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
-      "risk_score": 22,
-      "confidence": 72,
-      "scan_id": "599927ad6c38",
+      "risk_score": 60,
+      "confidence": 75,
+      "scan_id": "71cd1659adb1",
       "matched_signals": [
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "Known phishing campaign pattern matched",
+        "Sender has a risky history"
       ],
-      "explanation": "Sender authenticity checks contain spoofing indicators. One or more authentication checks failed.",
+      "explanation": "Sender authenticity checks contain spoofing indicators; Known phishing campaign pattern matched; Sender has a risky history. One or more authentication checks failed.",
       "tags": [
         "suspicious",
         "clean_content_bad_domain",
@@ -2153,13 +2478,15 @@
       "case_id": "SUS-020",
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
-      "risk_score": 22,
-      "confidence": 73,
-      "scan_id": "84a2a21a1d93",
+      "risk_score": 60,
+      "confidence": 75,
+      "scan_id": "231f5c7232e1",
       "matched_signals": [
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "Known phishing campaign pattern matched",
+        "Sender has a risky history"
       ],
-      "explanation": "Sender authenticity checks contain spoofing indicators. One or more authentication checks failed.",
+      "explanation": "Sender authenticity checks contain spoofing indicators; Known phishing campaign pattern matched; Sender has a risky history. One or more authentication checks failed.",
       "tags": [
         "suspicious",
         "clean_content_bad_domain",
@@ -2178,16 +2505,24 @@
       "case_id": "HR-031",
       "expected_verdict": "High Risk",
       "actual_verdict": "High Risk",
-      "risk_score": 80,
-      "confidence": 90,
-      "scan_id": "1d2685ac523c",
+      "risk_score": 88,
+      "confidence": 92,
+      "scan_id": "f32225b948c9",
       "matched_signals": [
         "Sender domain uses high-risk TLD (.tk/.ml/.xyz)",
+        "Attachment verification lure from untrusted sender",
+        "Attachment lure combined with urgency",
         "Sender authenticity checks contain spoofing indicators",
+        "Urgency language",
+        "Suspicious attachment type detected",
+        "Password-protected attachment blocks inspection",
+        "Attachment content asks for sensitive action",
+        "Attachment present - scan recommended",
+        "Unknown sender pattern",
         "Password-protected attachment used as verification lure",
         "Attachment content contains credential or OTP request"
       ],
-      "explanation": "Sender domain uses high-risk TLD (.tk/.ml/.xyz); Sender authenticity checks contain spoofing indicators; Password-protected attachment used as verification lure. One or more authentication checks failed; Reply-To domain mismatch detected.",
+      "explanation": "Sender domain uses high-risk TLD (.tk/.ml/.xyz); Attachment verification lure from untrusted sender; Attachment lure combined with urgency. One or more authentication checks failed; Reply-To domain mismatch detected.",
       "tags": [
         "high_risk",
         "attachment_lure",
@@ -2206,9 +2541,9 @@
       "case_id": "SAFE-038",
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
-      "risk_score": 0,
-      "confidence": 11,
-      "scan_id": "99d3326184c2",
+      "risk_score": 1,
+      "confidence": 71,
+      "scan_id": "af9929aa8a4c",
       "matched_signals": [],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
@@ -2225,14 +2560,17 @@
       "case_id": "SUS-018",
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
-      "risk_score": 25,
-      "confidence": 82,
-      "scan_id": "0537db9dedda",
+      "risk_score": 60,
+      "confidence": 76,
+      "scan_id": "269da4399177",
       "matched_signals": [
         "Soft-pressure details confirmation request from untrusted sender",
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "Urgency language",
+        "Known phishing campaign pattern matched",
+        "Sender has a risky history"
       ],
-      "explanation": "Soft-pressure details confirmation request from untrusted sender; Sender authenticity checks contain spoofing indicators. One or more authentication checks failed.",
+      "explanation": "Soft-pressure details confirmation request from untrusted sender; Sender authenticity checks contain spoofing indicators; Urgency language. One or more authentication checks failed.",
       "tags": [
         "suspicious",
         "clean_content_bad_domain",
@@ -2251,10 +2589,12 @@
       "case_id": "SAFE-035",
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
-      "risk_score": 0,
-      "confidence": 5,
-      "scan_id": "21a524166664",
-      "matched_signals": [],
+      "risk_score": 4,
+      "confidence": 73,
+      "scan_id": "e69b82ab87a6",
+      "matched_signals": [
+        "Link included in message"
+      ],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
         "safe",
@@ -2269,10 +2609,12 @@
       "case_id": "SAFE-006",
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
-      "risk_score": 0,
-      "confidence": 5,
-      "scan_id": "4d10c51bdd53",
-      "matched_signals": [],
+      "risk_score": 4,
+      "confidence": 73,
+      "scan_id": "f58e9bedeaeb",
+      "matched_signals": [
+        "Link included in message"
+      ],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
         "safe",
@@ -2287,13 +2629,17 @@
       "case_id": "SUS-033",
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
-      "risk_score": 48,
-      "confidence": 88,
-      "scan_id": "ce49bdd61e0b",
+      "risk_score": 60,
+      "confidence": 77,
+      "scan_id": "21ef6fd801bf",
       "matched_signals": [
         "High-risk TLD detected (.tk/.ml/.xyz)",
         "Sender domain uses high-risk TLD (.tk/.ml/.xyz)",
-        "Multiple high-risk TLD domains detected"
+        "Multiple high-risk TLD domains detected",
+        "Indian brand impersonation",
+        "Link included in message",
+        "Suspicious verification link",
+        "Unknown sender pattern"
       ],
       "explanation": "High-risk TLD detected (.tk/.ml/.xyz); Sender domain uses high-risk TLD (.tk/.ml/.xyz); Multiple high-risk TLD domains detected. Sender authenticity not verifiable from SPF/DKIM/DMARC (all none or neutral).",
       "tags": [
@@ -2313,9 +2659,9 @@
       "case_id": "HR-012",
       "expected_verdict": "High Risk",
       "actual_verdict": "High Risk",
-      "risk_score": 78,
-      "confidence": 88,
-      "scan_id": "16b17695ae0d",
+      "risk_score": 88,
+      "confidence": 91,
+      "scan_id": "1793c16b28e0",
       "matched_signals": [
         "Credential-harvesting pattern (sensitive request plus urgency or link)",
         "OTP-harvesting pattern (OTP request plus urgency or link)",
@@ -2324,7 +2670,13 @@
         "Sender lookalike paired with account-access lure",
         "Brand impersonation pattern (brand cue plus domain mismatch/lookalike)",
         "High-risk TLD detected (.tk/.ml/.xyz)",
-        "Sender domain uses high-risk TLD (.tk/.ml/.xyz)"
+        "Sender domain uses high-risk TLD (.tk/.ml/.xyz)",
+        "OTP request detected",
+        "Urgency language",
+        "Indian brand impersonation",
+        "Link included in message",
+        "Bank credential harvesting pattern",
+        "Sender has a risky history"
       ],
       "explanation": "Credential-harvesting pattern (sensitive request plus urgency or link); OTP-harvesting pattern (OTP request plus urgency or link); Sender domain resembles a known brand (lookalike spoof). One or more authentication checks failed; Reply-To domain mismatch detected.",
       "tags": [
@@ -2348,9 +2700,9 @@
       "case_id": "HR-010",
       "expected_verdict": "High Risk",
       "actual_verdict": "High Risk",
-      "risk_score": 78,
-      "confidence": 88,
-      "scan_id": "c174336cdca9",
+      "risk_score": 88,
+      "confidence": 91,
+      "scan_id": "02210d144ccf",
       "matched_signals": [
         "OTP-harvesting pattern (OTP request plus urgency or link)",
         "Sender domain resembles a known brand (lookalike spoof)",
@@ -2359,7 +2711,14 @@
         "Brand impersonation pattern (brand cue plus domain mismatch/lookalike)",
         "High-risk TLD detected (.tk/.ml/.xyz)",
         "Sender domain uses high-risk TLD (.tk/.ml/.xyz)",
-        "Multiple high-risk TLD domains detected"
+        "Multiple high-risk TLD domains detected",
+        "OTP request detected",
+        "OTP sharing request detected",
+        "Urgency language",
+        "Indian brand impersonation",
+        "Link included in message",
+        "Bank credential harvesting pattern",
+        "Sender has a risky history"
       ],
       "explanation": "OTP-harvesting pattern (OTP request plus urgency or link); Sender domain resembles a known brand (lookalike spoof); Linked domain resembles a known brand (lookalike spoof). One or more authentication checks failed; Reply-To domain mismatch detected.",
       "tags": [
@@ -2383,15 +2742,16 @@
       "case_id": "SUS-011",
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
-      "risk_score": 60,
-      "confidence": 99,
-      "scan_id": "3f6f48f76df4",
+      "risk_score": 57,
+      "confidence": 76,
+      "scan_id": "69fff522b8fb",
       "matched_signals": [
         "Sender domain resembles a known brand (lookalike spoof)",
         "Sender lookalike paired with account-access lure",
         "Sender domain uses risky brand-action keyword pattern",
         "Brand impersonation pattern (brand cue plus domain mismatch/lookalike)",
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "Indian brand impersonation"
       ],
       "explanation": "Sender domain resembles a known brand (lookalike spoof); Sender lookalike paired with account-access lure; Sender domain uses risky brand-action keyword pattern. One or more authentication checks failed.",
       "tags": [
@@ -2412,10 +2772,12 @@
       "case_id": "SAFE-009",
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
-      "risk_score": 0,
-      "confidence": 5,
-      "scan_id": "978c921ede64",
-      "matched_signals": [],
+      "risk_score": 4,
+      "confidence": 73,
+      "scan_id": "eb16c6768495",
+      "matched_signals": [
+        "Link included in message"
+      ],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
         "safe",
@@ -2430,10 +2792,13 @@
       "case_id": "SAFE-024",
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
-      "risk_score": 0,
-      "confidence": 23,
-      "scan_id": "200cdb640c55",
-      "matched_signals": [],
+      "risk_score": 4,
+      "confidence": 70,
+      "scan_id": "2068faa02aa5",
+      "matched_signals": [
+        "Known brand mentioned",
+        "Link included in message"
+      ],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
         "safe",
@@ -2448,14 +2813,19 @@
       "case_id": "HR-022",
       "expected_verdict": "High Risk",
       "actual_verdict": "High Risk",
-      "risk_score": 75,
-      "confidence": 87,
-      "scan_id": "ca469d2c0c6b",
+      "risk_score": 88,
+      "confidence": 91,
+      "scan_id": "1c9a22a5b98c",
       "matched_signals": [
         "Credential-harvesting pattern (sensitive request plus urgency or link)",
         "OTP-harvesting pattern (OTP request plus urgency or link)",
         "Sender authenticity checks contain spoofing indicators",
-        "Brand impersonation combined with suspicious link and urgency"
+        "OTP request detected",
+        "Urgency language",
+        "Link included in message",
+        "Suspicious verification link",
+        "Shortened link hides the final destination",
+        "Sender has a risky history"
       ],
       "explanation": "Credential-harvesting pattern (sensitive request plus urgency or link); OTP-harvesting pattern (OTP request plus urgency or link); Sender authenticity checks contain spoofing indicators. One or more authentication checks failed; Reply-To domain mismatch detected.",
       "tags": [
@@ -2475,16 +2845,22 @@
       "case_id": "HR-030",
       "expected_verdict": "High Risk",
       "actual_verdict": "High Risk",
-      "risk_score": 80,
-      "confidence": 90,
-      "scan_id": "192a19b38bc3",
+      "risk_score": 88,
+      "confidence": 92,
+      "scan_id": "72886a3ffd68",
       "matched_signals": [
         "Sender domain uses high-risk TLD (.tk/.ml/.xyz)",
+        "Attachment verification lure from untrusted sender",
+        "Attachment lure combined with urgency",
         "Sender authenticity checks contain spoofing indicators",
+        "Urgency language",
+        "Attachment contains a QR-code action",
+        "Attachment content asks for sensitive action",
+        "Attachment present - scan recommended",
         "Attachment QR lure indicator detected",
         "Attachment content contains credential or OTP request"
       ],
-      "explanation": "Sender domain uses high-risk TLD (.tk/.ml/.xyz); Sender authenticity checks contain spoofing indicators; Attachment QR lure indicator detected. One or more authentication checks failed; Reply-To domain mismatch detected.",
+      "explanation": "Sender domain uses high-risk TLD (.tk/.ml/.xyz); Attachment verification lure from untrusted sender; Attachment lure combined with urgency. One or more authentication checks failed; Reply-To domain mismatch detected.",
       "tags": [
         "high_risk",
         "attachment_lure",
@@ -2503,14 +2879,15 @@
       "case_id": "SUS-003",
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
-      "risk_score": 27,
-      "confidence": 82,
-      "scan_id": "196aa6618814",
+      "risk_score": 57,
+      "confidence": 75,
+      "scan_id": "058e2ddc9bd7",
       "matched_signals": [
         "Sender domain uses risky brand-action keyword pattern",
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "Sender has a risky history"
       ],
-      "explanation": "Sender domain uses risky brand-action keyword pattern; Sender authenticity checks contain spoofing indicators. One or more authentication checks failed.",
+      "explanation": "Sender domain uses risky brand-action keyword pattern; Sender authenticity checks contain spoofing indicators; Sender has a risky history. One or more authentication checks failed.",
       "tags": [
         "suspicious",
         "clean_content_bad_domain",
@@ -2529,10 +2906,13 @@
       "case_id": "SAFE-004",
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
-      "risk_score": 0,
-      "confidence": 5,
-      "scan_id": "88cef2994eef",
-      "matched_signals": [],
+      "risk_score": 4,
+      "confidence": 72,
+      "scan_id": "d33cc434bf99",
+      "matched_signals": [
+        "Known brand mentioned",
+        "Link included in message"
+      ],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
         "safe",
@@ -2547,9 +2927,9 @@
       "case_id": "SUS-031",
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
-      "risk_score": 22,
-      "confidence": 72,
-      "scan_id": "8c1a834c60d8",
+      "risk_score": 60,
+      "confidence": 75,
+      "scan_id": "74991e869399",
       "matched_signals": [
         "Sender authenticity checks contain spoofing indicators"
       ],
@@ -2572,9 +2952,9 @@
       "case_id": "HR-035",
       "expected_verdict": "High Risk",
       "actual_verdict": "High Risk",
-      "risk_score": 75,
-      "confidence": 88,
-      "scan_id": "1b2382e58ae7",
+      "risk_score": 88,
+      "confidence": 91,
+      "scan_id": "13cfe638571c",
       "matched_signals": [
         "Credential-harvesting pattern (sensitive request plus urgency or link)",
         "High-risk TLD detected (.tk/.ml/.xyz)",
@@ -2582,7 +2962,15 @@
         "Multiple high-risk TLD domains detected",
         "Urgency plus branded link pressure",
         "Sender authenticity checks contain spoofing indicators",
-        "Brand impersonation combined with suspicious link and urgency"
+        "OTP request detected",
+        "Urgency language",
+        "Indian brand impersonation",
+        "Suspicious phishing keywords",
+        "Aadhaar KYC requirement",
+        "Link included in message",
+        "Suspicious verification link",
+        "Bank credential harvesting pattern",
+        "Unknown sender pattern"
       ],
       "explanation": "Credential-harvesting pattern (sensitive request plus urgency or link); High-risk TLD detected (.tk/.ml/.xyz); Sender domain uses high-risk TLD (.tk/.ml/.xyz). One or more authentication checks failed; Reply-To domain mismatch detected.",
       "tags": [
@@ -2604,10 +2992,12 @@
       "case_id": "SAFE-019",
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
-      "risk_score": 0,
-      "confidence": 5,
-      "scan_id": "90689d279988",
-      "matched_signals": [],
+      "risk_score": 4,
+      "confidence": 73,
+      "scan_id": "75c2e4fb6a9d",
+      "matched_signals": [
+        "Link included in message"
+      ],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
         "safe",
@@ -2622,9 +3012,9 @@
       "case_id": "HR-006",
       "expected_verdict": "High Risk",
       "actual_verdict": "High Risk",
-      "risk_score": 78,
-      "confidence": 88,
-      "scan_id": "a7f2288deb46",
+      "risk_score": 88,
+      "confidence": 91,
+      "scan_id": "7117f5a7470f",
       "matched_signals": [
         "OTP-harvesting pattern (OTP request plus urgency or link)",
         "Sender domain resembles a known brand (lookalike spoof)",
@@ -2633,7 +3023,15 @@
         "Sender domain uses risky brand-action keyword pattern",
         "Brand impersonation pattern (brand cue plus domain mismatch/lookalike)",
         "High-risk TLD detected (.tk/.ml/.xyz)",
-        "Sender domain uses high-risk TLD (.tk/.ml/.xyz)"
+        "Sender domain uses high-risk TLD (.tk/.ml/.xyz)",
+        "OTP request detected",
+        "OTP sharing request detected",
+        "Urgency language",
+        "Indian brand impersonation",
+        "Link included in message",
+        "Suspicious verification link",
+        "Bank credential harvesting pattern",
+        "Sender has a risky history"
       ],
       "explanation": "OTP-harvesting pattern (OTP request plus urgency or link); Sender domain resembles a known brand (lookalike spoof); Linked domain resembles a known brand (lookalike spoof). One or more authentication checks failed; Reply-To domain mismatch detected.",
       "tags": [
@@ -2657,14 +3055,18 @@
       "case_id": "HR-032",
       "expected_verdict": "High Risk",
       "actual_verdict": "High Risk",
-      "risk_score": 85,
-      "confidence": 89,
-      "scan_id": "a6b4a8054bd6",
+      "risk_score": 89,
+      "confidence": 91,
+      "scan_id": "c2dedb1c4121",
       "matched_signals": [
         "OTP-harvesting pattern (OTP request plus urgency or link)",
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "OTP request detected",
+        "OTP sharing request detected",
+        "Urgency language",
+        "Sender has a risky history"
       ],
-      "explanation": "OTP-harvesting pattern (OTP request plus urgency or link); Sender authenticity checks contain spoofing indicators. One or more authentication checks failed; Reply-To domain mismatch detected.",
+      "explanation": "OTP-harvesting pattern (OTP request plus urgency or link); Sender authenticity checks contain spoofing indicators; OTP request detected. One or more authentication checks failed; Reply-To domain mismatch detected.",
       "tags": [
         "high_risk",
         "no_link_phishing",
@@ -2683,15 +3085,18 @@
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
       "risk_score": 60,
-      "confidence": 99,
-      "scan_id": "a6116ca52b34",
+      "confidence": 76,
+      "scan_id": "22d3d0a6bb22",
       "matched_signals": [
         "Sender domain resembles a known brand (lookalike spoof)",
         "Sender lookalike paired with account-access lure",
         "Sender domain uses risky brand-action keyword pattern",
         "Brand impersonation pattern (brand cue plus domain mismatch/lookalike)",
         "Soft-pressure details confirmation request from untrusted sender",
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "Urgency language",
+        "Indian brand impersonation",
+        "Sender has a risky history"
       ],
       "explanation": "Sender domain resembles a known brand (lookalike spoof); Sender lookalike paired with account-access lure; Sender domain uses risky brand-action keyword pattern. One or more authentication checks failed.",
       "tags": [
@@ -2712,13 +3117,14 @@
       "case_id": "SUS-032",
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
-      "risk_score": 22,
-      "confidence": 73,
-      "scan_id": "90cd43b696d2",
+      "risk_score": 60,
+      "confidence": 75,
+      "scan_id": "c7f193663719",
       "matched_signals": [
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "Sender has a risky history"
       ],
-      "explanation": "Sender authenticity checks contain spoofing indicators. One or more authentication checks failed.",
+      "explanation": "Sender authenticity checks contain spoofing indicators; Sender has a risky history. One or more authentication checks failed.",
       "tags": [
         "suspicious",
         "clean_content_bad_domain",
@@ -2737,13 +3143,14 @@
       "case_id": "SUS-029",
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
-      "risk_score": 22,
-      "confidence": 73,
-      "scan_id": "183b71eeab6c",
+      "risk_score": 60,
+      "confidence": 75,
+      "scan_id": "a7c028b5fc9b",
       "matched_signals": [
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "Sender has a risky history"
       ],
-      "explanation": "Sender authenticity checks contain spoofing indicators. One or more authentication checks failed.",
+      "explanation": "Sender authenticity checks contain spoofing indicators; Sender has a risky history. One or more authentication checks failed.",
       "tags": [
         "suspicious",
         "clean_content_bad_domain",
@@ -2762,13 +3169,15 @@
       "case_id": "SUS-002",
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
-      "risk_score": 30,
-      "confidence": 92,
-      "scan_id": "e35f02c75f89",
+      "risk_score": 60,
+      "confidence": 76,
+      "scan_id": "79e406ceec89",
       "matched_signals": [
         "Sender domain uses risky brand-action keyword pattern",
         "Soft-pressure details confirmation request from untrusted sender",
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "Urgency language",
+        "Sender has a risky history"
       ],
       "explanation": "Sender domain uses risky brand-action keyword pattern; Soft-pressure details confirmation request from untrusted sender; Sender authenticity checks contain spoofing indicators. One or more authentication checks failed.",
       "tags": [
@@ -2789,13 +3198,18 @@
       "case_id": "SUS-039",
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
-      "risk_score": 25,
-      "confidence": 74,
-      "scan_id": "12b0eff18529",
+      "risk_score": 60,
+      "confidence": 78,
+      "scan_id": "4ae7c8c9a027",
       "matched_signals": [
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "OTP request detected",
+        "Link included in message",
+        "Suspicious verification link",
+        "Shortened link hides the final destination",
+        "Sender has a risky history"
       ],
-      "explanation": "Sender authenticity checks contain spoofing indicators. One or more authentication checks failed; Reply-To domain mismatch detected.",
+      "explanation": "Sender authenticity checks contain spoofing indicators; OTP request detected; Link included in message. One or more authentication checks failed; Reply-To domain mismatch detected.",
       "tags": [
         "suspicious",
         "short_link",
@@ -2810,10 +3224,13 @@
       "case_id": "SAFE-025",
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
-      "risk_score": 0,
-      "confidence": 23,
-      "scan_id": "d5a031d897b3",
-      "matched_signals": [],
+      "risk_score": 4,
+      "confidence": 70,
+      "scan_id": "fc440feb0b3c",
+      "matched_signals": [
+        "Known brand mentioned",
+        "Link included in message"
+      ],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
         "safe",
@@ -2828,13 +3245,14 @@
       "case_id": "SUS-007",
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
-      "risk_score": 22,
-      "confidence": 73,
-      "scan_id": "9258a572976f",
+      "risk_score": 55,
+      "confidence": 74,
+      "scan_id": "3d1453a48785",
       "matched_signals": [
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "Sender has a risky history"
       ],
-      "explanation": "Sender authenticity checks contain spoofing indicators. One or more authentication checks failed.",
+      "explanation": "Sender authenticity checks contain spoofing indicators; Sender has a risky history. One or more authentication checks failed.",
       "tags": [
         "suspicious",
         "clean_content_bad_domain",
@@ -2854,14 +3272,16 @@
       "expected_verdict": "Suspicious",
       "actual_verdict": "Suspicious",
       "risk_score": 60,
-      "confidence": 99,
-      "scan_id": "f9101979a156",
+      "confidence": 76,
+      "scan_id": "afae4e645cda",
       "matched_signals": [
         "Sender domain resembles a known brand (lookalike spoof)",
         "Sender lookalike paired with account-access lure",
         "Sender domain uses risky brand-action keyword pattern",
         "Brand impersonation pattern (brand cue plus domain mismatch/lookalike)",
-        "Sender authenticity checks contain spoofing indicators"
+        "Sender authenticity checks contain spoofing indicators",
+        "Known brand mentioned",
+        "Sender has a risky history"
       ],
       "explanation": "Sender domain resembles a known brand (lookalike spoof); Sender lookalike paired with account-access lure; Sender domain uses risky brand-action keyword pattern. One or more authentication checks failed.",
       "tags": [
@@ -2883,8 +3303,8 @@
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
       "risk_score": 0,
-      "confidence": 23,
-      "scan_id": "bdd2b5c9b9cd",
+      "confidence": 70,
+      "scan_id": "d14e878fc571",
       "matched_signals": [],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [
@@ -2902,8 +3322,8 @@
       "expected_verdict": "Safe",
       "actual_verdict": "Safe",
       "risk_score": 0,
-      "confidence": 23,
-      "scan_id": "7e7cbd028509",
+      "confidence": 72,
+      "scan_id": "c7daa78e1b20",
       "matched_signals": [],
       "explanation": "No high-risk phishing combinations were detected. Sender authentication passed and URL checks found no malicious reputation signals.",
       "tags": [

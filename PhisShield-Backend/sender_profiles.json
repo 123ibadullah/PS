@@ -1,209 +1,37 @@
 {
   "accounts.google.com": {
-    "totalScans": 22,
-    "safeCount": 14,
-    "lastScore": 56,
-    "lastVerdict": "Suspicious",
-    "lastSeen": "2026-04-16T07:47:57.723038+00:00",
-    "phishingCount": 8
+    "totalScans": 1,
+    "safeCount": 1,
+    "lastScore": 23,
+    "lastVerdict": "Safe",
+    "lastSeen": "2026-04-18T09:02:21.877273+00:00"
   },
-  "amazon.com": {
-    "totalScans": 21,
-    "phishingCount": 21,
-    "lastScore": 51,
+  "company-helpdesk.com": {
+    "totalScans": 1,
+    "phishingCount": 1,
+    "lastScore": 42,
     "lastVerdict": "Suspicious",
-    "lastSeen": "2026-04-16T07:47:57.054795+00:00"
+    "lastSeen": "2026-04-18T09:02:22.230089+00:00"
   },
   "linkedin.com": {
-    "totalScans": 20,
-    "phishingCount": 19,
-    "lastScore": 35,
-    "lastVerdict": "Suspicious",
-    "lastSeen": "2026-04-16T07:47:50.760122+00:00",
-    "safeCount": 1
-  },
-  "github.com": {
-    "totalScans": 6,
-    "phishingCount": 5,
-    "lastScore": 35,
-    "lastVerdict": "Suspicious",
-    "lastSeen": "2026-04-16T07:47:55.399551+00:00",
-    "safeCount": 1
-  },
-  "paytm.com": {
-    "totalScans": 10,
-    "safeCount": 5,
-    "lastScore": 58,
-    "lastVerdict": "Suspicious",
-    "lastSeen": "2026-04-16T07:47:10.433452+00:00",
-    "phishingCount": 5
-  },
-  "hdfc-alert-secure.xyz": {
-    "totalScans": 15,
-    "phishingCount": 15,
-    "lastScore": 85,
-    "lastVerdict": "High Risk",
-    "lastSeen": "2026-04-16T07:47:17.704699+00:00"
-  },
-  "sbi-login-check.top": {
-    "totalScans": 15,
-    "phishingCount": 15,
-    "lastScore": 85,
-    "lastVerdict": "High Risk",
-    "lastSeen": "2026-04-16T07:47:18.646035+00:00"
-  },
-  "micr0soft-login-support.work": {
-    "totalScans": 15,
-    "phishingCount": 15,
-    "lastScore": 85,
-    "lastVerdict": "High Risk",
-    "lastSeen": "2026-04-16T07:47:19.525835+00:00"
-  },
-  "netfiix-membership-billing.click": {
-    "totalScans": 15,
-    "phishingCount": 15,
-    "lastScore": 80,
-    "lastVerdict": "High Risk",
-    "lastSeen": "2026-04-16T07:47:20.426580+00:00"
-  },
-  "refund-department-gov.xyz": {
-    "totalScans": 15,
-    "phishingCount": 15,
-    "lastScore": 85,
-    "lastVerdict": "High Risk",
-    "lastSeen": "2026-04-16T07:47:21.320206+00:00"
-  },
-  "microsoft.com": {
-    "totalScans": 15,
-    "phishingCount": 15,
-    "lastScore": 35,
-    "lastVerdict": "Suspicious",
-    "lastSeen": "2026-04-16T07:47:53.513736+00:00"
-  },
-  "mobile-mail.work": {
-    "totalScans": 25,
-    "phishingCount": 25,
-    "lastScore": 81,
-    "lastVerdict": "High Risk",
-    "lastSeen": "2026-04-16T07:47:12.522436+00:00"
-  },
-  "secure-doc-review.xyz": {
-    "totalScans": 5,
-    "phishingCount": 5,
-    "lastScore": 95,
-    "lastVerdict": "Critical",
-    "lastSeen": "2026-04-16T07:47:21.902704+00:00"
-  },
-  "payroll-secure.work": {
-    "totalScans": 6,
-    "phishingCount": 6,
-    "lastScore": 95,
-    "lastVerdict": "Critical",
-    "lastSeen": "2026-04-16T07:47:57.188520+00:00"
-  },
-  "mail-protect.top": {
-    "totalScans": 5,
-    "phishingCount": 5,
-    "lastScore": 95,
-    "lastVerdict": "Critical",
-    "lastSeen": "2026-04-16T07:47:22.990714+00:00"
-  },
-  "invoice-alert.click": {
-    "totalScans": 5,
-    "phishingCount": 5,
-    "lastScore": 95,
-    "lastVerdict": "Critical",
-    "lastSeen": "2026-04-16T07:47:23.573807+00:00"
-  },
-  "docs-portal.info": {
-    "totalScans": 5,
-    "phishingCount": 5,
-    "lastScore": 49,
-    "lastVerdict": "Suspicious",
-    "lastSeen": "2026-04-16T07:47:24.116863+00:00"
-  },
-  "secure-login-check.top": {
-    "totalScans": 18,
-    "phishingCount": 18,
-    "lastScore": 95,
-    "lastVerdict": "Critical",
-    "lastSeen": "2026-04-16T07:47:26.991943+00:00"
-  },
-  "parcel-release.click": {
-    "totalScans": 18,
-    "phishingCount": 18,
-    "lastScore": 85,
-    "lastVerdict": "High Risk",
-    "lastSeen": "2026-04-16T07:47:29.899771+00:00"
-  },
-  "jobs-screening.work": {
-    "totalScans": 18,
-    "phishingCount": 18,
-    "lastScore": 48,
-    "lastVerdict": "Suspicious",
-    "lastSeen": "2026-04-16T07:47:32.760431+00:00"
-  },
-  "vendor-payments.co": {
-    "totalScans": 18,
-    "phishingCount": 18,
-    "lastScore": 75,
-    "lastVerdict": "High Risk",
-    "lastSeen": "2026-04-16T07:47:35.496349+00:00"
-  },
-  "tenant-security.xyz": {
-    "totalScans": 18,
-    "phishingCount": 18,
-    "lastScore": 95,
-    "lastVerdict": "Critical",
-    "lastSeen": "2026-04-16T07:47:38.209568+00:00"
-  },
-  "reward-claim.tk": {
-    "totalScans": 18,
-    "phishingCount": 18,
-    "lastScore": 95,
-    "lastVerdict": "Critical",
-    "lastSeen": "2026-04-16T07:47:41.137715+00:00"
-  },
-  "invoice-review.info": {
-    "totalScans": 18,
-    "phishingCount": 18,
-    "lastScore": 75,
-    "lastVerdict": "High Risk",
-    "lastSeen": "2026-04-16T07:47:43.664078+00:00"
-  },
-  "wallet-restore-check.xyz": {
-    "totalScans": 19,
-    "phishingCount": 19,
-    "lastScore": 58,
-    "lastVerdict": "Suspicious",
-    "lastSeen": "2026-04-16T07:47:55.543303+00:00"
-  },
-  "netflix.com": {
-    "totalScans": 10,
-    "safeCount": 10,
-    "lastScore": 10,
+    "totalScans": 1,
+    "safeCount": 1,
+    "lastScore": 23,
     "lastVerdict": "Safe",
-    "lastSeen": "2026-04-16T07:47:49.419001+00:00"
+    "lastSeen": "2026-04-18T09:02:22.294478+00:00"
   },
-  "hdfcbank.com": {
-    "totalScans": 10,
-    "phishingCount": 10,
-    "lastScore": 35,
+  "new-domain-example.org": {
+    "totalScans": 1,
+    "safeCount": 1,
+    "lastScore": 20,
+    "lastVerdict": "Safe",
+    "lastSeen": "2026-04-18T09:02:22.410199+00:00"
+  },
+  "amazon-security-support.com": {
+    "totalScans": 1,
+    "phishingCount": 1,
+    "lastScore": 57,
     "lastVerdict": "Suspicious",
-    "lastSeen": "2026-04-16T07:47:52.112409+00:00"
-  },
-  "urgent-ops.work": {
-    "totalScans": 1,
-    "phishingCount": 1,
-    "lastScore": 80,
-    "lastVerdict": "High Risk",
-    "lastSeen": "2026-04-16T07:47:55.626309+00:00"
-  },
-  "vendor-update.top": {
-    "totalScans": 1,
-    "phishingCount": 1,
-    "lastScore": 75,
-    "lastVerdict": "High Risk",
-    "lastSeen": "2026-04-16T07:47:57.317933+00:00"
+    "lastSeen": "2026-04-18T09:02:22.475146+00:00"
   }
 }

@@ -21,6 +21,7 @@ PhishShield is a full-stack cybersecurity project that combines a React dashboar
 
 - **Explainable verdicts** with risk score, category, signals, and human-readable reasons
 - **India-focused scam coverage** for OTP, UPI, KYC, Aadhaar, PAN, GST, refund, delivery-fee, and bank impersonation fraud
+- **Advanced Threat Analysis** for **Thread Hijacking**, **Malicious Attachments** (PDF/HTML/DOCX), and **QR Code Evasion**
 - **Multilingual detection** for English, Hindi, Telugu, and mixed-script phishing content
 - **Browser-side protection** through the Chrome extension warning UI
 - **Feedback loop** for continuous improvement and retraining support
@@ -31,7 +32,7 @@ PhishShield is a full-stack cybersecurity project that combines a React dashboar
 ## Current project snapshot
 
 ### Verified now
-- ✅ `pnpm build` passes locally from `PhishShield-Frontend` (**verified on April 10, 2026**)
+- ✅ `pnpm build` passes locally from `PhishShield-Frontend` (**verified on April 18, 2026**)
 - ✅ Live backend check on `http://127.0.0.1:8000/api/analyze`:
   - OTP scam sample (`Your account is suspended. Send your OTP immediately to restore access.`) returns `classification: phishing` with `riskScore: 79`
   - safe sample (`Project Update for this week`) returns `classification: safe` with `riskScore: 0`

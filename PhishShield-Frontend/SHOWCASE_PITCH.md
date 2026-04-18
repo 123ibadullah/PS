@@ -25,6 +25,7 @@ Use this file for demos, interviews, portfolio reviews, and final presentations.
 
 - explains **why** a message or destination looks dangerous
 - targets **India-specific scams** such as OTP, UPI, KYC, Aadhaar, PAN, GST, refund, and bank impersonation fraud
+- identifies advanced threats like **Thread Hijacking**, **Malicious Attachments**, and **QR Code Evasion**
 - supports **English, Hindi, Telugu, and mixed-script phishing**
 - works across a **dashboard + backend + extension**, not just one model endpoint
 - already includes **stored QA and benchmark artifacts** in the repo
@@ -84,7 +85,7 @@ Use this file for demos, interviews, portfolio reviews, and final presentations.
 
 ### Q1. What is the novelty here?
 **Answer:**
-> The project combines explainable AI, multilingual phishing analysis, India-specific fraud coverage, and browser-side warnings in one user flow.
+> The project combines explainable AI, advanced threat analysis (Thread Hijacking/Attachments), multilingual phishing analysis, India-specific fraud coverage, and browser-side warnings in one user flow.
 
 ### Q2. Why not rely on a generic spam filter?
 **Answer:**
