@@ -1,37 +1,9 @@
 {
-  "accounts.google.com": {
-    "totalScans": 1,
-    "safeCount": 1,
-    "lastScore": 23,
-    "lastVerdict": "Safe",
-    "lastSeen": "2026-04-18T09:02:21.877273+00:00"
-  },
-  "company-helpdesk.com": {
-    "totalScans": 1,
-    "phishingCount": 1,
-    "lastScore": 42,
-    "lastVerdict": "Suspicious",
-    "lastSeen": "2026-04-18T09:02:22.230089+00:00"
-  },
-  "linkedin.com": {
-    "totalScans": 1,
-    "safeCount": 1,
-    "lastScore": 23,
-    "lastVerdict": "Safe",
-    "lastSeen": "2026-04-18T09:02:22.294478+00:00"
-  },
-  "new-domain-example.org": {
+  "example.com": {
     "totalScans": 1,
     "safeCount": 1,
     "lastScore": 20,
     "lastVerdict": "Safe",
-    "lastSeen": "2026-04-18T09:02:22.410199+00:00"
-  },
-  "amazon-security-support.com": {
-    "totalScans": 1,
-    "phishingCount": 1,
-    "lastScore": 57,
-    "lastVerdict": "Suspicious",
-    "lastSeen": "2026-04-18T09:02:22.475146+00:00"
+    "lastSeen": "2026-04-19T08:00:47.925527+00:00"
   }
 }
