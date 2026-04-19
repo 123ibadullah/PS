@@ -23,9 +23,10 @@ def _init() -> None:
 
 
 def test_bounds_random_inputs() -> None:
+    """Fuzz the same fusion entrypoint used by calculate_email_risk (via compute_score)."""
     rng = random.Random(42)
-    for _ in range(1000):
-        rs, _, _, _ = score_engine.compute_score(
+    for i in range(1000):
+        result = score_engine.compute_score_result_dict(
             language_model_score=rng.randint(0, 100),
             pattern_score=rng.randint(0, 100),
             link_risk_score=rng.randint(0, 100),
@@ -42,10 +43,11 @@ def test_bounds_random_inputs() -> None:
             trusted_sender=rng.choice([True, False]),
             has_brand_impersonation=rng.choice([True, False]),
             safe_reputation_signals=[],
-            ml_max_contribution=35,
-            rule_max_contribution=45,
+            ml_max_contribution=score_engine.ML_MAX_CONTRIBUTION,
+            rule_max_contribution=score_engine.RULE_MAX_CONTRIBUTION,
         )
-        assert 0 <= rs <= 100
+        fs = int(result["final_score"])
+        assert 0 <= fs <= 100, f"Score out of bounds on iteration {i}: {fs}"
 
 
 def test_determinism_cert_cases() -> None:

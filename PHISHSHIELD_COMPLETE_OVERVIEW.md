@@ -89,6 +89,12 @@ React Frontend (http://localhost:5173)
                └── Active learning feedback loop
 ```
 
+### Python scan pipeline (`PhisShield-Backend`)
+
+**Gap 1 (modular scoring) — partial for this release:** Analyzers, enrichment, and **fusion caps** live in focused modules (`scoring/score_engine.py` exports `ML_MAX_CONTRIBUTION` / `RULE_MAX_CONTRIBUTION` and `compute_score` for the linear blend). **Most post-fusion score policy and verdict assembly still live in `calculate_email_risk`** in `main.py` on purpose: a full extraction was deferred after slice-style moves showed baseline drift; baseline-safe extraction is a **roadmap** item. See the architecture comment at the top of `calculate_email_risk`.
+
+The FastAPI path still **orchestrates** preprocessing, analyzers, enrichment, fusion call, downstream policy, caching, and logging; verdict helpers in `verdict/` remain in use where mapped.
+
 ### How the frontend uses both
 
 The React dashboard calls the **Python backend directly on `localhost:8000`** for:

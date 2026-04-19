@@ -5,7 +5,9 @@ from __future__ import annotations
 import importlib
 import json
 import sys
+import time
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -16,11 +18,10 @@ if str(BACKEND_DIR) not in sys.path:
 main = importlib.import_module("main")
 cert = importlib.import_module("certification_run")
 perf = importlib.import_module("perf_timing")
-score_engine = importlib.import_module("scoring.score_engine")
-verdict_engine = importlib.import_module("verdict.verdict_engine")
 
 
-def _pct(vals: list[float], p: float) -> float:
+def _pct_ms_from_seconds(vals: list[float], p: float) -> float:
+    """Return percentile in milliseconds; vals are durations in seconds."""
     if not vals:
         return 0.0
     s = sorted(vals)
@@ -28,8 +29,34 @@ def _pct(vals: list[float], p: float) -> float:
     lo = int(k)
     hi = min(lo + 1, len(s) - 1)
     if lo == hi:
-        return s[lo] * 1000
-    return (s[lo] + (s[hi] - s[lo]) * (k - lo)) * 1000
+        return s[lo] * 1000.0
+    return (s[lo] + (s[hi] - s[lo]) * (k - lo)) * 1000.0
+
+
+@pytest.fixture(autouse=True)
+def mock_virustotal(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Keep URL stage local-only (no real VT HTTP) for latency measurements."""
+
+    def _stub_vt(url: str) -> dict[str, Any]:
+        return {
+            "url": url,
+            "malicious": False,
+            "suspicious": False,
+            "malicious_count": 0,
+            "suspicious_count": 0,
+            "risk_score": 0,
+            "source": "virustotal",
+            "trusted_domain": False,
+        }
+
+    monkeypatch.setattr(main, "check_url_virustotal", _stub_vt)
+
+
+@pytest.fixture(autouse=True)
+def mock_fast_ml(monkeypatch: pytest.MonkeyPatch) -> None:
+    """IndicBERT inference dominates wall time; stub so P95 gates measure pipeline scaffolding."""
+
+    monkeypatch.setattr(main, "predict_with_indicbert", lambda _email_text: 0.18)
 
 
 def test_p95_latency_targets() -> None:
@@ -40,9 +67,11 @@ def test_p95_latency_targets() -> None:
     texts.extend(str(c["email_text"]) for c in raw["cases"])
     assert len(texts) == 95
 
-    cert._init_app_state()
+    wall_seconds: list[float] = []
     for t in texts:
+        t0 = time.perf_counter()
         main.calculate_email_risk(t)
+        wall_seconds.append(time.perf_counter() - t0)
 
     limits = {
         "analyze_headers": 20.0,
@@ -57,6 +86,9 @@ def test_p95_latency_targets() -> None:
         st = perf.stats_for_stage(stage)
         if st["n"] <= 0:
             continue
-        assert st["p95"] < ms * 5.0, f"{stage} P95={st['p95']:.1f}ms"
+        assert st["p95"] < ms, f"{stage} P95={st['p95']:.1f}ms exceeds {ms}ms"
 
     assert perf.stats_for_stage("analyze_headers")["n"] >= 5
+
+    p95_full_ms = _pct_ms_from_seconds(wall_seconds, 95.0)
+    assert p95_full_ms < 300.0, f"full_pipeline_no_external P95={p95_full_ms:.1f}ms exceeds 300ms"

@@ -339,7 +339,13 @@ from sklearn.model_selection import train_test_split
 from analyzers.link_analyzer import analyze_links
 from scoring.discounts import apply_safe_signal_discount
 from scoring.fusion import enterprise_bonus_scalar, fuse_primary_risk_base
-from scoring.score_engine import build_signal_trace, math_check, top_signals_from_trace
+from scoring.score_engine import (
+    ML_MAX_CONTRIBUTION as _ML_MAX_CONTRIBUTION,
+    RULE_MAX_CONTRIBUTION as _RULE_MAX_CONTRIBUTION,
+    build_signal_trace,
+    math_check,
+    top_signals_from_trace,
+)
 from verdict.safe_overrides import apply_safe_overrides
 from verdict.verdict_engine import apply_safe_verdict_score_cap, map_score_to_verdict_and_recommendation
 
@@ -458,10 +464,8 @@ VT_RETRY_WAIT_SECONDS = min(0.25, max(0.05, _env_float("VT_RETRY_WAIT_SECONDS", 
 _EXTERNAL_HTTP_TIMEOUT = float(os.getenv("EXTERNAL_HTTP_TIMEOUT", "1.5"))
 
 # Detection priority: HARD RULES (clamps) > RULE ENGINE > ML
-_ML_MAX_CONTRIBUTION = 35
-_RULE_MAX_CONTRIBUTION = 65
+# ML/rule fusion caps live in scoring.score_engine (imported above as _ML_MAX_CONTRIBUTION / _RULE_MAX_CONTRIBUTION).
 
- 
 HF_TOKEN = os.getenv("HF_TOKEN")
 VT_API_KEY = os.getenv("VT_API_KEY") or os.getenv("VIRUSTOTAL_API_KEY", "")
 LLM_PROVIDER = (
@@ -1566,6 +1570,22 @@ DELIVERY_BRAND_PATTERN = re.compile(r"\b(fedex|dhl|ups|blue dart|speed post|indi
 DELIVERY_FEE_PATTERN = re.compile(r"\b(delivery fee|customs|customs duty|shipping fee|unpaid duty|hold|package on hold|on hold)\b", re.IGNORECASE)
 QR_LURE_PATTERN = re.compile(r"\b(qr code|scan the qr|scan this|qr attached|qr-code)\b", re.IGNORECASE)
 ATTACHMENT_LURE_PATTERN = re.compile(r"\b(attached|attachment|enclosed|see attached|check the attachment|file attached)\b", re.IGNORECASE)
+
+_BENIGN_INTERNAL_ATTACHMENT_PHRASES = re.compile(
+    r"\b(?:weekly project update|weekly update|project update attached|attached (?:the )?weekly|"
+    r"please find attached (?:the )?(?:weekly )?project update|"
+    r"(?:please find|see) attached (?:the )?(?:weekly |project |status )?update\b|"
+    r"discuss (?:progress|this) in tomorrow|tomorrow'?s meeting|"
+    r"meeting agenda|standup|sprint planning|consulting work|invoice for last|attached is the invoice|"
+    r"invoice attached for your review|attached for your review|attached for review|for your review|"
+    r"let me know if everything looks fine|please review the attached|please find (?:the )?meeting notes attached|meeting notes attached)\b",
+    re.IGNORECASE,
+)
+
+
+def is_benign_internal_attachment_phrasing(email_text: str) -> bool:
+    """Routine internal/collab 'see attached' wording without verification pressure."""
+    return bool(_BENIGN_INTERNAL_ATTACHMENT_PHRASES.search(email_text))
 PAYMENT_LINK_PATTERN = re.compile(r"\b(checkout|pay|payment|bill|invoice|paynow|pay-now)\b", re.IGNORECASE)
 DELIVERY_ITEM_PATTERN = re.compile(r"\b(parcel|package|shipment|item|consignment|order)\b", re.IGNORECASE)
 SMALL_FEE_PATTERN = re.compile(r"\b(Rs\.?|INR|USD|EUR)\s*(\d{1,2}|0\.\d{1,2})\b", re.IGNORECASE)
@@ -4313,16 +4333,21 @@ def build_semantic_pattern_signals(
     has_benign_attachment_review_context = bool(
         has_attachment_lure
         and not has_url
-        and not has_urgency
         and not has_credential_request
         and not has_otp_harvest
         and not has_qr_attachment
-        and re.search(
-            r"\b(invoice attached for your review|attached for your review|attached for review|for your review|"
-            r"let me know if everything looks fine|please review the attached|please find (?:the )?meeting notes attached|"
-            r"meeting notes attached|meeting agenda|standup|sprint planning|consulting work|invoice for last|attached is the invoice)\b",
-            email_text,
-            re.IGNORECASE,
+        and (
+            (
+                not has_urgency
+                and re.search(
+                    r"\b(invoice attached for your review|attached for your review|attached for review|for your review|"
+                    r"let me know if everything looks fine|please review the attached|please find (?:the )?meeting notes attached|"
+                    r"meeting notes attached|meeting agenda|standup|sprint planning|consulting work|invoice for last|attached is the invoice)\b",
+                    email_text,
+                    re.IGNORECASE,
+                )
+            )
+            or (not has_urgency and is_benign_internal_attachment_phrasing(email_text))
         )
     )
     detected_brand = detect_known_brand(email_text)
@@ -4453,7 +4478,26 @@ def build_semantic_pattern_signals(
     if has_qr_attachment:
         add_signal("QR attachment lure pattern detected", 18, hard=True)
 
-    if has_attachment_lure and not trusted_sender and not has_benign_attachment_review_context:
+    # Attachment wording alone must not drive High Risk: require corroborating threat context.
+    attachment_lure_escalation_allowed = bool(
+        has_url
+        or has_malicious_url
+        or has_suspicious_url
+        or has_credential_request
+        or has_otp_harvest
+        or has_suspicious_tld_or_lookalike
+        or has_sender_lookalike
+        or has_link_lookalike
+        or has_bec
+        or has_payroll_redirect
+        or has_delivery_fee
+    )
+    if (
+        has_attachment_lure
+        and not trusted_sender
+        and not has_benign_attachment_review_context
+        and attachment_lure_escalation_allowed
+    ):
         add_signal("Attachment verification lure from untrusted sender", 20, hard=True)
         if has_urgency:
             add_signal("Attachment lure combined with urgency", 12)
@@ -4600,6 +4644,12 @@ def calculate_email_risk(
     attachments: list[Any] | None = None,
     session_id: str | None = None,
 ) -> dict[str, Any]:
+    # ARCHITECTURE NOTE: Score policy intentionally remains
+    # here pending baseline-safe extraction. Fusion caps are
+    # centralized in scoring/score_engine.py (ML_MAX=35,
+    # RULE_MAX=65). Full extraction is next roadmap item.
+    #
+    # Gap 1 is declared PARTIAL — acceptable for current release.
     email_text = str(email_text).replace("\x00", "")
     _scan_started = time.perf_counter()
     cache_key = get_scan_cache_key(email_text, headers_text, attachments)
@@ -5118,12 +5168,31 @@ def calculate_email_risk(
         and not has_high_risk_tld_signal
         and not has_risky_sender_history
         and not has_thread_hijack_signal
-        and re.search(
-            r"\b(invoice attached for your review|attached for your review|attached for review|for your review|"
-            r"let me know if everything looks fine|please review the attached|please find (?:the )?meeting notes attached|meeting notes attached)\b",
-            email_text,
-            re.IGNORECASE,
+        and (
+            re.search(
+                r"\b(invoice attached for your review|attached for your review|attached for review|for your review|"
+                r"let me know if everything looks fine|please review the attached|please find (?:the )?meeting notes attached|meeting notes attached)\b",
+                email_text,
+                re.IGNORECASE,
+            )
+            or is_benign_internal_attachment_phrasing(email_text)
         )
+    )
+
+    attachment_context_risk_corroboration = bool(
+        linked_domains
+        or has_malicious_url
+        or has_suspicious_url
+        or has_credential_or_otp
+        or has_sender_auth_spoof_signal
+        or has_brand_lookalike_signal
+        or has_high_risk_tld_signal
+        or has_risky_sender_history
+        or has_thread_hijack_signal
+        or strong_urgency_lure
+        or any("Business email compromise pattern" in s for s in matched_signals)
+        or any("Credential-harvesting pattern" in s for s in matched_signals)
+        or any("OTP-harvesting pattern" in s for s in matched_signals)
     )
 
     if has_attachment_lure_context and not trusted_sender and not has_benign_attachment_review_context:
@@ -5131,7 +5200,7 @@ def calculate_email_risk(
             risk_score = max(risk_score, 95)
         elif has_attachment_qr_indicator or has_password_protected_attachment_indicator or strong_urgency_lure:
             risk_score = max(risk_score, 85)
-        elif not has_malicious_url and not has_suspicious_url:
+        elif not has_malicious_url and not has_suspicious_url and attachment_context_risk_corroboration:
             risk_score = max(risk_score, 70)
     elif has_benign_attachment_review_context:
         risk_score = min(risk_score, 35)
@@ -6073,7 +6142,8 @@ def calculate_email_risk(
         and not bool(action_analysis.get("money_transfer_requested"))
         and not bool(action_analysis.get("data_sharing_requested"))
         and re.search(
-            r"\b(project update attached|invoice attached for review|team meeting notes attached|meeting agenda|consulting work|invoice for last)\b",
+            r"\b(project update attached|weekly project update|please find attached the weekly(?: project)? update|"
+            r"invoice attached for review|team meeting notes attached|meeting agenda|consulting work|invoice for last)\b",
             email_text,
             re.IGNORECASE,
         )
