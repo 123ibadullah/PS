@@ -1,8 +1,8 @@
 ===========================================================
 PHISHSHIELD AI - BATTLE HARDENING CERTIFICATION REPORT
-Build: 2026-04-19T07:45:27Z
+Build: 2026-04-19T11:01:55Z
 ===========================================================
-[REGRESSION]         35-case score bands               [OK]  35/35 pass | FP=0 | FN=0 | max_ms=70
+[REGRESSION]         35-case score bands               [OK]  35/35 pass | FP=0 | FN=0 | max_ms=115
 [REGRESSION]         pytest test_cert|test_regression  [OK]  exit 0
 [ADVERSARIAL]        PhisShield-Backend/tests/test_adversarial [OK]  exit 0
 [SCORE INTEGRITY]    test_score_integrity.py           [OK]  exit 0
@@ -12,15 +12,15 @@ Build: 2026-04-19T07:45:27Z
 [EXPLAINABILITY]     tests/test_explanation_integrity.py [OK]  exit 0
 ===========================================================
 --- TIMING (wall seconds per stage) ---
-  REGRESSION_35                                 12.39s  [ok]  35/35 pass | FP=0 | FN=0 | max_ms=70
-  REGRESSION_PYTEST                            170.30s  [ok]  exit 0
-  ADVERSARIAL                                   21.71s  [ok]  exit 0
-  SCORE_INTEGRITY                              577.71s  [ok]  exit 0
-  FAILURE_INJECTION                             26.01s  [ok]  exit 0
-  PERFORMANCE                                   24.74s  [ok]  exit 0
-  SECURITY                                      13.85s  [ok]  exit 0
-  EXPLAINABILITY                                91.96s  [ok]  exit 0
-  TOTAL (sequential stages)                    938.67s
+  REGRESSION_35                                 28.31s  [ok]  35/35 pass | FP=0 | FN=0 | max_ms=115
+  REGRESSION_PYTEST                            402.26s  [ok]  exit 0
+  ADVERSARIAL                                   33.23s  [ok]  exit 0
+  SCORE_INTEGRITY                              760.87s  [ok]  exit 0
+  FAILURE_INJECTION                             35.66s  [ok]  exit 0
+  PERFORMANCE                                   28.04s  [ok]  exit 0
+  SECURITY                                      23.13s  [ok]  exit 0
+  EXPLAINABILITY                               213.43s  [ok]  exit 0
+  TOTAL (sequential stages)                   1524.92s
 ===========================================================
 OVERALL: [OK] All certification gates passed.
 Exit code: 0

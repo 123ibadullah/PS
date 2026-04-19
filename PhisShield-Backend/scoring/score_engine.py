@@ -16,6 +16,10 @@ from perf_timing import timed
 from scoring.discounts import apply_safe_signal_discount
 from scoring.fusion import enterprise_bonus_scalar, fuse_primary_risk_base
 
+# Fusion caps (single source of truth for certification / main.calculate_email_risk)
+ML_MAX_CONTRIBUTION = 35
+RULE_MAX_CONTRIBUTION = 65
+
 
 @timed("compute_score")
 def compute_score(
@@ -53,6 +57,44 @@ def compute_score(
     risk_score = apply_safe_signal_discount(risk_score, safe_reputation_signals)
     eb = float(enterprise_bonus_scalar(enterprise_bonus_breakdown))
     return int(risk_score), ml_contribution, rule_contribution, eb
+
+
+def compute_score_result_dict(
+    *,
+    language_model_score: int,
+    pattern_score: int,
+    link_risk_score: int,
+    header_spoofing_score: int,
+    enterprise_bonus_breakdown: dict[str, Any],
+    hard_signal_count: int,
+    header_has_fail: bool,
+    trusted_sender: bool,
+    has_brand_impersonation: bool,
+    safe_reputation_signals: list[str],
+    ml_max_contribution: int,
+    rule_max_contribution: int,
+) -> dict[str, Any]:
+    """Same numeric core as compute_score; dict wrapper for bounds / contract tests."""
+    rs, ml, rule, ent = compute_score(
+        language_model_score=language_model_score,
+        pattern_score=pattern_score,
+        link_risk_score=link_risk_score,
+        header_spoofing_score=header_spoofing_score,
+        enterprise_bonus_breakdown=enterprise_bonus_breakdown,
+        hard_signal_count=hard_signal_count,
+        header_has_fail=header_has_fail,
+        trusted_sender=trusted_sender,
+        has_brand_impersonation=has_brand_impersonation,
+        safe_reputation_signals=safe_reputation_signals,
+        ml_max_contribution=ml_max_contribution,
+        rule_max_contribution=rule_max_contribution,
+    )
+    return {
+        "final_score": int(rs),
+        "ml_contribution": float(ml),
+        "rule_contribution": float(rule),
+        "enterprise_bonus": float(ent),
+    }
 
 
 def compute_score_placeholder() -> dict[str, Any]:
