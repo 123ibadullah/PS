@@ -1,0 +1,62 @@
+{
+  "description": "Adversarial / robustness inputs for calculate_email_risk — must not crash; scores stay in-band.",
+  "cases": [
+    {
+      "id": "homoglyph_bank_lure",
+      "email_text": "From: nоtification@sbi-security-notice.ru\nSubject: Аccount suspended\nDear customer verify OTP immediately http://evil.example/phish",
+      "expect": {
+        "min_score": 0,
+        "max_score": 100,
+        "verdict_not": "Safe"
+      }
+    },
+    {
+      "id": "zwsp_inside_words",
+      "email_text": "Team update: please re\u200bview the atta\u200bched spreadsheet before EOD.",
+      "expect": {
+        "min_score": 0,
+        "max_score": 40
+      }
+    },
+    {
+      "id": "crlf_and_nested_quotes",
+      "email_text": "Subject: Quote test\r\nBody: {\"note\":\"Send OTP to 555\",\"hint\":\"''urgent''\"}\r\nThanks.",
+      "expect": {
+        "min_score": 0,
+        "max_score": 100
+      }
+    },
+    {
+      "id": "emoji_noise_phishing_tail",
+      "email_text": "🔒🔒🔒 Winner! 🎉🎉 Click now to claim your prize at http://prize-spam.xyz/ok 🎁 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "expect": {
+        "min_score": 40,
+        "max_score": 100
+      }
+    },
+    {
+      "id": "minimal_safe",
+      "email_text": "Hi, meeting at 3pm.",
+      "expect": {
+        "min_score": 0,
+        "max_score": 35
+      }
+    },
+    {
+      "id": "sql_fragment_safe_context",
+      "email_text": "SELECT id FROM logs WHERE session = 'admin'; -- audit query from yesterday",
+      "expect": {
+        "min_score": 0,
+        "max_score": 45
+      }
+    },
+    {
+      "id": "rtl_markers_and_link",
+      "email_text": "Verify your account\u200f: https://accounts-fake-verify.example/login please",
+      "expect": {
+        "min_score": 35,
+        "max_score": 100
+      }
+    }
+  ]
+}

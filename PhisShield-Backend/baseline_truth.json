@@ -1,0 +1,449 @@
+[
+  {
+    "case_id": "cert_001_phishing",
+    "input_hash": "33aaf083780b0b30e0e11c6e7729eae949ecba718efda20110704f26f1fa3a97",
+    "risk_score": 88,
+    "verdict": "High Risk",
+    "ml_contribution": 35.0,
+    "rule_contribution": 65.0,
+    "signals": [
+      "OTP-harvesting pattern (OTP request plus urgency or link)",
+      "Linked domain resembles a known brand (lookalike spoof)",
+      "Brand impersonation pattern (brand cue plus domain mismatch/lookalike)",
+      "Urgency plus branded link pressure",
+      "OTP request detected",
+      "OTP sharing request detected",
+      "Urgency language",
+      "Indian brand impersonation",
+      "Link included in message",
+      "Suspicious verification link",
+      "Bank credential harvesting pattern"
+    ],
+    "latency_ms": 194.86
+  },
+  {
+    "case_id": "cert_002_phishing",
+    "input_hash": "c8ce62d50b831c7c64f69135c1341a81f0f5ad39699b703253214a4fabcf42eb",
+    "risk_score": 78,
+    "verdict": "High Risk",
+    "ml_contribution": 1.0,
+    "rule_contribution": 65.0,
+    "signals": [
+      "OTP request detected",
+      "Mixed-language phishing phrasing",
+      "Suspicious phishing keywords",
+      "Link included in message",
+      "Suspicious verification link"
+    ],
+    "latency_ms": 81.66
+  },
+  {
+    "case_id": "cert_003_phishing",
+    "input_hash": "155d20348c554f8e7f923ce345b0b9872fe429bddeb13dd7945b3387fb113e6a",
+    "risk_score": 75,
+    "verdict": "High Risk",
+    "ml_contribution": 0.0,
+    "rule_contribution": 65.0,
+    "signals": [
+      "Linked domain resembles a known brand (lookalike spoof)",
+      "Brand impersonation pattern (brand cue plus domain mismatch/lookalike)",
+      "High-risk TLD detected (.tk/.ml/.xyz)",
+      "Indian brand impersonation",
+      "Suspicious phishing keywords",
+      "Aadhaar KYC requirement",
+      "Link included in message",
+      "Suspicious verification link"
+    ],
+    "latency_ms": 58.34
+  },
+  {
+    "case_id": "cert_004_phishing",
+    "input_hash": "5ba0ba1fa33f8cb64fd8fc5d5f65b885995a76e1131af1e58859799e15a366f4",
+    "risk_score": 78,
+    "verdict": "High Risk",
+    "ml_contribution": 0.0,
+    "rule_contribution": 65.0,
+    "signals": [
+      "Indian brand impersonation",
+      "Suspicious phishing keywords",
+      "Income Tax refund lure",
+      "Government department impersonation",
+      "Link included in message"
+    ],
+    "latency_ms": 78.8
+  },
+  {
+    "case_id": "cert_005_phishing",
+    "input_hash": "a80ed16450720a6e9a83c657a51c359c50eaee45d9683723217b4304d1e87f9e",
+    "risk_score": 85,
+    "verdict": "High Risk",
+    "ml_contribution": 1.0,
+    "rule_contribution": 41.0,
+    "signals": [
+      "Business email compromise pattern (payment instruction plus secrecy/urgency)",
+      "Urgency language",
+      "No-link BEC: money transfer + pressure + secrecy detected"
+    ],
+    "latency_ms": 70.81
+  },
+  {
+    "case_id": "cert_006_phishing",
+    "input_hash": "84a7a6c334ebe1f44af619e2a253c50f0333d14c5668cad3360cc48620570374",
+    "risk_score": 77,
+    "verdict": "High Risk",
+    "ml_contribution": 9.0,
+    "rule_contribution": 59.0,
+    "signals": [
+      "Urgency language",
+      "Indian brand impersonation",
+      "GST registration portal account-suspension impersonation"
+    ],
+    "latency_ms": 59.06
+  },
+  {
+    "case_id": "cert_007_phishing",
+    "input_hash": "b8b567acd6ad7db3a1ab9997bc6f4251cde6bd80a115e54e1a461d269935f447",
+    "risk_score": 75,
+    "verdict": "High Risk",
+    "ml_contribution": 0.0,
+    "rule_contribution": 65.0,
+    "signals": [
+      "Reward or prize scam lure detected",
+      "KBC lottery branding",
+      "Lucky draw lure",
+      "Foreign WhatsApp lure",
+      "Prize money lure"
+    ],
+    "latency_ms": 58.58
+  },
+  {
+    "case_id": "cert_008_phishing",
+    "input_hash": "c0e06053e6cd8bef61169c29a7f9c0edb91463b1a7d09568274eaf03af410a67",
+    "risk_score": 75,
+    "verdict": "High Risk",
+    "ml_contribution": 35.0,
+    "rule_contribution": 47.0,
+    "signals": [
+      "Urgency language",
+      "Indian brand impersonation",
+      "Suspicious phishing keywords"
+    ],
+    "latency_ms": 59.85
+  },
+  {
+    "case_id": "cert_009_phishing",
+    "input_hash": "172b3cfb8104d7008e1e90ee4b36921dfdd9899287eb081e6fc203ea6ca51089",
+    "risk_score": 78,
+    "verdict": "High Risk",
+    "ml_contribution": 0.0,
+    "rule_contribution": 65.0,
+    "signals": [
+      "Delivery-fee lure pattern with external link",
+      "Courier brand impersonation",
+      "Delivery or customs fee request",
+      "Parcel or shipment lure with suspicious domain",
+      "Foreign-origin package fee pressure",
+      "Link included in message"
+    ],
+    "latency_ms": 83.13
+  },
+  {
+    "case_id": "cert_010_phishing",
+    "input_hash": "3745fd50588a8ba29e8d5f7392ea2d63a098b4bea7418685bae04b6384d09663",
+    "risk_score": 81,
+    "verdict": "High Risk",
+    "ml_contribution": 35.0,
+    "rule_contribution": 65.0,
+    "signals": [
+      "Credential-harvesting pattern (sensitive request plus urgency or link)",
+      "OTP request detected",
+      "OTP sharing request detected",
+      "Urgency language",
+      "Indian brand impersonation",
+      "Bank credential harvesting pattern"
+    ],
+    "latency_ms": 62.46
+  },
+  {
+    "case_id": "cert_011_phishing",
+    "input_hash": "a9b7d50c4f130d8360f0cecf3bd6ca35dc13a4a131cafb61c1f8108d7f8bf38d",
+    "risk_score": 89,
+    "verdict": "High Risk",
+    "ml_contribution": 35.0,
+    "rule_contribution": 0.0,
+    "signals": [
+      "Sender authenticity not verifiable from SPF/DKIM/DMARC (all none or neutral)"
+    ],
+    "latency_ms": 53.44
+  },
+  {
+    "case_id": "cert_012_phishing",
+    "input_hash": "f186836d0ac6f4289500fce32a705854c026d71c3a49138f55fd4ba7bd106cd4",
+    "risk_score": 89,
+    "verdict": "High Risk",
+    "ml_contribution": 35.0,
+    "rule_contribution": 4.0,
+    "signals": [
+      "Known brand mentioned"
+    ],
+    "latency_ms": 56.44
+  },
+  {
+    "case_id": "cert_013_phishing",
+    "input_hash": "30a8030fd914b9d9958e54fb46ac2480024f13156a0e690cb58e3f9c00efa290",
+    "risk_score": 74,
+    "verdict": "High Risk",
+    "ml_contribution": 0.0,
+    "rule_contribution": 4.0,
+    "signals": [
+      "Known brand mentioned"
+    ],
+    "latency_ms": 67.56
+  },
+  {
+    "case_id": "cert_014_phishing",
+    "input_hash": "7925c80146a2573faa726853364ffc0116362273a8edee38fafb5fdbea6d207f",
+    "risk_score": 74,
+    "verdict": "High Risk",
+    "ml_contribution": 35.0,
+    "rule_contribution": 0.0,
+    "signals": [
+      "Sender authenticity not verifiable from SPF/DKIM/DMARC (all none or neutral)"
+    ],
+    "latency_ms": 64.76
+  },
+  {
+    "case_id": "cert_015_phishing",
+    "input_hash": "7bb486ca2e35790d19bbaf789d5afc6e6dd2274274b81bbfde9a2acd837787d8",
+    "risk_score": 78,
+    "verdict": "High Risk",
+    "ml_contribution": 35.0,
+    "rule_contribution": 64.0,
+    "signals": [
+      "Indian brand impersonation",
+      "PAN card update pressure",
+      "Link included in message",
+      "Suspicious verification link"
+    ],
+    "latency_ms": 65.99
+  },
+  {
+    "case_id": "cert_016_phishing",
+    "input_hash": "6fb847668d4b96dab22f185c5da6c6599b74d78a465136f44f15ef533ab8ce0c",
+    "risk_score": 75,
+    "verdict": "High Risk",
+    "ml_contribution": 0.0,
+    "rule_contribution": 24.0,
+    "signals": [
+      "Known brand mentioned",
+      "Aadhaar KYC requirement"
+    ],
+    "latency_ms": 62.02
+  },
+  {
+    "case_id": "cert_017_phishing",
+    "input_hash": "99b2ad2bc7cd5b130eea50e6c3ec4607d8f08e673deffab3f1607df33ffaee7e",
+    "risk_score": 75,
+    "verdict": "High Risk",
+    "ml_contribution": 35.0,
+    "rule_contribution": 32.0,
+    "signals": [
+      "Suspicious phishing keywords",
+      "Lucky draw lure"
+    ],
+    "latency_ms": 52.17
+  },
+  {
+    "case_id": "cert_018_phishing",
+    "input_hash": "3c04beef99928fe88a810b622bb5a4a6e85bcf29dac2448a6dc7d7aec716e4af",
+    "risk_score": 76,
+    "verdict": "High Risk",
+    "ml_contribution": 0.0,
+    "rule_contribution": 54.0,
+    "signals": [
+      "Business email compromise pattern (payment instruction plus secrecy/urgency)",
+      "Payroll or salary account redirection request"
+    ],
+    "latency_ms": 58.31
+  },
+  {
+    "case_id": "cert_019_phishing",
+    "input_hash": "7ddaf255539d6e6aedb8c8bf6607d506a2b34c2fab5e498b1d35f8a66c6658a2",
+    "risk_score": 75,
+    "verdict": "High Risk",
+    "ml_contribution": 0.0,
+    "rule_contribution": 65.0,
+    "signals": [
+      "Courier brand impersonation",
+      "Delivery or customs fee request",
+      "Parcel or shipment lure with suspicious domain",
+      "Foreign-origin package fee pressure"
+    ],
+    "latency_ms": 53.99
+  },
+  {
+    "case_id": "cert_020_phishing",
+    "input_hash": "53873ece61923803cf340309b6f6c1c3475062c9f55153fd96a2d3abb05cffac",
+    "risk_score": 77,
+    "verdict": "High Risk",
+    "ml_contribution": 35.0,
+    "rule_contribution": 65.0,
+    "signals": [
+      "Urgency language",
+      "Indian brand impersonation",
+      "Aadhaar KYC requirement",
+      "UID/Aadhaar service termination pressure impersonation"
+    ],
+    "latency_ms": 52.31
+  },
+  {
+    "case_id": "cert_021_safe",
+    "input_hash": "cbd3060ed9a8bb85528d7bfb2a2ea36dff8507cb45a0c59bb2de9dd80ba0ad34",
+    "risk_score": 20,
+    "verdict": "Safe",
+    "ml_contribution": 0.0,
+    "rule_contribution": 0.0,
+    "signals": [],
+    "latency_ms": 54.19
+  },
+  {
+    "case_id": "cert_022_safe",
+    "input_hash": "f4e08727f7a89913583c56f630d2cbe257fed50902de71152c85762c05f79f7c",
+    "risk_score": 20,
+    "verdict": "Safe",
+    "ml_contribution": 35.0,
+    "rule_contribution": 0.0,
+    "signals": [],
+    "latency_ms": 58.49
+  },
+  {
+    "case_id": "cert_023_safe",
+    "input_hash": "599f1c995a9b6e5561e9be72d62de0f62128d93207d81cdef708585dee36d5a6",
+    "risk_score": 20,
+    "verdict": "Safe",
+    "ml_contribution": 0.0,
+    "rule_contribution": 0.0,
+    "signals": [],
+    "latency_ms": 53.55
+  },
+  {
+    "case_id": "cert_024_safe",
+    "input_hash": "8000d57d0a2205cb3d8955c6a0ee9d85ecb6443a6056c99f6603d1412f695713",
+    "risk_score": 20,
+    "verdict": "Safe",
+    "ml_contribution": 0.0,
+    "rule_contribution": 0.0,
+    "signals": [],
+    "latency_ms": 60.74
+  },
+  {
+    "case_id": "cert_025_safe",
+    "input_hash": "770abd2bca3ac7583dddd26eeee12d7374d40214714ecfbb54fe1b48d3119fdf",
+    "risk_score": 20,
+    "verdict": "Safe",
+    "ml_contribution": 0.0,
+    "rule_contribution": 0.0,
+    "signals": [],
+    "latency_ms": 59.55
+  },
+  {
+    "case_id": "cert_026_safe",
+    "input_hash": "a243c860fc03d615ea0eb245aee35d041b2edd1a0fdc9e3835dc57a3c20d172e",
+    "risk_score": 20,
+    "verdict": "Safe",
+    "ml_contribution": 0.0,
+    "rule_contribution": 0.0,
+    "signals": [],
+    "latency_ms": 47.17
+  },
+  {
+    "case_id": "cert_027_safe",
+    "input_hash": "5201086223de08211c31716dfb53ad7a58d7645a7d78e33eb006f8dfafe33c96",
+    "risk_score": 20,
+    "verdict": "Safe",
+    "ml_contribution": 35.0,
+    "rule_contribution": 0.0,
+    "signals": [],
+    "latency_ms": 47.71
+  },
+  {
+    "case_id": "cert_028_safe",
+    "input_hash": "0238a82a674945793e715e3ce42cb0c6b03a4c6101e0b137e7ddebc47033eb22",
+    "risk_score": 20,
+    "verdict": "Safe",
+    "ml_contribution": 0.0,
+    "rule_contribution": 0.0,
+    "signals": [],
+    "latency_ms": 59.64
+  },
+  {
+    "case_id": "cert_029_safe",
+    "input_hash": "07a55defa5eaf1371feb8d4ec4f768a53c2d8be4600e10fa0ff1edc291c815c2",
+    "risk_score": 20,
+    "verdict": "Safe",
+    "ml_contribution": 35.0,
+    "rule_contribution": 0.0,
+    "signals": [],
+    "latency_ms": 54.69
+  },
+  {
+    "case_id": "cert_030_safe",
+    "input_hash": "7ef5d34b706be857ad06547c0f9d956d4e238088ec288d9dd3bfb77fab3f229a",
+    "risk_score": 20,
+    "verdict": "Safe",
+    "ml_contribution": 0.0,
+    "rule_contribution": 0.0,
+    "signals": [],
+    "latency_ms": 55.85
+  },
+  {
+    "case_id": "cert_031_safe",
+    "input_hash": "2eb555b7b9814cef924b8f8d96ab6b49dd7a23453118f5db2e7f4d6dbcd3849e",
+    "risk_score": 20,
+    "verdict": "Safe",
+    "ml_contribution": 0.0,
+    "rule_contribution": 0.0,
+    "signals": [],
+    "latency_ms": 51.04
+  },
+  {
+    "case_id": "cert_032_safe",
+    "input_hash": "426489620ae461bbde31cb01409dbd5a0df351d4e6e0ec9177ed10d6ab2f2072",
+    "risk_score": 20,
+    "verdict": "Safe",
+    "ml_contribution": 8.0,
+    "rule_contribution": 0.0,
+    "signals": [],
+    "latency_ms": 45.34
+  },
+  {
+    "case_id": "cert_033_safe",
+    "input_hash": "fd651859951c73d6cd48c470b23e09fdab36fcaec3ace75bfead4571858a8679",
+    "risk_score": 20,
+    "verdict": "Safe",
+    "ml_contribution": 0.0,
+    "rule_contribution": 0.0,
+    "signals": [],
+    "latency_ms": 44.31
+  },
+  {
+    "case_id": "cert_034_safe",
+    "input_hash": "20b7ad2593a50e921d5ff706bfaa9c91df672350d5b0d2e4243599e0894a782f",
+    "risk_score": 20,
+    "verdict": "Safe",
+    "ml_contribution": 1.0,
+    "rule_contribution": 0.0,
+    "signals": [],
+    "latency_ms": 75.71
+  },
+  {
+    "case_id": "cert_035_safe",
+    "input_hash": "3f79988cad01d2e215d87290661a5f2f9a5d2cdceefb41174cb033f5d34e3be4",
+    "risk_score": 20,
+    "verdict": "Safe",
+    "ml_contribution": 0.0,
+    "rule_contribution": 0.0,
+    "signals": [],
+    "latency_ms": 56.22
+  }
+]

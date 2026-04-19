@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib
 import sys
+from collections import OrderedDict
 from pathlib import Path
 
 import pytest
@@ -17,6 +18,15 @@ if str(BACKEND_DIR) not in sys.path:
 
 backend_main = importlib.import_module("main")
 app = backend_main.app
+
+
+@pytest.fixture(autouse=True)
+def _reset_scan_cache_for_tests() -> None:
+    """Avoid cross-test pollution from scan_cache / explanations (stable scores)."""
+    app.state.scan_cache = OrderedDict()
+    app.state.scan_explanations = OrderedDict()
+    app.state.scan_rate_limits = {}
+    yield
 
 
 @pytest.fixture

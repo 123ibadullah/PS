@@ -1,0 +1,424 @@
+{
+  "results": [
+    {
+      "id": "A01",
+      "category": "A",
+      "score": 78,
+      "verdict": "High Risk",
+      "pass": true
+    },
+    {
+      "id": "A02",
+      "category": "A",
+      "score": 85,
+      "verdict": "High Risk",
+      "pass": true
+    },
+    {
+      "id": "A03",
+      "category": "A",
+      "score": 88,
+      "verdict": "High Risk",
+      "pass": true
+    },
+    {
+      "id": "A04",
+      "category": "A",
+      "score": 75,
+      "verdict": "High Risk",
+      "pass": true
+    },
+    {
+      "id": "A05",
+      "category": "A",
+      "score": 78,
+      "verdict": "High Risk",
+      "pass": true
+    },
+    {
+      "id": "A06",
+      "category": "A",
+      "score": 79,
+      "verdict": "High Risk",
+      "pass": true
+    },
+    {
+      "id": "A07",
+      "category": "A",
+      "score": 78,
+      "verdict": "High Risk",
+      "pass": true
+    },
+    {
+      "id": "A08",
+      "category": "A",
+      "score": 85,
+      "verdict": "High Risk",
+      "pass": true
+    },
+    {
+      "id": "A09",
+      "category": "A",
+      "score": 78,
+      "verdict": "High Risk",
+      "pass": true
+    },
+    {
+      "id": "A10",
+      "category": "A",
+      "score": 78,
+      "verdict": "High Risk",
+      "pass": true
+    },
+    {
+      "id": "B01",
+      "category": "B",
+      "score": 18,
+      "verdict": "Safe",
+      "pass": true
+    },
+    {
+      "id": "B02",
+      "category": "B",
+      "score": 20,
+      "verdict": "Safe",
+      "pass": true
+    },
+    {
+      "id": "B03",
+      "category": "B",
+      "score": 18,
+      "verdict": "Safe",
+      "pass": true
+    },
+    {
+      "id": "B04",
+      "category": "B",
+      "score": 20,
+      "verdict": "Safe",
+      "pass": true
+    },
+    {
+      "id": "B05",
+      "category": "B",
+      "score": 18,
+      "verdict": "Safe",
+      "pass": true
+    },
+    {
+      "id": "B06",
+      "category": "B",
+      "score": 18,
+      "verdict": "Safe",
+      "pass": true
+    },
+    {
+      "id": "B07",
+      "category": "B",
+      "score": 18,
+      "verdict": "Safe",
+      "pass": true
+    },
+    {
+      "id": "B08",
+      "category": "B",
+      "score": 18,
+      "verdict": "Safe",
+      "pass": true
+    },
+    {
+      "id": "B09",
+      "category": "B",
+      "score": 18,
+      "verdict": "Safe",
+      "pass": true
+    },
+    {
+      "id": "B10",
+      "category": "B",
+      "score": 18,
+      "verdict": "Safe",
+      "pass": true
+    },
+    {
+      "id": "C01",
+      "category": "C",
+      "score": 82,
+      "verdict": "High Risk",
+      "pass": true
+    },
+    {
+      "id": "C02",
+      "category": "C",
+      "score": 89,
+      "verdict": "High Risk",
+      "pass": true
+    },
+    {
+      "id": "C03",
+      "category": "C",
+      "score": 88,
+      "verdict": "High Risk",
+      "pass": true
+    },
+    {
+      "id": "C04",
+      "category": "C",
+      "score": 85,
+      "verdict": "High Risk",
+      "pass": true
+    },
+    {
+      "id": "C05",
+      "category": "C",
+      "score": 85,
+      "verdict": "High Risk",
+      "pass": true
+    },
+    {
+      "id": "C06",
+      "category": "C",
+      "score": 85,
+      "verdict": "High Risk",
+      "pass": true
+    },
+    {
+      "id": "C07",
+      "category": "C",
+      "score": 85,
+      "verdict": "High Risk",
+      "pass": true
+    },
+    {
+      "id": "C08",
+      "category": "C",
+      "score": 78,
+      "verdict": "High Risk",
+      "pass": true
+    },
+    {
+      "id": "C09",
+      "category": "C",
+      "score": 88,
+      "verdict": "High Risk",
+      "pass": true
+    },
+    {
+      "id": "C10",
+      "category": "C",
+      "score": 89,
+      "verdict": "High Risk",
+      "pass": true
+    },
+    {
+      "id": "D01",
+      "category": "D",
+      "score": 10,
+      "verdict": "Safe",
+      "pass": true
+    },
+    {
+      "id": "D02",
+      "category": "D",
+      "score": 20,
+      "verdict": "Safe",
+      "pass": true
+    },
+    {
+      "id": "D03",
+      "category": "D",
+      "score": 20,
+      "verdict": "Safe",
+      "pass": true
+    },
+    {
+      "id": "D04",
+      "category": "D",
+      "score": 20,
+      "verdict": "Safe",
+      "pass": true
+    },
+    {
+      "id": "D05",
+      "category": "D",
+      "score": 20,
+      "verdict": "Safe",
+      "pass": true
+    },
+    {
+      "id": "D06",
+      "category": "D",
+      "score": 88,
+      "verdict": "High Risk",
+      "pass": true
+    },
+    {
+      "id": "D07",
+      "category": "D",
+      "score": 85,
+      "verdict": "High Risk",
+      "pass": true
+    },
+    {
+      "id": "D08",
+      "category": "D",
+      "score": 85,
+      "verdict": "High Risk",
+      "pass": true
+    },
+    {
+      "id": "D09",
+      "category": "D",
+      "score": 82,
+      "verdict": "High Risk",
+      "pass": true
+    },
+    {
+      "id": "D10",
+      "category": "D",
+      "score": 85,
+      "verdict": "High Risk",
+      "pass": true
+    },
+    {
+      "id": "E01",
+      "category": "E",
+      "score": 85,
+      "verdict": "High Risk",
+      "pass": true
+    },
+    {
+      "id": "E02",
+      "category": "E",
+      "score": 85,
+      "verdict": "High Risk",
+      "pass": true
+    },
+    {
+      "id": "E03",
+      "category": "E",
+      "score": 76,
+      "verdict": "High Risk",
+      "pass": true
+    },
+    {
+      "id": "E04",
+      "category": "E",
+      "score": 85,
+      "verdict": "High Risk",
+      "pass": true
+    },
+    {
+      "id": "E05",
+      "category": "E",
+      "score": 85,
+      "verdict": "High Risk",
+      "pass": true
+    },
+    {
+      "id": "E06",
+      "category": "E",
+      "score": 85,
+      "verdict": "High Risk",
+      "pass": true
+    },
+    {
+      "id": "E07",
+      "category": "E",
+      "score": 85,
+      "verdict": "High Risk",
+      "pass": true
+    },
+    {
+      "id": "E08",
+      "category": "E",
+      "score": 85,
+      "verdict": "High Risk",
+      "pass": true
+    },
+    {
+      "id": "E09",
+      "category": "E",
+      "score": 85,
+      "verdict": "High Risk",
+      "pass": true
+    },
+    {
+      "id": "E10",
+      "category": "E",
+      "score": 85,
+      "verdict": "High Risk",
+      "pass": true
+    },
+    {
+      "id": "F01",
+      "category": "F",
+      "score": 20,
+      "verdict": "Safe",
+      "pass": true
+    },
+    {
+      "id": "F02",
+      "category": "F",
+      "score": 20,
+      "verdict": "Safe",
+      "pass": true
+    },
+    {
+      "id": "F03",
+      "category": "F",
+      "score": 20,
+      "verdict": "Safe",
+      "pass": true
+    },
+    {
+      "id": "F04",
+      "category": "F",
+      "score": 78,
+      "verdict": "High Risk",
+      "pass": true
+    },
+    {
+      "id": "F05",
+      "category": "F",
+      "score": 20,
+      "verdict": "Safe",
+      "pass": true
+    },
+    {
+      "id": "F06",
+      "category": "F",
+      "score": 20,
+      "verdict": "Safe",
+      "pass": true
+    },
+    {
+      "id": "F07",
+      "category": "F",
+      "score": 20,
+      "verdict": "Safe",
+      "pass": true
+    },
+    {
+      "id": "F08",
+      "category": "F",
+      "score": 82,
+      "verdict": "High Risk",
+      "pass": true
+    },
+    {
+      "id": "F09",
+      "category": "F",
+      "score": 20,
+      "verdict": "Safe",
+      "pass": true
+    },
+    {
+      "id": "F10",
+      "category": "F",
+      "score": 20,
+      "verdict": "Safe",
+      "pass": true
+    }
+  ]
+}
