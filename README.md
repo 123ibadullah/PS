@@ -93,7 +93,7 @@ All UI captures below are stored under `screenshots/`; each block lists the exac
 ```bash
 # 1) Clone
 git clone https://github.com/123ibadullah/PhishShield.git
-cd <repo-folder>
+cd PhishShield
 
 # 2) Environment file
 cp .env.example .env
