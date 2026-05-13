@@ -14,18 +14,21 @@ I wanted to build something that catches real scam patterns we actually see here
 This project became my way of learning security engineering by building a product end to end, not just training a model in a notebook.
 
 ## What Does It Do?
-You paste an email (or scan from connected flows), and PhishShield checks if it looks dangerous.  
-It gives you a clear risk score, a final decision, and short reasons you can actually read.  
-If the message is risky, it tells you what kind of scam it looks like.  
-If it is safe, it shows that too, so you are not blocked by false alarms.
+Most of the time you paste email text straight into the app (from your inbox, a forward, or a screenshot dump) and hit scan.  
+You are not clicking through a fake wizard: you bring the messy real message, and PhishShield walks it through checks in order.  
+You get a risk score, a plain verdict, and short reasons you can skim in a few seconds.  
+If it looks like a scam it names the vibe; if it looks fine it says so, so you are not stuck guessing.
 
 ## Features
+
+> **Chrome Extension:** Includes a Chrome Extension for in-browser scanning — paste any email directly from Gmail or any webmail tab without leaving the page.
+
 - Scans email text and returns a risk score with verdicts like Safe, Suspicious, or High Risk.
 - Uses both rule-based detection and machine-learning scoring for better phishing coverage.
 - Supports multilingual scam signals (including English, Hindi, Telugu, and mixed-script patterns).
 - Has API endpoints for email scan, URL check, header analysis, user feedback, and explanation retrieval.
 - Saves user feedback to improve future detections over time.
-- Includes a React dashboard, TypeScript API layer, FastAPI backend, and a Chrome extension for in-browser scanning.
+- Includes a React dashboard, TypeScript API layer, and FastAPI backend.
 - Comes with Docker setup to run frontend and backend together with one command.
 
 ## Tech Stack
@@ -40,7 +43,7 @@ If it is safe, it shows that too, so you are not blocked by false alarms.
 ## How It Works
 1. A user submits an email to scan.
 2. The backend cleans the text and checks phishing patterns (urgency, impersonation, credential lures, etc.).
-3. ML scoring runs (SecureBERT/MuRIL when available, with TF-IDF fallback).
+3. ML scoring runs (SecureBERT/MuRIL when available, with TF-IDF fallback). The transformer path runs when the machine has enough RAM or a GPU; on smaller laptops TF-IDF is picked automatically so the same request still returns a score.
 4. Rule signals + ML signals are fused into one final risk score.
 5. The app returns a clear verdict, confidence context, and explanation so the user knows what to do next.
 
@@ -126,12 +129,14 @@ cd frontend
 pnpm dev
 ```
 
+Once running: frontend at http://localhost:5173 — API docs at http://localhost:8000/docs
+
 ## Project Structure
 ```text
 .
 ├── backend/                 # FastAPI app, ML logic, training and evaluation scripts
-│   ├── analyze_report.py     # Report analysis helper
-│   └── certify_dataset.py    # Dataset cleaning pipeline
+│   ├── analyze_report.py     # Prints eval summary and sample misses/false positives from data/test_report.json
+│   └── certify_dataset.py    # Audits, normalizes, and writes Phishing_Email.csv → Phishing_Email_cleaned.csv
 ├── frontend/                # React + TypeScript workspace and extension artifacts
 ├── data/                    # CSV/JSON datasets and evaluation artifacts
 ├── tests/                   # Centralized Python test files (test_*.py)
@@ -176,22 +181,22 @@ Source: `data/training_meta.json` (`metrics` + row counts).
 Curated offline metrics can look stronger than what users see in a mixed real inbox. A **manual live UI run on 100 real emails** (documented in the same overview) estimated roughly **~80–85%** accuracy after hardening, with the caveat that live mail has more benign security/ops traffic and paraphrase variance than the offline split. That honest range is also stored under `live_qa` in `data/training_meta.json` for transparency.
 
 ## What I Learned
-- Building security products is more than model accuracy; false positives and user trust matter just as much.
+- During the live 100-email pass I watched real mail get flagged as phishing when it was just boring IT or bank security copy; that sting of a wrong red banner mattered more than squeezing another point on the offline split.
 - Rule-based checks and ML together work better than either one alone for phishing edge cases.
 - Data cleaning quality can change model behavior more than hyperparameter tweaks.
 - End-to-end architecture (frontend + API + ML backend + deployment) is a different skill than writing isolated scripts.
 - Explainability output is essential when users need to make safety decisions quickly.
 
 ## Future Improvements
-- Add a live Gmail/Outlook integration flow so scans can happen in real inbox workflows.
-- Expand multilingual detection for more Indian language scripts and better transliteration handling.
-- Add model/version tracking dashboards for clearer experiment comparison over time.
-- Add authenticated user accounts and per-user scan history in production storage.
-- Add CI pipelines that run both backend pytest suites and frontend verification scripts on every PR.
+- A live Gmail or Outlook hook is next on my list because paste-only flows still add friction for people who live inside their inbox all day, and that is where most risky threads actually land.
+- I want broader Indian-language coverage and cleaner transliteration handling because mixed-script bait already shows up in the wild and the model still stumbles when the script hops mid-sentence.
+- A small model and version log in the UI would help me compare runs without diffing JSON by hand; right now the honest numbers live in files and that is fine for me, not great for a teammate joining cold.
+- Signed-in accounts with stored scan history belong in a serious deployment because feedback and repeat checks need a home that is not a shared CSV on disk.
+- CI that runs backend pytest plus the frontend checks on every PR is overdue because I still catch regressions manually, and that does not scale once the surface area grows.
 
 ## Author
 **MOHD IBADULLAH**  
-[GitHub](https://github.com/123ibadullah?tab=repositories) · [PhishShield repo](https://github.com/123ibadullah/PhishShield) · LinkedIn — coming soon
+[GitHub](https://github.com/123ibadullah?tab=repositories) · [PhishShield repo](https://github.com/123ibadullah/PhishShield) · *LinkedIn — (add your URL here)*
 
 ## License
 MIT License
