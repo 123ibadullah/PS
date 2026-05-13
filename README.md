@@ -34,7 +34,7 @@ If it is safe, it shows that too, so you are not blocked by false alarms.
 | Backend | Python, FastAPI, Uvicorn |
 | ML Model | TF-IDF + Logistic Regression, SecureBERT/MuRIL (Transformers, Torch) |
 | Frontend | React 19, Vite 7, TypeScript, Tailwind CSS |
-| Database | SQLite (artifact API server local DB), JSON/CSV stores |
+| Database | SQLite (local dev DB), JSON/CSV flat file stores |
 | DevOps | Docker, Docker Compose, Nginx |
 
 ## How It Works
