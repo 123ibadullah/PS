@@ -88,6 +88,19 @@ All UI captures below are stored under `screenshots/`; each block lists the exac
 
 ## Getting Started
 
+### Quick Start
+
+The full **frontend + backend** stack is meant to come up with **one command** via **Docker Compose** from the repo root — no separate terminal per service.
+
+```bash
+git clone https://github.com/123ibadullah/PhishShield.git
+cd PhishShield
+cp .env.example .env
+docker compose up --build
+```
+
+`docker compose up --build` starts both services together (images build on first run or when Dockerfiles change). Use **Prerequisites**, **Installation**, and **Running the Project** below only if you prefer a local dev setup without Docker.
+
 ### Prerequisites
 - Python `3.12+` (from `backend/Dockerfile`)
 - Node.js `20+` (from `frontend/Dockerfile`)
@@ -113,8 +126,11 @@ python -m pip install -r backend/requirements.txt
 ```
 
 ### Running the Project
+
+**Docker Compose (recommended):** From the repo root, the same single command as in **Quick Start** runs the full stack — frontend and backend in one go:
+
 ```bash
-# Option A: Docker (recommended full stack)
+# Option A: Docker — full frontend + backend with one command
 docker compose up --build
 ```
 
