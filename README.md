@@ -25,7 +25,7 @@ If it is safe, it shows that too, so you are not blocked by false alarms.
 - Supports multilingual scam signals (including English, Hindi, Telugu, and mixed-script patterns).
 - Has API endpoints for email scan, URL check, header analysis, user feedback, and explanation retrieval.
 - Saves user feedback to improve future detections over time.
-- Includes a React dashboard, TypeScript API layer, FastAPI backend, and Chrome extension artifacts.
+- Includes a React dashboard, TypeScript API layer, FastAPI backend, and a Chrome extension for in-browser scanning.
 - Comes with Docker setup to run frontend and backend together with one command.
 
 ## Tech Stack
