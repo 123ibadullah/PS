@@ -348,5 +348,5 @@ MIT License
 
 ---
 
-**Last Updated**: April 2026  
+**Last Updated**: May 2026  
 **Docker Version**: Compose v3.9
