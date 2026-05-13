@@ -7,6 +7,8 @@
 
 > Real-time phishing email detection with explainable scoring, multilingual checks, and a full-stack dashboard + browser extension workflow.
 
+![PhishShield in action](screenshots/demo.gif)
+
 ## Why I Built This
 I kept seeing smart people around me still fall for phishing because the emails looked "normal enough."  
 Most tools just say safe or unsafe, but they do not explain why in a way regular users can trust.  
@@ -19,6 +21,8 @@ You are not clicking through a fake wizard: you bring the messy real message, an
 You get a risk score, a plain verdict, and short reasons you can skim in a few seconds.  
 If it looks like a scam it names the vibe; if it looks fine it says so, so you are not stuck guessing.
 
+For example, a note claiming your HDFC account is frozen until you “urgently” share the OTP for KYC over UPI can come back as **HIGH RISK** with the rule engine surfacing signals like **OTP request detected**, **Urgency language**, and **UPI handle detected**—the same kinds of reasons you see in the scan response, not a black box.
+
 ## Features
 
 > **Chrome Extension:** Includes a Chrome Extension for in-browser scanning — paste any email directly from Gmail or any webmail tab without leaving the page.
@@ -26,7 +30,7 @@ If it looks like a scam it names the vibe; if it looks fine it says so, so you a
 - Scans email text and returns a risk score with verdicts like Safe, Suspicious, or High Risk.
 - Uses both rule-based detection and machine-learning scoring for better phishing coverage.
 - Supports multilingual scam signals (including English, Hindi, Telugu, and mixed-script patterns).
-- Has API endpoints for email scan, URL check, header analysis, user feedback, and explanation retrieval.
+- You can run a full email scan, check a URL on its own, or paste headers for SPF-style checks when you do not have the whole message, then send feedback or fetch the stored explanation for a past scan so you are not re-pasting the same thread to understand an earlier verdict.
 - Saves user feedback to improve future detections over time.
 - Includes a React dashboard, TypeScript API layer, and FastAPI backend.
 - Comes with Docker setup to run frontend and backend together with one command.
@@ -52,6 +56,31 @@ If it looks like a scam it names the vibe; if it looks fine it says so, so you a
 The backend (FastAPI) handles all phishing analysis — text cleaning, rule-based pattern checks, ML inference, score fusion, and feedback storage.
 The frontend (React + TypeScript) talks to the backend over a REST API and shows scan results, risk scores, and explanations in a clean dashboard UI.
 Docker Compose wires both services together. Nginx serves the frontend and proxies API traffic to the backend.
+
+```mermaid
+flowchart LR
+  subgraph C["Clients"]
+    UI["React 19 + TypeScript dashboard"]
+    EXT["Chrome extension MV3"]
+  end
+  subgraph SFE["Docker Compose service frontend"]
+    NGX["Nginx port 80 static + /api proxy"]
+  end
+  subgraph SBE["Docker Compose service backend"]
+    API["FastAPI Uvicorn port 8000"]
+    RULES["Rule engine pattern scores"]
+    MLN["ML TF-IDF LR or SecureBERT MuRIL"]
+    FUS["Score fusion verdict"]
+  end
+  subgraph VOL["Host-mounted files"]
+    FILES["feedback.csv, sender_profiles.json, scan_logs.jsonl"]
+  end
+  UI --> NGX
+  NGX --> API
+  EXT --> API
+  API --> RULES --> MLN --> FUS
+  API -.-> FILES
+```
 
 See `docs/PHISHSHIELD_COMPLETE_OVERVIEW.md` for a full deep-dive.
 
@@ -151,6 +180,15 @@ pnpm dev
 
 Once running: frontend at http://localhost:5173 — API docs at http://localhost:8000/docs
 
+## Chrome Extension
+
+The loadable extension sources live under **`frontend/artifacts/chrome-extension/`** (Manifest V3: `manifest.json`, `background.js` service worker, `content.js`, `popup.html` / `popup.js`, and `options.html` / `options.js`).
+
+1. Start the FastAPI backend so `http://localhost:8000` responds (for example `docker compose up --build` from the repo root, or `python -m uvicorn main:app --reload --port 8000` from `backend/`).
+2. In Chrome, open `chrome://extensions/`, turn on **Developer mode**, click **Load unpacked**, and choose the `frontend/artifacts/chrome-extension/` folder.
+3. Open the extension’s **Extension options** (or the options page from the extension details) and confirm **API Base URL** is `http://localhost:8000` (or your deployed API origin); use **Test Connection** if you want to verify `/health`.
+4. Use the toolbar popup: manual scans `POST` to **`/scan-email`** with JSON `{"email_text": "..."}` on that same FastAPI base URL, and the background worker polls **`/health`** for status—so the extension talks to the same backend as the dashboard, not a different stack.
+
 ## Project Structure
 ```text
 .
@@ -209,6 +247,7 @@ Curated offline metrics can look stronger than what users see in a mixed real in
 - Data cleaning quality can change model behavior more than hyperparameter tweaks.
 - End-to-end architecture (frontend + API + ML backend + deployment) is a different skill than writing isolated scripts.
 - Explainability output is essential when users need to make safety decisions quickly.
+- Shipping the Chrome extension taught me that UX friction is a security problem — if checking a suspicious email requires switching apps, most people skip it and that is where the real risk lives.
 
 ## Future Improvements
 - A live Gmail or Outlook hook is next on my list because paste-only flows still add friction for people who live inside their inbox all day, and that is where most risky threads actually land.
@@ -219,8 +258,8 @@ Curated offline metrics can look stronger than what users see in a mixed real in
 
 ## Author
 **MOHD IBADULLAH**  
-Software engineer focused on security-minded full-stack systems.  
-[GitHub profile](https://github.com/123ibadullah?tab=repositories) · [PhishShield repository](https://github.com/123ibadullah/PhishShield)
+Full-stack developer with a security focus — I build things that solve real problems, not just demo well.  
+[GitHub profile](https://github.com/123ibadullah?tab=repositories) · [LinkedIn](https://linkedin.com/in/YOURUSERNAME) · [PhishShield repository](https://github.com/123ibadullah/PhishShield)
 
 ## License
 MIT License
