@@ -23,10 +23,10 @@ If it is safe, it shows that too, so you are not blocked by false alarms.
 - Scans email text and returns a risk score with verdicts like Safe, Suspicious, or High Risk.
 - Uses both rule-based detection and machine-learning scoring for better phishing coverage.
 - Supports multilingual scam signals (including English, Hindi, Telugu, and mixed-script patterns).
-- Exposes API endpoints for email scan, URL check, header check, feedback, and explanation retrieval.
-- Stores user feedback and supports active-learning style retraining workflows.
+- Has API endpoints for email scan, URL check, header analysis, user feedback, and explanation retrieval.
+- Saves user feedback to improve future detections over time.
 - Includes a React dashboard, TypeScript API layer, FastAPI backend, and Chrome extension artifacts.
-- Ships with Docker configs for running frontend and backend together.
+- Comes with Docker setup to run frontend and backend together with one command.
 
 ## Tech Stack
 | Layer | Technology |
