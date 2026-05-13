@@ -140,12 +140,15 @@ Once running: frontend at http://localhost:5173 — API docs at http://localhost
 ├── frontend/                # React + TypeScript workspace and extension artifacts
 ├── data/                    # CSV/JSON datasets and evaluation artifacts
 ├── tests/                   # Centralized Python test files (test_*.py)
+├── pytest.ini               # Repo-root pytest config (shared by tests/ above)
 ├── docs/                    # Architecture diagrams and technical docs
 │   └── PHISHSHIELD_COMPLETE_OVERVIEW.md  # Detailed project deep-dive
 ├── screenshots/             # `dashboard-*.png`, `chrome-extension-*.png` (see Screenshots section)
 ├── docker-compose.yml       # Root compose for backend + frontend services
 └── README.md                # Recruiter-facing project overview
 ```
+
+`pytest.ini` stays at the repository root on purpose: pytest discovers it automatically and applies one shared configuration to the centralized `tests/` directory, so you do not need duplicate config files next to each test package.
 
 ## Dataset
 This repo contains multiple phishing datasets and curated test corpora in `data/`.  
