@@ -46,9 +46,11 @@ If it is safe, it shows that too, so you are not blocked by false alarms.
 
 ## Architecture
 
-The React frontend (in `frontend/artifacts/phishshield`) talks to a TypeScript API service and the Python FastAPI backend.  
-The backend handles phishing analysis, model inference, scoring, and feedback endpoints.  
-Docker Compose connects frontend and backend services, with Nginx serving the frontend and proxying API traffic.
+The backend (FastAPI) handles all phishing analysis — text cleaning, rule-based checks, ML inference, score fusion, and feedback storage.
+The frontend (React + TypeScript) talks to the backend over a REST API and shows scan results, risk scores, and explanations in a clean dashboard UI.
+Docker Compose wires both services together. Nginx serves the frontend and proxies API traffic to the backend.
+
+See `docs/PHISHSHIELD_COMPLETE_OVERVIEW.md` for the full architecture deep-dive.
 
 ## Screenshots
 
