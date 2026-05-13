@@ -14,3 +14,12 @@ __pycache__/
 /archive/
 .cursor/
 node_modules/
+
+backend/models/
+backend/scan_logs.jsonl
+backend/scans.db
+backend/vectorizer.pkl
+*.safetensors
+*.pkl
+*.db
+*.jsonl
