@@ -99,7 +99,11 @@ cp .env.example .env
 docker compose up --build
 ```
 
-`docker compose up --build` starts both services together (images build on first run or when Dockerfiles change). Use **Prerequisites**, **Installation**, and **Running the Project** below only if you prefer a local dev setup without Docker.
+`docker compose up --build` starts both services together (images build on first run or when Dockerfiles change).
+
+There is also a **`Makefile`** at the repo root with helper targets for Docker workflows, local setup convenience (for example creating `.env` from the example), and development tasks such as running tests in the backend container — run `make help` to see the list.
+
+Use **Prerequisites**, **Installation**, and **Running the Project** below only if you prefer a local dev setup without Docker.
 
 ### Prerequisites
 - Python `3.12+` (from `backend/Dockerfile`)
