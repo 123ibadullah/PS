@@ -388,7 +388,7 @@ The live `/health` endpoint currently reports:
 
 ### Frontend deployment (Vercel)
 
-1. push `PhishShield/` to GitHub
+1. Push the project to GitHub (canonical remote: **https://github.com/123ibadullah/PhishShield** — use the same URL if you fork for your own deploy).
 2. import the repo into **Vercel**
 3. set the project root to `PhishShield/`
 4. build command:

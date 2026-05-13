@@ -6,8 +6,8 @@ PhishShield is a containerized full-stack cybersecurity project featuring a Reac
 
 ## Quick Links
 
-- 📖 **Frontend Docs**: [frontend README](./frontend/README.md)
-- 🔐 **Backend Docs**: [backend](./backend/)
+- 📖 **Frontend Docs**: [frontend README](../frontend/README.md)
+- 🔐 **Backend Docs**: [backend](../backend/)
 - 🐳 **Docker Setup**: [Docker Quickstart](#docker-quickstart)
 
 ---
@@ -140,7 +140,7 @@ make rebuild
 
 ### Local Development (without Docker)
 
-See detailed setup in [frontend README](./frontend/README.md).
+See detailed setup in [frontend README](../frontend/README.md).
 
 ```bash
 # Frontend
@@ -335,8 +335,11 @@ docker-compose exec backend python -m pytest tests/ -v
 
 ## Support & Documentation
 
+- **Source repository**: [github.com/123ibadullah/PhishShield](https://github.com/123ibadullah/PhishShield)
+- **Clone URL**: `git clone https://github.com/123ibadullah/PhishShield.git`
+- **Maintainer profile**: [github.com/123ibadullah](https://github.com/123ibadullah)
 - **Bug Reports**: [GitHub Issues](https://github.com/123ibadullah/PhishShield/issues)
-- **Frontend Docs**: [frontend/README.md](./frontend/README.md)
+- **Frontend Docs**: [frontend/README.md](../frontend/README.md)
 - **Docker Docs**: [docs.docker.com](https://docs.docker.com/)
 - **Nginx Docs**: [nginx.org](https://nginx.org/)
 

@@ -1,4 +1,7 @@
 # Docs Index
+
+**Canonical GitHub:** [github.com/123ibadullah/PhishShield](https://github.com/123ibadullah/PhishShield) · **Clone:** `git clone https://github.com/123ibadullah/PhishShield.git`
+
 | File | What it contains |
 |------|-----------------|
 | TECHNICAL_GUIDE.md | Docker setup, deployment, endpoints, troubleshooting |
