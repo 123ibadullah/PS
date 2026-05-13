@@ -1,9 +1,0 @@
-{
-  "example.com": {
-    "totalScans": 1,
-    "safeCount": 1,
-    "lastScore": 20,
-    "lastVerdict": "Safe",
-    "lastSeen": "2026-04-19T11:26:27.604805+00:00"
-  }
-}

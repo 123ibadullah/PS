@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
-BACKEND_DIR = ROOT_DIR / "PhisShield-Backend"
+BACKEND_DIR = ROOT_DIR / "backend"
 if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
 
@@ -18,7 +18,7 @@ cert = importlib.import_module("certification_run")
 score_engine = importlib.import_module("scoring.score_engine")
 
 
-VERDICTS = frozenset({"Critical", "High Risk", "Suspicious", "Safe"})
+VERDICTS = frozenset({"High Risk", "Suspicious", "Safe"})
 
 
 def _init_app_state() -> None:
@@ -43,13 +43,11 @@ def test_cert_case_score_verdict_bounds(idx: int) -> None:
     assert 0 <= score <= 100
     assert verdict in VERDICTS
     if verdict == "Safe":
-        assert score <= 20
-    elif verdict == "Critical":
-        assert score >= 90
+        assert score <= 25
     elif verdict == "High Risk":
-        assert 70 <= score <= 89
+        assert score >= 61
     elif verdict == "Suspicious":
-        assert 40 <= score <= 69
+        assert 26 <= score <= 60
 
 
 def test_signal_trace_pure_math_matches_final_score() -> None:

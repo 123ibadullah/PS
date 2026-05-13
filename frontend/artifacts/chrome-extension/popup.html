@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PhishShield AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body class="popup-body">
+  <div id="scan-fx" class="scan-fx hidden" aria-hidden="true">
+    <div class="scan-fx-line"></div>
+    <div class="scan-fx-matrix" id="matrix-chars"></div>
+  </div>
+
+  <main class="app popup-app-enter">
+    <header class="header-card">
+      <div class="header-top">
+        <div id="shield-icon" class="shield-wrap">
+          <span class="shield-ico" aria-hidden="true">🛡</span>
+        </div>
+        <div class="header-titles">
+          <h1>PhishShield AI</h1>
+          <p class="subtitle">Enterprise Threat Command Center</p>
+        </div>
+        <span class="version-pill">v3.1</span>
+      </div>
+      <div class="status-line">
+        <span id="status-dot" class="status-dot" aria-hidden="true"></span>
+        <span id="backend-status" class="backend-status-label">Offline</span>
+        <span id="model-inline" class="model-inline"></span>
+      </div>
+      <div id="model-text" class="model-row muted"></div>
+      <div class="header-glow-line"></div>
+    </header>
+
+    <section id="threat-gauge-wrap" class="gauge-wrap hidden">
+      <div id="gauge-ring-host" class="gauge-ring-host">
+        <svg id="threat-gauge" class="threat-gauge" viewBox="0 0 120 120" aria-label="Threat score gauge">
+          <circle class="gauge-track" cx="60" cy="60" r="52" fill="none" stroke-width="8" />
+          <circle id="gauge-arc" class="gauge-arc" cx="60" cy="60" r="52" fill="none" stroke-width="8" stroke-linecap="round" transform="rotate(-90 60 60)" />
+          <text id="gauge-score" x="60" y="66" text-anchor="middle" class="gauge-num">0</text>
+        </svg>
+      </div>
+      <div id="gauge-verdict" class="gauge-verdict-out" aria-live="polite">—</div>
+      <div class="trust-inline">
+        <span class="muted tiny">Trust context</span>
+        <button type="button" id="trust-help" class="trust-help" title="What is this?">?</button>
+        <div id="trust-tooltip" class="trust-tooltip hidden">
+          Based on sender domain heuristics, link reputation, and known-brand patterns. Not a replacement for SPF/DKIM/DMARC headers in your mail server.
+        </div>
+      </div>
+    </section>
+
+    <section class="panel-card current-page">
+      <div class="eyebrow">Current page</div>
+      <div class="domain-verdict-row">
+        <p id="page-domain" class="domain-strong">—</p>
+        <span id="page-verdict" class="verdict-pill unknown">Unknown</span>
+      </div>
+      <div class="score-bar-wrap">
+        <div class="score-bar-label"><span>Risk score</span><span id="page-score-label">0/100</span></div>
+        <div class="score-bar-bg"><div id="page-score-fill" class="score-bar-fill safe" style="width:0%"></div></div>
+      </div>
+      <div class="page-meta-row">
+        <span id="page-last-scan" class="muted">Last scanned —</span>
+        <div class="btn-inline">
+          <button type="button" id="rescan-page-btn" class="btn-outline">↻ Re-scan</button>
+          <button type="button" id="view-details-btn" class="btn-text">Details →</button>
+        </div>
+      </div>
+      <div id="page-details" class="page-details hidden"></div>
+    </section>
+
+    <section class="panel-card">
+      <div class="eyebrow">Manual scan</div>
+      <div id="manual-scan-wrap" class="manual-scan-wrap">
+        <div class="manual-scan-grid" aria-hidden="true"></div>
+        <textarea id="manual-input" rows="3" placeholder="Paste email or message to scan…"></textarea>
+      </div>
+      <button type="button" id="scan-text-btn" class="btn-gradient full">
+        <span id="scan-btn-label">Scan text</span>
+        <span id="scan-btn-dots" class="scan-dots hidden" aria-hidden="true"><span>.</span><span>.</span><span>.</span></span>
+      </button>
+      <p id="manual-error" class="error hidden"></p>
+      <div id="manual-result" class="manual-result hidden"></div>
+    </section>
+
+    <section class="panel-card">
+      <details class="stats-details">
+        <summary class="eyebrow clickable">Threat stats</summary>
+        <div class="details-animate stats-details-body">
+          <div class="stats-row">
+            <div class="stat-tile"><span class="stat-ico">🔗</span><strong id="stat-links">0</strong><span class="stat-cap">Links scanned</span></div>
+            <div class="stat-tile"><span class="stat-ico">🛡</span><strong id="stat-blocked">0</strong><span class="stat-cap">Threats blocked</span></div>
+            <div class="stat-tile"><span class="stat-ico">📄</span><strong id="stat-pages">0</strong><span class="stat-cap">Pages analyzed</span></div>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <section class="panel-card">
+      <details class="timeline-details">
+        <summary class="eyebrow clickable">Threat timeline</summary>
+        <div class="details-animate timeline-details-body">
+          <p class="muted tiny timeline-hint">Last 5 Gmail scans — click to replay result</p>
+          <div id="timeline-list" class="timeline-list"></div>
+        </div>
+      </details>
+    </section>
+
+    <section class="panel-card settings-card">
+      <details class="settings-details">
+        <summary class="eyebrow clickable">Settings</summary>
+        <div class="details-animate settings-details-body">
+          <label class="set-row"><span>Link badges</span><span class="twrap"><input id="toggle-link-badges" type="checkbox" class="tcb" /><span class="track"><span class="thumb"></span></span></span></label>
+          <label class="set-row"><span>Auto-scan pages</span><span class="twrap"><input id="toggle-auto-scan" type="checkbox" class="tcb" /><span class="track"><span class="thumb"></span></span></span></label>
+          <label class="set-row"><span>Link interception</span><span class="twrap"><input id="toggle-link-interception" type="checkbox" class="tcb" /><span class="track"><span class="thumb"></span></span></span></label>
+          <button type="button" id="save-settings-btn" class="btn-text full center">Save settings</button>
+        </div>
+      </details>
+    </section>
+
+    <footer class="footer">
+      <div class="india-badge" title="India-focused heuristics">
+        <span>🇮🇳</span> Tuned for Indian cyber threats · 13.9L+ fraud cases reported (2023, CERT-In trends)
+      </div>
+      <p class="footer-line"><span aria-hidden="true">🛡</span> PhishShield AI · India-focused phishing detection</p>
+      <p class="keys-hint"><kbd>S</kbd> focus · <kbd>Enter</kbd> scan · <kbd>Esc</kbd> close</p>
+    </footer>
+  </main>
+  <script src="popup.js"></script>
+</body>
+</html>

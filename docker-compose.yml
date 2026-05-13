@@ -5,7 +5,7 @@ networks:
 services:
   backend:
     build:
-      context: ./PhisShield-Backend
+      context: ./backend
       dockerfile: Dockerfile
     container_name: phishshield-backend
     ports:
@@ -16,9 +16,9 @@ services:
       - ENVIRONMENT=${ENVIRONMENT:-development}
       - PYTHONUNBUFFERED=1
     volumes:
-      - ./PhisShield-Backend/feedback.csv:/app/feedback.csv
-      - ./PhisShield-Backend/sender_profiles.json:/app/sender_profiles.json
-      - ./PhisShield-Backend/scan_logs.jsonl:/app/scan_logs.jsonl
+      - ./backend/feedback.csv:/app/feedback.csv
+      - ./backend/sender_profiles.json:/app/sender_profiles.json
+      - ./backend/scan_logs.jsonl:/app/scan_logs.jsonl
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
@@ -31,7 +31,7 @@ services:
 
   frontend:
     build:
-      context: ./PhishShield-Frontend
+      context: ./frontend
       dockerfile: Dockerfile
     container_name: phishshield-frontend
     ports:

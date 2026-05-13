@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    <title>PhishShield AI</title>
+    <script>
+      (() => {
+        const isLocalRuntime = /^(localhost|127\.0\.0\.1)$/i.test(window.location.hostname);
+        if (!isLocalRuntime) return;
+
+        const shouldSuppress = (args) => {
+          const firstArg = typeof args[0] === "string" ? args[0] : "";
+          return (
+            firstArg.includes("You have Reduced Motion enabled on your device.") &&
+            firstArg.includes("motion.dev/troubleshooting/reduced-motion-disabled")
+          );
+        };
+
+        const nativeConsoleWarn = window.console.warn.bind(window.console);
+        const nativeConsoleError = window.console.error.bind(window.console);
+
+        window.console.warn = (...args) => {
+          if (shouldSuppress(args)) return;
+          nativeConsoleWarn(...args);
+        };
+
+        window.console.error = (...args) => {
+          if (shouldSuppress(args)) return;
+          nativeConsoleError(...args);
+        };
+      })();
+    </script>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

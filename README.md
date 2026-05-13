@@ -1,331 +1,162 @@
-# PhishShield AI – Full-Stack Phishing Detection
+# PhishShield 🛡️
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 
-**Explainable phishing defense for real-world Indian scam patterns, with Docker containerization for production deployment.**
+> Real-time phishing email detection with explainable scoring, multilingual checks, and a full-stack dashboard + browser extension workflow.
 
-PhishShield is a containerized full-stack cybersecurity project featuring a React dashboard, TypeScript service layer, FastAPI + ML backend, and Chrome extension for protecting users from phishing threats.
+## Why I Built This
+I kept seeing smart people around me still fall for phishing because the emails looked "normal enough."  
+Most tools just say safe or unsafe, but they do not explain why in a way regular users can trust.  
+I wanted to build something that catches real scam patterns we actually see here (OTP, KYC, UPI, fake bank urgency), and also shows the reasoning clearly.  
+This project became my way of learning security engineering by building a product end to end, not just training a model in a notebook.
 
-## Quick Links
+## What Does It Do?
+You paste an email (or scan from connected flows), and PhishShield checks if it looks dangerous.  
+It gives you a clear risk score, a final decision, and short reasons you can actually read.  
+If the message is risky, it tells you what kind of scam it looks like.  
+If it is safe, it shows that too, so you are not blocked by false alarms.
 
-- 📖 **Frontend Docs**: [PhishShield-Frontend README](./PhishShield-Frontend/README.md)
-- 🔐 **Backend Docs**: [PhisShield-Backend](./PhisShield-Backend/)
-- 🐳 **Docker Setup**: [Docker Quickstart](#docker-quickstart)
+## Features
+- Scans email text and returns a risk score with verdicts like Safe, Suspicious, or High Risk.
+- Uses both rule-based detection and machine-learning scoring for better phishing coverage.
+- Supports multilingual scam signals (including English, Hindi, Telugu, and mixed-script patterns).
+- Exposes API endpoints for email scan, URL check, header check, feedback, and explanation retrieval.
+- Stores user feedback and supports active-learning style retraining workflows.
+- Includes a React dashboard, TypeScript API layer, FastAPI backend, and Chrome extension artifacts.
+- Ships with Docker configs for running frontend and backend together.
 
----
+## Tech Stack
+| Layer | Technology |
+|-------|------------|
+| Backend | Python, FastAPI, Uvicorn |
+| ML Model | TF-IDF + Logistic Regression, SecureBERT/MuRIL (Transformers, Torch) |
+| Frontend | React 19, Vite 7, TypeScript, Tailwind CSS |
+| Database | SQLite (artifact API server local DB), JSON/CSV stores |
+| DevOps | Docker, Docker Compose, Nginx |
+
+## How It Works
+1. A user submits an email to scan.
+2. The backend cleans the text and checks phishing patterns (urgency, impersonation, credential lures, etc.).
+3. ML scoring runs (SecureBERT/MuRIL when available, with TF-IDF fallback).
+4. Rule signals + ML signals are fused into one final risk score.
+5. The app returns a clear verdict, confidence context, and explanation so the user knows what to do next.
 
 ## Architecture
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                   PhishShield Services                       │
-├─────────────────────┬───────────────────────────────────────┤
-│  Frontend (React)   │       Backend (FastAPI + Python)      │
-│  Port: 80/443       │       Port: 8000                      │
-│  (Nginx + SPA)      │       (ML + API)                      │
-└─────────────────────┴───────────────────────────────────────┘
-         ↓ docker-compose.yml ↑
-    Shared Network (phishshield-network)
-```
+The React frontend (in `frontend/artifacts/phishshield`) talks to a TypeScript API service and the Python FastAPI backend.  
+The backend handles phishing analysis, model inference, scoring, and feedback endpoints.  
+Docker Compose connects frontend and backend services, with Nginx serving the frontend and proxying API traffic.
 
-| Component | Tech Stack | Location |
-|-----------|-----------|----------|
-| Dashboard & UI | React 18, Vite, TypeScript | `PhishShield-Frontend/` |
-| Web API | Node.js + Express | `PhishShield-Frontend/artifacts/api-server/` |
-| ML Analysis | FastAPI, Python 3.12, IndicBERT | `PhisShield-Backend/` |
-| Browser Extension | Chrome Extension API | `PhishShield-Frontend/artifacts/chrome-extension/` |
+## Screenshots
+![Home Screen](screenshots/home.png)
+![Scan Result](screenshots/scan_result.png)
 
-## Key Features
-
-- **Hybrid AI Engine**: Combines **IndicBERT** (semantic NLP) with **TF-IDF + LR** (lexical analysis) for 97%+ accuracy.
-- **Advanced Threat Analysis**: Production-ready detection for **Thread Hijacking**, **Malicious Attachments**, and **QR Code lures**.
-- **India-Focused Defense**: Native support for English, Hindi, Telugu, and Hinglish script detection with local brand protection (SBI, HDFC, UPI, etc.).
-- **Explainable Verdicts**: Real-time risk scoring (0-100) with detailed signal highlighting and confidence intervals.
-- **Active Learning**: Built-in human-in-the-loop feedback system that improves model performance with real-world user data.
-
----
-
-## Docker Quickstart
+## Getting Started
 
 ### Prerequisites
+- Python `3.12+` (from `backend/Dockerfile`)
+- Node.js `20+` (from `frontend/Dockerfile`)
+- pnpm (workspace package manager)
+- Docker + Docker Compose (for containerized run)
 
-- Docker & Docker Compose installed ([Get Docker](https://docs.docker.com/get-docker/))
-- `.env` file with API tokens (see below)
-
-### Setup & Run
-
-1. **Copy environment configuration** to `.env`:
-
-   ```bash
-   cp .env.example .env
-   ```
-
-2. **Fill in your API tokens** in `.env`:
-   - `HF_TOKEN`: Hugging Face API token (for IndicBERT model)
-   - `VT_API_KEY`: VirusTotal API key (for URL scanning)
-   - `ENVIRONMENT`: Set to `production`
-
-3. **Build and start all services**:
-
-   ```bash
-   docker-compose up --build
-   ```
-
-   This starts:
-   - **Backend**: http://localhost:8000
-   - **Frontend**: http://localhost
-   - Both services connected via `phishshield-network`
-
-4. **Verify services are running**:
-
-   ```bash
-   # Backend health check
-   curl http://localhost:8000/health
-
-   # Frontend should be accessible
-   open http://localhost
-   ```
-
-5. **View logs**:
-
-   ```bash
-   docker-compose logs -f
-   ```
-
-6. **Stop all services**:
-
-   ```bash
-   docker-compose down
-   ```
-
-### Using the Makefile (Recommended)
-
-For a faster workflow, use the included `Makefile`:
-
+### Installation
 ```bash
-# Build images
-make build
+# 1) Clone
+git clone <your-repo-url>
+cd <repo-folder>
 
-# Start services in background
-make up
+# 2) Environment file
+cp .env.example .env
 
-# Stop services
-make down
-
-# View live logs
-make logs
-
-# Run tests in backend container
-make test
-
-# Rebuild without cache
-make rebuild
-```
-
----
-
-## Docker Files
-
-| File | Purpose |
-|------|---------|
-| `docker-compose.yml` | Orchestrates both services with networking, health checks, volumes |
-| `PhisShield-Backend/Dockerfile` | Python 3.12 FastAPI image with UV health checks |
-| `PhisShield-Backend/.dockerignore` | Excludes large model files & cache |
-| `PhishShield-Frontend/Dockerfile` | Multi-stage Node + Nginx build |
-| `PhishShield-Frontend/.dockerignore` | Excludes `node_modules` & build artifacts |
-| `PhishShield-Frontend/nginx.conf` | Nginx configuration with React Router SPA routing & API proxy |
-| `.env.example` | Environment variable template |
-
----
-
-## Development
-
-### Local Development (without Docker)
-
-See detailed setup in [PhishShield-Frontend README](./PhishShield-Frontend/README.md).
-
-```bash
-# Frontend
-cd PhishShield-Frontend
+# 3) Frontend workspace deps
+cd frontend
 pnpm install
-pnpm dev
+cd ..
 
-# Backend (separate terminal)
-cd PhisShield-Backend
-pip install -r requirements.txt
+# 4) Backend Python deps
+python -m pip install -r backend/requirements.txt
+```
+
+### Running the Project
+```bash
+# Option A: Docker (recommended full stack)
+docker compose up --build
+```
+
+```bash
+# Option B: Local dev (two terminals)
+# Terminal 1
+cd backend
 python -m uvicorn main:app --reload --port 8000
+
+# Terminal 2
+cd frontend
+pnpm dev
 ```
 
-### Docker Compose Services
-
-#### Backend Service
-- **Port**: 8000
-- **Health Check**: `GET /health` every 30s
-- **Volumes**: 
-  - `feedback.csv` (persistent)
-  - `sender_profiles.json` (persistent)
-  - `scan_logs.jsonl` (persistent)
-- **Environment**: Reads from `.env` file
-
-#### Frontend Service
-- **Ports**: 80 (HTTP), 443 (HTTPS ready)
-- **Depends On**: Backend (waits for healthy status)
-- **Health Check**: `GET /health` every 30s
-- **Features**:
-  - React SPA routing via `try_files`
-  - `/api/*` requests proxied to backend
-  - Static asset caching (1 year)
-  - HTML cache-busting
-  - Gzip compression
-
----
-
-## Environment Variables
-
-See `.env.example` for all available options. Key variables:
-
-```env
-HF_TOKEN=<your-huggingface-token>
-VT_API_KEY=<your-virustotal-key>
-ENVIRONMENT=production
-```
-
----
-
-## Production Considerations
-
-### SSL/TLS
-
-To enable HTTPS in production:
-
-1. Place SSL certificate and key in `./ssl/` directory
-2. Uncomment HTTPS section in `PhishShield-Frontend/nginx.conf`
-3. Update `docker-compose.yml` volumes to mount certificates
-
-### Security
-
-- Run `docker-compose up` behind a reverse proxy (e.g., Traefik, Caddy)
-- Use secrets management for `.env` (e.g., Docker Secrets, Vault)
-- Regularly scan images: `docker scan phishshield-frontend:latest`
-
-### Performance
-
-- Use dedicated volume for model cache
-- Enable Docker-in-Docker for CI/CD
-- Use container orchestration (Kubernetes) for scaling
-
----
-
-## Troubleshooting
-
-### Port Already in Use
-
-```bash
-# Find process using port
-lsof -i :8000
-lsof -i :80
-
-# Change port in docker-compose.yml or .env
-```
-
-### Container Logs
-
-```bash
-# All services
-docker-compose logs
-
-# Specific service
-docker-compose logs backend
-docker-compose logs frontend
-
-# Follow in real-time
-docker-compose logs -f
-```
-
-### Health Check Failures
-
-```bash
-# Check backend health
-docker exec phishshield-backend curl http://localhost:8000/health
-
-# Check frontend
-docker exec phishshield-frontend wget -q -O- http://localhost/health
-```
-
-### Rebuild from Scratch
-
-```bash
-# Remove all containers and volumes
-docker-compose down -v
-
-# Rebuild
-docker-compose up --build
-```
-
----
-
-## Certification status
-
-From the repo root, `python PhisShield-Backend/run_certification.py` runs the **35-case regression driver** plus **seven pytest gates** (regression pytest, adversarial, score integrity, failure injection, performance, security, explainability). Exit code **0** means every stage passed.
-
-| Area | Status |
-|------|--------|
-| Architecture | Partially modular ⚠️ (fusion caps centralized in `scoring/score_engine.py`; full score-policy extraction pending) |
-| Performance P95 | Real targets met ✅ (`PhisShield-Backend/tests/test_performance.py`; VirusTotal + IndicBERT **stubbed** in that suite so P95 measures pipeline scaffolding, not GPU or external HTTP) |
-| Test coverage | All 8 suites genuine ✅ (same driver as above) |
-
----
-
-## Testing
-
-Run pytest inside the backend container:
-
-```bash
-# Using Makefile
-make test
-
-# Or directly
-docker-compose exec backend python -m pytest tests/ -v
-```
-
----
-
-## File Structure
-
-```
+## Project Structure
+```text
 .
-├── docker-compose.yml           # Main orchestration
-├── .env.example                 # Environment template
-├── Makefile                     # Development shortcuts
-├── PhishShield-Frontend/        # React UI
-│   ├── Dockerfile              # Multi-stage Nginx build
-│   ├── .dockerignore            # Docker build exclusions
-│   ├── nginx.conf               # Nginx with SPA routing
-│   ├── package.json
-│   └── src/
-├── PhisShield-Backend/          # FastAPI ML backend
-│   ├── Dockerfile              # Python 3.12 image
-│   ├── .dockerignore            # Docker build exclusions
-│   ├── main.py                 # FastAPI app
-│   ├── requirements.txt         # Python dependencies
-│   └── indicbert_model/         # Pre-trained ML model
-└── README.md                    # This file
+├── backend/                 # FastAPI app, ML logic, training and evaluation scripts
+│   ├── analyze_report.py     # Report analysis helper
+│   └── certify_dataset.py    # Dataset cleaning pipeline
+├── frontend/                # React + TypeScript workspace and extension artifacts
+├── data/                    # CSV/JSON datasets and evaluation artifacts
+├── tests/                   # Centralized Python test files (test_*.py)
+├── docs/                    # Architecture diagrams and technical docs
+│   └── PHISHSHIELD_COMPLETE_OVERVIEW.md  # Detailed project deep-dive
+├── screenshots/             # README screenshots
+├── docker-compose.yml       # Root compose for backend + frontend services
+└── README.md                # Recruiter-facing project overview
 ```
 
----
+## Dataset
+This repo contains multiple phishing datasets and curated test corpora in `data/`.  
+Key visible files include:
+- `data/Phishing_Email.csv` (~18,133 rows)
+- `data/Phishing_Email_cleaned.csv` (~1,401 rows)
+- `data/elite_emails_1000.json` (~1,020 items)
+- `data/phishtank_dataset.json` (~200 items)
+- `data/dataset_100.json` (80 labeled evaluation items)
 
-## Support & Documentation
+Source notes in the code/docs reference curated phishing corpora plus internally cleaned and synthetic balancing steps.  
+The training metadata in `data/training_meta.json` reports `rows: 18684`.
 
-- **Bug Reports**: [GitHub Issues](https://github.com/yourusername/phishshield/issues)
-- **Frontend Docs**: [PhishShield-Frontend/README.md](./PhishShield-Frontend/README.md)
-- **Docker Docs**: [docs.docker.com](https://docs.docker.com/)
-- **Nginx Docs**: [nginx.org](https://nginx.org/)
+## Results
+| Metric | Value |
+|--------|-------|
+| Accuracy | 97.19% |
+| Precision | 94.05% |
+| Recall | 99.11% |
+| F1 Score | 96.52% |
+| Train Rows | 14,947 |
+| Test Rows | 3,737 |
 
----
+These values are from `data/training_meta.json`.
+
+## What I Learned
+- Building security products is more than model accuracy; false positives and user trust matter just as much.
+- Rule-based checks and ML together work better than either one alone for phishing edge cases.
+- Data cleaning quality can change model behavior more than hyperparameter tweaks.
+- End-to-end architecture (frontend + API + ML backend + deployment) is a different skill than writing isolated scripts.
+- Explainability output is essential when users need to make safety decisions quickly.
+
+## Future Improvements
+- Add a live Gmail/Outlook integration flow so scans can happen in real inbox workflows.
+- Expand multilingual detection for more Indian language scripts and better transliteration handling.
+- Add model/version tracking dashboards for clearer experiment comparison over time.
+- Add authenticated user accounts and per-user scan history in production storage.
+- Add CI pipelines that run both backend pytest suites and frontend verification scripts on every PR.
+
+## Author
+**MOHD IBADULLAH**  
+[GitHub](https://github.com/123ibadulllah) • [LinkedIn](https://linkedin.com/in/YOUR_LINKEDIN_HERE)
 
 ## License
-
-[Your License Here]
+MIT License
 
 ---
-
-**Last Updated**: April 2026  
-**Docker Version**: Compose v3.9
+📄 For technical and Docker details → [TECHNICAL_GUIDE](docs/TECHNICAL_GUIDE.md)

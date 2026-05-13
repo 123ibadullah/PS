@@ -14,7 +14,7 @@ def _sample_scan_record(scan_id: str) -> dict:
         "email_text": "URGENT: Verify your account now to avoid suspension.",
         "risk_score": 86,
         "verdict": "High Risk",
-        "model_used": "IndicBERT-GPU-97.4%",
+        "model_used": "SecureBERT/MuRIL-GPU-97.4%",
         "signals": ["Urgency language", "Suspicious link", "Credential request"],
         "safe_signals": [],
         "explanation": {
