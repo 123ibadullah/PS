@@ -1,0 +1,19 @@
+{
+  "dataset": "datasets\\combined_eval_balanced.jsonl",
+  "metrics": {
+    "total": 44,
+    "accuracy": 1.0,
+    "precision_phish": 1.0,
+    "recall_phish": 1.0,
+    "fpr": 0.0,
+    "fn": 0,
+    "fp": 0,
+    "tn": 22,
+    "tp": 22,
+    "unstable": 0,
+    "avg_ms": 463.1069181850762
+  },
+  "false_negatives": [],
+  "false_positives": [],
+  "unstable_samples": []
+}

@@ -1,0 +1,486 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.1.0
+  description: PhishShield AI API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: phishing
+    description: Phishing detection operations
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+  /analyze:
+    post:
+      operationId: analyzeEmail
+      tags: [phishing]
+      summary: Analyze email for phishing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AnalyzeRequest"
+      responses:
+        "200":
+          description: Analysis result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnalyzeResult"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /feedback:
+    post:
+      operationId: submitFeedback
+      tags: [phishing]
+      summary: Submit user feedback
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FeedbackRequest"
+      responses:
+        "200":
+          description: Feedback submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+  /feedback/export:
+    get:
+      operationId: exportFeedbackData
+      tags: [phishing]
+      summary: Export feedback data for retraining
+      parameters:
+        - in: query
+          name: format
+          schema:
+            type: string
+            enum: [json, jsonl]
+          description: Export format. Defaults to json.
+      responses:
+        "200":
+          description: Feedback export dataset
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FeedbackExportItem"
+            application/x-ndjson:
+              schema:
+                type: string
+  /report:
+    post:
+      operationId: generateReport
+      tags: [phishing]
+      summary: Generate downloadable report
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AnalyzeResult"
+      responses:
+        "200":
+          description: Report content
+          content:
+            text/plain:
+              schema:
+                type: string
+  /history:
+    get:
+      operationId: getScanHistory
+      tags: [phishing]
+      summary: Get recent scan history
+      responses:
+        "200":
+          description: Recent scan history
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ScanHistoryItem"
+    delete:
+      operationId: clearScanHistory
+      tags: [phishing]
+      summary: Clear scan history
+      responses:
+        "200":
+          description: History cleared
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+  /metrics:
+    get:
+      operationId: getModelMetrics
+      tags: [phishing]
+      summary: Get model performance metrics
+      responses:
+        "200":
+          description: Model metrics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ModelMetrics"
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+    AnalyzeRequest:
+      type: object
+      properties:
+        emailText:
+          type: string
+        headers:
+          type: string
+          description: Optional raw email headers for spoofing analysis
+      required:
+        - emailText
+    UrlAnalysis:
+      type: object
+      properties:
+        url:
+          type: string
+        domain:
+          type: string
+        riskScore:
+          type: number
+        flags:
+          type: array
+          items:
+            type: string
+        isSuspicious:
+          type: boolean
+      required:
+        - url
+        - domain
+        - riskScore
+        - flags
+        - isSuspicious
+    FeedbackRequest:
+      type: object
+      properties:
+        emailId:
+          type: string
+        userFeedback:
+          type: string
+          enum: [correct, incorrect]
+          description: User confirmation on whether the predicted verdict was correct.
+        isAccurate:
+          type: boolean
+          description: Legacy compatibility field. Prefer `userFeedback`.
+      required:
+        - emailId
+    DetectionReason:
+      type: object
+      properties:
+        category:
+          type: string
+          enum: [urgency, financial, social_engineering, url, domain, india_specific, ml_score, language, header, informational]
+        description:
+          type: string
+        severity:
+          type: string
+          enum: [low, medium, high]
+        matchedTerms:
+          type: array
+          items:
+            type: string
+      required:
+        - category
+        - description
+        - severity
+        - matchedTerms
+    SuspiciousSpan:
+      type: object
+      properties:
+        start:
+          type: integer
+        end:
+          type: integer
+        text:
+          type: string
+        reason:
+          type: string
+      required:
+        - start
+        - end
+        - text
+        - reason
+    FeatureImportance:
+      type: object
+      properties:
+        feature:
+          type: string
+          description: The vocabulary term that contributed to the ML score
+        contribution:
+          type: number
+          description: Magnitude of the contribution (always positive)
+        direction:
+          type: string
+          enum: [phishing, safe]
+          description: Whether the term pushed the score toward phishing or safe
+      required:
+        - feature
+        - contribution
+        - direction
+    HeaderAnalysis:
+      type: object
+      properties:
+        hasHeaders:
+          type: boolean
+        senderEmail:
+          type: string
+        senderDomain:
+          type: string
+        displayName:
+          type: string
+        replyToEmail:
+          type: string
+        replyToDomain:
+          type: string
+        mismatch:
+          type: boolean
+        spoofingRisk:
+          type: string
+          enum: [none, low, medium, high]
+        issues:
+          type: array
+          items:
+            type: string
+        headerScore:
+          type: number
+      required:
+        - hasHeaders
+        - mismatch
+        - spoofingRisk
+        - issues
+        - headerScore
+    AnalyzeResult:
+      type: object
+      properties:
+        id:
+          type: string
+        riskScore:
+          type: number
+        classification:
+          type: string
+          enum: [safe, uncertain, phishing]
+        confidence:
+          type: number
+        detectedLanguage:
+          type: string
+          description: "Detected language code: en, hi, te, mixed"
+        reasons:
+          type: array
+          items:
+            $ref: "#/components/schemas/DetectionReason"
+        suspiciousSpans:
+          type: array
+          items:
+            $ref: "#/components/schemas/SuspiciousSpan"
+        urlAnalyses:
+          type: array
+          items:
+            $ref: "#/components/schemas/UrlAnalysis"
+        safetyTips:
+          type: array
+          items:
+            type: string
+        warnings:
+          type: array
+          items:
+            type: string
+        mlScore:
+          type: number
+        ruleScore:
+          type: number
+        urlScore:
+          type: number
+        headerScore:
+          type: number
+          description: Risk score contribution from email header analysis (0-100)
+        attackType:
+          type: string
+          enum: ["Credential Harvesting", "Reward Scam", "Bank Impersonation", "OTP Scam", "Social Engineering", "Safe / Informational", "Account Alert / Social Engineering", "Lookalike Domain Phishing"]
+          description: "Categorization of the specific phishing strategy used"
+        scamStory:
+          type: string
+          description: "Human-friendly explanation of the risk and potential impact"
+        featureImportance:
+          type: array
+          items:
+            $ref: "#/components/schemas/FeatureImportance"
+          description: Top ML features contributing to the score
+        headerAnalysis:
+          $ref: "#/components/schemas/HeaderAnalysis"
+      required:
+        - id
+        - riskScore
+        - classification
+        - confidence
+        - detectedLanguage
+        - reasons
+        - suspiciousSpans
+        - urlAnalyses
+        - safetyTips
+        - warnings
+        - mlScore
+        - ruleScore
+        - urlScore
+        - headerScore
+        - featureImportance
+        - attackType
+        - scamStory
+    ScanHistoryItem:
+      type: object
+      properties:
+        id:
+          type: string
+        timestamp:
+          type: string
+          description: ISO 8601 timestamp
+        emailPreview:
+          type: string
+          description: First 80 characters of the email text
+        riskScore:
+          type: number
+        classification:
+          type: string
+          enum: [safe, uncertain, phishing]
+        detectedLanguage:
+          type: string
+        urlCount:
+          type: integer
+        reasonCount:
+          type: integer
+        userFeedback:
+          type: string
+          enum: [correct, incorrect]
+          description: Latest user feedback state for this scan, when provided.
+      required:
+        - id
+        - timestamp
+        - emailPreview
+        - riskScore
+        - classification
+        - detectedLanguage
+        - urlCount
+        - reasonCount
+    FeedbackExportItem:
+      type: object
+      properties:
+        scanId:
+          type: string
+        timestamp:
+          type: string
+          description: When the feedback was captured
+        emailText:
+          type: string
+        emailPreview:
+          type: string
+        predictedClassification:
+          type: string
+          enum: [safe, uncertain, phishing]
+        riskScore:
+          type: number
+        confidence:
+          type: number
+        attackType:
+          type: string
+        reasons:
+          type: array
+          items:
+            type: string
+        reasonCount:
+          type: integer
+        userFeedback:
+          type: string
+          enum: [correct, incorrect]
+      required:
+        - scanId
+        - timestamp
+        - emailText
+        - emailPreview
+        - predictedClassification
+        - riskScore
+        - confidence
+        - attackType
+        - reasons
+        - reasonCount
+        - userFeedback
+    ModelMetrics:
+      type: object
+      properties:
+        accuracy:
+          type: number
+          description: Model accuracy 0-1
+        precision:
+          type: number
+          description: Precision 0-1
+        recall:
+          type: number
+          description: Recall 0-1
+        f1Score:
+          type: number
+          description: F1 score 0-1
+        falsePositiveRate:
+          type: number
+          description: False positive rate 0-1
+        totalScans:
+          type: integer
+          description: Total scans in current session
+        phishingDetected:
+          type: integer
+        suspiciousDetected:
+          type: integer
+        safeDetected:
+          type: integer
+      required:
+        - accuracy
+        - precision
+        - recall
+        - f1Score
+        - falsePositiveRate
+        - totalScans
+        - phishingDetected
+        - suspiciousDetected
+        - safeDetected
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+      required:
+        - error
+        - message

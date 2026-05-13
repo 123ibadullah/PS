@@ -1,0 +1,27 @@
+{
+  "trained_at": "2026-04-05T11:17:13.636063+00:00",
+  "dataset_path": "C:\\Users\\froms\\Desktop\\New folder (2)\\backend\\Phishing_Email.csv",
+  "rows": 18684,
+  "source_rows": 18631,
+  "train_rows": 14947,
+  "test_rows": 3737,
+  "model_type": "TF-IDF Active Learning",
+  "pretrained_model": "ai4bharat/SecureBERT/MuRILv2-MLM-only",
+  "device": "cpu",
+  "metrics": {
+    "accuracy": 0.971902595664972,
+    "precision": 0.940530058177117,
+    "recall": 0.9911444141689373,
+    "f1_score": 0.9651741293532339
+  },
+  "feedback_rows": 50,
+  "live_qa": {
+    "date": "2026-05",
+    "description": "Live UI QA run: 100 real emails scanned via the dashboard. 20 issues found and fixed; 20/20 targeted samples re-verified via FastAPI on 127.0.0.1:8000.",
+    "estimated_accuracy_range": [0.80, 0.85],
+    "notes": [
+      "Offline benchmark (metrics.accuracy) is computed on an offline test split and can exceed live accuracy.",
+      "Live inbox distributions contain more mixed-intent mail, paraphrase variance, and benign security/ops communications that affect score bands."
+    ]
+  }
+}

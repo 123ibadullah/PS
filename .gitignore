@@ -1,0 +1,25 @@
+
+# Local model weights
+backend/indicbert_model/*.safetensors
+.env
+.env.local
+.env.*.local
+frontend/.env
+backend/.env
+__pycache__/
+.mypy_cache/
+.pytest_cache/
+.venv/
+*.pyc
+/archive/
+.cursor/
+node_modules/
+
+backend/models/
+backend/scan_logs.jsonl
+backend/scans.db
+backend/vectorizer.pkl
+*.safetensors
+*.pkl
+*.db
+*.jsonl

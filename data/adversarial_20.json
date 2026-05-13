@@ -1,0 +1,22 @@
+[
+  {"text":"Your OTP is 482911 do not share it","label":"safe"},
+  {"text":"O-T-P bhejo abhi warna block","label":"phishing"},
+  {"text":"O T P required for verification","label":"phishing"},
+  {"text":"Hey bro send me 3k urgently will return","label":"phishing"},
+  {"text":"Bhai paise bhej jaldi, confidential rakhna","label":"phishing"},
+  {"text":"Hi, please review the document and confirm","label":"phishing"},
+  {"text":"Hi, please review the document and confirm in internal portal","label":"safe"},
+  {"text":"Invoice attached for your review","label":"safe"},
+  {"text":"Reset password immediately","label":"phishing"},
+  {"text":"Click link to unlock account","label":"phishing"},
+  {"text":"Confirm identity now","label":"phishing"},
+  {"text":"Account credited 500 INR","label":"safe"},
+  {"text":"Mee account block ayindi OTP ivvandi","label":"phishing"},
+  {"text":"Transfer funds now don't tell anyone","label":"phishing"},
+  {"text":"Your weekly report is ready","label":"safe"},
+  {"text":"Verify account: http://secure-login.fake","label":"phishing"},
+  {"text":"Hi, following up kindly complete action","label":"phishing"},
+  {"text":"Team meeting notes attached","label":"safe"},
+  {"text":"Provide credentials now","label":"phishing"},
+  {"text":"System update complete","label":"safe"}
+]

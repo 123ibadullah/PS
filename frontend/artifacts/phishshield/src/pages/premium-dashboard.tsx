@@ -1,0 +1,805 @@
+import { useMemo, useState } from 'react';
+import { motion } from 'framer-motion';
+import {
+  AlertTriangle,
+  ArrowRight,
+  CheckCircle2,
+  Download,
+  History,
+  Mail,
+  RefreshCw,
+  ScanSearch,
+  Shield,
+  Sparkles,
+  Trash2,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
+import {
+  useAnalyzeEmail,
+  useClearScanHistory,
+  useGetModelMetrics,
+  useGetScanHistory,
+} from '@workspace/api-client-react';
+
+const SAMPLE_EMAILS = [
+  {
+    id: 'finance-bec',
+    sender: 'CFO Office',
+    subject: 'Release this confidential vendor transfer today',
+    preview: 'Urgent payment diversion attempt with secrecy pressure and finance language.',
+    text:
+      'From: CFO Office <ceo-finance@vendor-payments.co>\nSubject: Confidential: release urgent vendor transfer today\n\nHi, I need you to process the attached vendor bank transfer today. Keep this confidential and do not call back until it is done. Update the beneficiary to the new account in the invoice and confirm once the payment is released.',
+  },
+  {
+    id: 'bank-otp',
+    sender: 'HDFC Security',
+    subject: 'Your account will be suspended in 24 hours',
+    preview: 'Classic credential-harvesting flow with urgency and a suspicious link.',
+    text:
+      'Dear customer, we detected unusual login attempts on your HDFC account. To avoid suspension, verify immediately at http://hdfc-verify.xyz/login and enter your OTP and password to restore access.',
+  },
+  {
+    id: 'legit-safe',
+    sender: 'Google Security',
+    subject: 'Security alert for your account',
+    preview: 'A normal security notice that does not ask you to send credentials.',
+    text:
+      'Your Google Account was just signed in to from a new Windows device. If this was you, you can safely ignore this email. If this was not you, open your Google account directly to review the activity.',
+  },
+];
+
+type VisualState = 'safe' | 'suspicious' | 'phishing';
+
+function getVisualState(classification?: string): VisualState {
+  if (classification === 'phishing') return 'phishing';
+  if (classification === 'uncertain' || classification === 'suspicious') return 'suspicious';
+  return 'safe';
+}
+
+function getStateCopy(state: VisualState) {
+  if (state === 'phishing') {
+    return {
+      title: 'HIGH RISK',
+      badge: 'HIGH RISK',
+      text: 'text-[#ef4444]',
+      softText: 'text-red-100',
+      surface: 'border-[#ef4444]/35 bg-[#ef4444]/10',
+      chip: 'border-[#ef4444]/35 bg-[#ef4444]/12 text-[#fecaca]',
+      glow: 'from-[#ef4444]/18 via-[#ef4444]/6 to-transparent',
+      accent: 'bg-[#ef4444]',
+    };
+  }
+
+  if (state === 'suspicious') {
+    return {
+      title: 'SUSPICIOUS',
+      badge: 'SUSPICIOUS',
+      text: 'text-[#f59e0b]',
+      softText: 'text-amber-100',
+      surface: 'border-[#f59e0b]/35 bg-[#f59e0b]/10',
+      chip: 'border-[#f59e0b]/35 bg-[#f59e0b]/12 text-[#fde68a]',
+      glow: 'from-[#f59e0b]/18 via-[#f59e0b]/6 to-transparent',
+      accent: 'bg-[#f59e0b]',
+    };
+  }
+
+  return {
+    title: 'SAFE',
+    badge: 'SAFE',
+    text: 'text-[#22c55e]',
+    softText: 'text-emerald-100',
+    surface: 'border-[#22c55e]/35 bg-[#22c55e]/10',
+    chip: 'border-[#22c55e]/35 bg-[#22c55e]/12 text-[#bbf7d0]',
+    glow: 'from-[#22c55e]/16 via-[#22c55e]/5 to-transparent',
+    accent: 'bg-[#22c55e]',
+  };
+}
+
+function clampDisplayedConfidence(percent = 0) {
+  const rounded = Math.round(percent);
+  if (rounded <= 0) return 5;
+  return Math.max(5, Math.min(95, rounded));
+}
+
+function clampPercent(value = 0) {
+  const numericValue = Number.isFinite(value) ? value : 0;
+  return Math.max(0, Math.min(100, Math.round(numericValue)));
+}
+
+function formatConfidence(confidence?: number, riskScore = 0) {
+  const normalized = typeof confidence === 'number'
+    ? (confidence <= 1 ? confidence * 100 : confidence)
+    : Math.max(5, 100 - riskScore);
+
+  return `Confidence: ${clampDisplayedConfidence(normalized)}%`;
+}
+
+function formatCountLabel(count: number, singular: string, plural?: string) {
+  const safeCount = Number.isFinite(count) ? count : 0;
+  const pluralLabel = plural ?? `${singular}s`;
+  return `${safeCount} ${safeCount === 1 ? singular : pluralLabel}`;
+}
+
+function compactExplanation(text?: string, fallbackState: VisualState = 'safe') {
+  const fallback =
+    fallbackState === 'phishing'
+      ? 'Detected brand impersonation with suspicious domain and phishing link.'
+      : fallbackState === 'suspicious'
+        ? 'This email needs manual review before you click, reply, or sign in.'
+        : 'No phishing patterns detected. Message appears informational and low risk.';
+
+  const source = (text || fallback).replace(/\s+/g, ' ').trim();
+  const parts = source.split(/(?<=[.!?])\s+/).slice(0, 2);
+  return parts.join(' ');
+}
+
+function deriveSignals(result: any, state: VisualState) {
+  const mapped = new Set<string>();
+  const reasons = Array.isArray(result?.reasons) ? result.reasons : [];
+  const flags = Array.isArray(result?.flags) ? result.flags : [];
+  const attackType = String(result?.attackType || '').toLowerCase();
+
+  for (const reason of reasons) {
+    const category = String(reason?.category || '').toLowerCase();
+    const description = String(reason?.description || '').toLowerCase();
+
+    if (category === 'social_engineering' && /otp|password|credential|pin|identity/.test(description)) mapped.add('Credential Request');
+    else if (category === 'social_engineering') mapped.add('Suspicious Request');
+    else if (category === 'url' || category === 'domain') mapped.add('Suspicious Link');
+    else if (category === 'urgency' || /urgent|suspend|deadline|immediately|rush/.test(description)) mapped.add('Urgency');
+    else if (category === 'financial' && /invoice|payment|transfer|billing|refund/.test(description)) mapped.add('Money Request');
+    else if (category === 'financial' && /reward|prize|cashback|bonus/.test(description)) mapped.add('Reward Lure');
+    else if (category === 'header' || category === 'india_specific') mapped.add('Impersonation');
+  }
+
+  flags.forEach((flag: string) => {
+    if (/credential|otp|password|pin/i.test(flag)) mapped.add('Credential Request');
+    else if (/link|domain|url/i.test(flag)) mapped.add('Suspicious Link');
+    else if (/urgent|pressure|deadline|suspend/i.test(flag)) mapped.add('Urgency');
+    else if (/bank|brand|spoof|imperson/i.test(flag)) mapped.add('Impersonation');
+  });
+
+  if (state === 'phishing') {
+    if (/reward/.test(attackType)) mapped.add('Reward Lure');
+    if (/bank/.test(attackType)) mapped.add('Impersonation');
+    if (/credential|otp/.test(attackType)) mapped.add('Credential Request');
+  }
+
+  const list = Array.from(mapped).slice(0, 3);
+  if (list.length > 0) return list;
+
+  if (state === 'phishing') return ['Credential Request', 'Suspicious Link', 'Urgency'];
+  if (state === 'suspicious') return ['Needs Verification', 'Review Carefully'];
+  return ['No phishing patterns detected', 'Informational language'];
+}
+
+function signalTone(signal: string) {
+  const normalized = signal.toLowerCase();
+
+  if (/(trusted|safe|verified|no phishing patterns|informational|routine)/i.test(normalized)) {
+    return {
+      icon: '🟢',
+      className: 'border-[#00C853]/35 bg-[#00C853]/12 text-[#bbf7d0]',
+    };
+  }
+
+  if (/(credential|suspicious link|urgency|impersonation|spoof|money request)/i.test(normalized)) {
+    return {
+      icon: '🔴',
+      className: 'border-[#FF4C4C]/35 bg-[#FF4C4C]/12 text-[#fecaca]',
+    };
+  }
+
+  return {
+    icon: '⚠️',
+    className: 'border-[#FFA500]/35 bg-[#FFA500]/12 text-[#fde68a]',
+  };
+}
+
+export default function PremiumDashboard() {
+  const [emailText, setEmailText] = useState('');
+  const [selectedSampleId, setSelectedSampleId] = useState<string | null>(null);
+
+  const { mutate: analyzeEmail, data: result, isPending, error, reset } = useAnalyzeEmail();
+  const { data: history = [], refetch: refetchHistory } = useGetScanHistory();
+  const { data: metrics, refetch: refetchMetrics } = useGetModelMetrics();
+  const { mutate: clearHistory } = useClearScanHistory();
+
+  const visualState = getVisualState(result?.classification);
+  const stateCopy = getStateCopy(visualState);
+  const score = Math.max(0, Math.min(100, Math.round(result?.riskScore ?? 0)));
+  const confidence = formatConfidence(result?.confidence, score);
+  const summary = compactExplanation(result?.scamStory || (result as any)?.explanation, visualState);
+  const signals = deriveSignals(result, visualState);
+  const recentHistory = Array.isArray(history) ? history.slice(0, 5) : [];
+  const hasHeaderSpoofing = Boolean(
+    result && (
+      /header spoofing|spoof/i.test(String(result?.attackType || '')) ||
+      (Array.isArray((result as any)?.reasons) && (result as any).reasons.some((reason: any) => String(reason?.category || '').toLowerCase() === 'header'))
+    )
+  );
+  const senderVerified = Boolean((result as any)?.sender_verified === true);
+  const reasonItems = Array.isArray((result as any)?.reasons) ? (result as any).reasons : [];
+  const urlAnalyses = Array.isArray((result as any)?.urlAnalyses) ? (result as any).urlAnalyses : [];
+  const reasonCorpus = `${emailText} ${String(result?.attackType || '')} ${reasonItems.map((reason: any) => `${reason?.category || ''} ${reason?.description || ''}`).join(' ')}`.toLowerCase();
+
+  const hasLinks = urlAnalyses.length > 0 || /https?:\/\/|www\./i.test(emailText);
+  const hasUrgency = reasonItems.some((reason: any) => String(reason?.category || '').toLowerCase() === 'urgency')
+    || /\b(urgent|immediately|today|deadline|suspend|expir|limited time|24\s*hours?)\b/i.test(reasonCorpus);
+  const hasCredentialRequest = reasonItems.some((reason: any) => {
+    const category = String(reason?.category || '').toLowerCase();
+    const description = String(reason?.description || '').toLowerCase();
+    return category === 'social_engineering' && /otp|credential|password|pin|passcode|verify|login/.test(description);
+  }) || /\b(otp|credential|password|pin|passcode|verify your account|login)\b/i.test(reasonCorpus);
+  const hasSpoofing = hasHeaderSpoofing
+    || reasonItems.some((reason: any) => {
+      const category = String(reason?.category || '').toLowerCase();
+      const description = String(reason?.description || '').toLowerCase();
+      return category === 'header' || category === 'india_specific' || /spoof|imperson|mismatch|lookalike/.test(description);
+    })
+    || /spoof|imperson|mismatch|lookalike/.test(reasonCorpus);
+
+  const safeSignals = result && visualState === 'safe'
+    ? [
+        !hasLinks && 'No links detected',
+        !hasUrgency && 'No urgency language',
+        !hasCredentialRequest && 'No credential request',
+        !hasSpoofing && 'No sender spoofing',
+      ].filter(Boolean) as string[]
+    : [];
+
+  const verdictReasons = result
+    ? (() => {
+        if (visualState === 'safe') {
+          const safeReasons = [
+            'No phishing patterns detected across content and structure.',
+            ...safeSignals,
+          ];
+          if (senderVerified) safeReasons.unshift('Sender verification passed for this source.');
+          return safeReasons.slice(0, 4);
+        }
+
+        const dynamicReasons: string[] = [];
+        if (visualState === 'phishing' && hasCredentialRequest && hasLinks) {
+          dynamicReasons.push('Requests OTP or credentials and includes suspicious links.');
+        }
+        if (hasUrgency) dynamicReasons.push('Contains urgency language designed to pressure quick action.');
+        if (hasSpoofing) dynamicReasons.push('Shows sender spoofing or impersonation risk.');
+        if (hasLinks) dynamicReasons.push('Contains links that should not be trusted without verification.');
+        if (hasCredentialRequest && visualState !== 'phishing') dynamicReasons.push('Requests sensitive details and needs manual verification.');
+        if (dynamicReasons.length === 0) {
+          dynamicReasons.push(
+            visualState === 'phishing'
+              ? 'Multiple high-risk phishing indicators were detected.'
+              : 'Suspicious patterns detected and manual verification is recommended.',
+          );
+        }
+
+        return dynamicReasons.slice(0, 4);
+      })()
+    : [];
+
+  const actionMap: Record<VisualState, string> = {
+    safe: 'No action needed. You can proceed safely.',
+    suspicious: 'Verify from official source before taking action.',
+    phishing: 'Do NOT click links. Block and report immediately.',
+  };
+  const recommendedAction = result ? actionMap[visualState] : 'Run a scan to get a recommended next action.';
+
+  const realComponents = [
+    { label: 'Language Model', value: clampPercent(Number((result as any)?.mlScore ?? 0)), tone: 'bg-sky-400' },
+    { label: 'Pattern Matching', value: clampPercent(Number((result as any)?.ruleScore ?? 0)), tone: 'bg-indigo-400' },
+    { label: 'Link Risk', value: clampPercent(Number((result as any)?.urlScore ?? 0)), tone: 'bg-amber-400' },
+    { label: 'Header Spoofing', value: clampPercent(Number((result as any)?.headerScore ?? 0)), tone: 'bg-rose-400' },
+  ];
+
+  const displayComponents = result
+    ? (score >= 30
+      ? realComponents
+      : [
+          { label: 'Content Safety', value: 80, tone: 'bg-emerald-400' },
+          { label: 'No Threat Patterns', value: 90, tone: 'bg-green-500' },
+        ])
+    : [];
+
+  const topStats = useMemo(() => {
+    return [
+      {
+        label: 'High risk',
+        value: metrics?.phishingDetected ?? 0,
+        tone: 'border-[#ef4444]/25 bg-[#ef4444]/10 text-[#fecaca]',
+      },
+      {
+        label: 'Suspicious',
+        value: metrics?.suspiciousDetected ?? 0,
+        tone: 'border-[#f59e0b]/25 bg-[#f59e0b]/10 text-[#fde68a]',
+      },
+      {
+        label: 'Safe',
+        value: metrics?.safeDetected ?? 0,
+        tone: 'border-[#22c55e]/25 bg-[#22c55e]/10 text-[#bbf7d0]',
+      },
+    ];
+  }, [metrics]);
+
+  const handleScan = (text = emailText) => {
+    const payload = text.trim();
+    if (!payload) return;
+
+    analyzeEmail(
+      { data: { emailText: payload } },
+      {
+        onSuccess: () => {
+          refetchHistory();
+          refetchMetrics();
+        },
+      },
+    );
+  };
+
+  const handleLoadSample = (sample: (typeof SAMPLE_EMAILS)[number]) => {
+    setSelectedSampleId(sample.id);
+    setEmailText(sample.text);
+    handleScan(sample.text);
+  };
+
+  const handleDismiss = () => {
+    reset();
+    setSelectedSampleId(null);
+  };
+
+  const handleDownloadReport = () => {
+    const scanId = ((result as any)?.scan_id as string | undefined) ?? ((result as any)?.scanId as string | undefined);
+    if (!scanId) return;
+
+    const envBase = (
+      typeof import.meta !== 'undefined'
+        ? ((import.meta as ImportMeta & { env?: { VITE_API_BASE_URL?: string } }).env?.VITE_API_BASE_URL ?? '')
+        : ''
+    ).trim();
+
+    const apiBase = envBase
+      ? envBase.replace(/\/$/, '')
+      : (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+        ? `${window.location.protocol}//${window.location.hostname}:8000`
+        : window.location.origin;
+
+    const reportUrl = `${apiBase}/report/${encodeURIComponent(scanId)}`;
+    window.open(reportUrl, '_blank', 'noopener,noreferrer');
+  };
+
+  return (
+    <div className="min-h-screen bg-[#0f172a] text-slate-50">
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -left-20 top-0 h-72 w-72 rounded-full bg-sky-500/15 blur-3xl" />
+        <div className="absolute right-0 top-24 h-80 w-80 rounded-full bg-violet-500/12 blur-3xl" />
+        <div className="absolute bottom-0 left-1/3 h-72 w-72 rounded-full bg-emerald-500/10 blur-3xl" />
+      </div>
+
+      <div className="relative mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+        <motion.header
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-6 flex flex-col gap-4 rounded-3xl border border-white/10 bg-slate-950/60 px-5 py-4 backdrop-blur-xl sm:flex-row sm:items-center sm:justify-between"
+        >
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-sky-400/30 bg-sky-500/15 shadow-[0_0_32px_rgba(56,189,248,0.18)]">
+              <Shield className="h-5 w-5 text-sky-300" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="text-lg font-black tracking-tight">PhishShield</h1>
+                <Badge className="border-0 bg-sky-400 text-slate-950 shadow-none">PREMIUM</Badge>
+              </div>
+              <p className="text-sm text-slate-300">Modern phishing defense for Gmail, browser links, and security teams.</p>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge variant="outline" className="flex items-center gap-1 border-emerald-400/30 bg-emerald-500/10 text-emerald-200">
+              <span className="animate-pulse text-green-400">● Live</span>
+              <span>Protection</span>
+            </Badge>
+            <Badge variant="outline" className="border-white/10 bg-white/5 text-slate-200">
+              {formatCountLabel(metrics?.totalScans ?? 0, 'scan')} analyzed
+            </Badge>
+          </div>
+        </motion.header>
+
+        <motion.section
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.05 }}
+          className="overflow-hidden rounded-[28px] border border-white/10 bg-[linear-gradient(135deg,rgba(15,23,42,0.96),rgba(15,23,42,0.86))] shadow-[0_24px_80px_rgba(2,6,23,0.45)] transition-transform duration-200 hover:scale-[1.005]"
+        >
+          <div className="grid gap-4 px-4 py-5 lg:grid-cols-[1.2fr_0.8fr] lg:px-8 lg:py-8">
+            <div>
+              <Badge className="mb-3 border-0 bg-white/8 text-slate-200 shadow-none">Security-grade clarity</Badge>
+              <h2 className="max-w-2xl text-3xl font-black tracking-tight text-white sm:text-5xl">
+                Premium phishing detection with a <span className="text-sky-300">serious security feel</span>.
+              </h2>
+              <p className="mt-3 max-w-xl text-sm leading-6 text-slate-300 sm:text-base">
+                Scan suspicious emails instantly, surface only the strongest signals, and deliver a verdict that feels clean, powerful, and trustworthy.
+              </p>
+
+              <div className="mt-5 flex flex-wrap gap-3">
+                <Button size="lg" className="bg-sky-500 text-slate-950 hover:bg-sky-400" onClick={() => handleScan()}>
+                  Scan now <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+                <Button size="lg" variant="outline" className="border-white/15 bg-white/5 text-white hover:bg-white/10" onClick={handleDismiss}>
+                  Reset view
+                </Button>
+              </div>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+              {[
+                {
+                  title: 'HIGH RISK',
+                  scoreLabel: '87/100',
+                  note: 'Credential theft or payment fraud likely.',
+                  tone: 'border-[#ef4444]/35 bg-[#ef4444]/10 text-[#fecaca]',
+                },
+                {
+                  title: 'SUSPICIOUS',
+                  scoreLabel: '54/100',
+                  note: 'Verify independently before acting.',
+                  tone: 'border-[#f59e0b]/35 bg-[#f59e0b]/10 text-[#fde68a]',
+                },
+                {
+                  title: 'SAFE',
+                  scoreLabel: '14/100',
+                  note: 'Routine message with low-risk signals.',
+                  tone: 'border-[#22c55e]/35 bg-[#22c55e]/10 text-[#bbf7d0]',
+                },
+              ].map((item) => (
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  key={item.title}
+                  className={cn('rounded-[20px] border p-4 shadow-[0_10px_30px_rgba(15,23,42,0.28)]', item.tone)}
+                >
+                  <p className="text-xs font-black uppercase tracking-[0.2em] text-white/70">Threat state</p>
+                  <div className="mt-2 flex items-end justify-between gap-3">
+                    <div>
+                      <p className="text-base font-bold text-white">{item.title}</p>
+                      <p className="mt-1 text-xs leading-5">{item.note}</p>
+                    </div>
+                    <span className="text-lg font-black text-white">{item.scoreLabel}</span>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </motion.section>
+
+        <div id="scanner" className="mt-4 grid gap-4 xl:grid-cols-[1.08fr_0.92fr]">
+          <motion.section
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.08 }}
+            className="rounded-3xl border border-white/10 bg-slate-950/65 p-4 shadow-[0_16px_60px_rgba(2,6,23,0.32)] backdrop-blur-xl transition-transform duration-200 hover:scale-[1.01]"
+          >
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <div>
+                <p className="text-xs font-black uppercase tracking-[0.24em] text-slate-400">Live scanner</p>
+                <h3 className="mt-1 text-xl font-bold text-white">Paste an email and get a premium verdict.</h3>
+              </div>
+              <div className="rounded-2xl border border-sky-400/25 bg-sky-500/10 p-2">
+                <ScanSearch className="h-5 w-5 text-sky-300" />
+              </div>
+            </div>
+
+            <div className="mb-4 grid gap-3 md:grid-cols-3">
+              {SAMPLE_EMAILS.map((sample) => (
+                <motion.button
+                  whileHover={{ scale: 1.01 }}
+                  key={sample.id}
+                  onClick={() => handleLoadSample(sample)}
+                  className={cn(
+                    'rounded-[18px] border p-3 text-left transition-all',
+                    selectedSampleId === sample.id
+                      ? 'border-sky-400/45 bg-sky-500/10 shadow-[0_0_0_1px_rgba(56,189,248,0.12)]'
+                      : 'border-white/10 bg-white/5 hover:border-white/20 hover:bg-white/[0.07]',
+                  )}
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-xs font-bold text-white">{sample.sender}</span>
+                    <Badge variant="outline" className="border-white/10 bg-white/5 text-slate-300">
+                      Demo
+                    </Badge>
+                  </div>
+                  <p className="mt-2 text-sm font-semibold text-slate-100">{sample.subject}</p>
+                  <p className="mt-1 text-xs leading-5 text-slate-400">{sample.preview}</p>
+                </motion.button>
+              ))}
+            </div>
+
+            <label className="mb-2 block text-xs font-black uppercase tracking-[0.22em] text-slate-400">
+              Email content
+            </label>
+            <textarea
+              value={emailText}
+              onChange={(event) => {
+                setEmailText(event.target.value);
+                setSelectedSampleId(null);
+              }}
+              placeholder="Paste the email body, subject, or suspicious message here..."
+              className="min-h-64 w-full rounded-[20px] border border-white/10 bg-[#09101d] px-4 py-4 text-sm text-slate-100 outline-none transition focus:border-sky-400/45 focus:ring-2 focus:ring-sky-400/20"
+            />
+
+            <div className="mt-3 flex items-center justify-between gap-3 text-xs text-slate-400">
+              <span>{emailText.trim() ? `${formatCountLabel(emailText.trim().length, 'character')} loaded` : 'No email loaded yet'}</span>
+              <span>Private local workflow</span>
+            </div>
+
+            {error && (
+              <div className="mt-4 rounded-[18px] border border-[#ef4444]/30 bg-[#ef4444]/10 px-4 py-3 text-sm text-red-100">
+                {error instanceof Error ? error.message : 'The scan could not be completed.'}
+              </div>
+            )}
+
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Button size="lg" onClick={() => handleScan()} disabled={isPending || !emailText.trim()} className="min-w-40 bg-sky-500 text-slate-950 hover:bg-sky-400">
+                {isPending ? <RefreshCw className="mr-2 h-4 w-4 animate-spin" /> : <Mail className="mr-2 h-4 w-4" />}
+                {isPending ? 'Scanning…' : 'Analyze Email'}
+              </Button>
+              <Button size="lg" variant="outline" onClick={handleDismiss} className="border-white/12 bg-white/5 text-white hover:bg-white/10">
+                Dismiss
+              </Button>
+            </div>
+          </motion.section>
+
+          <motion.aside
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.12 }}
+            className="rounded-3xl border border-white/10 bg-slate-950/65 p-4 shadow-[0_16px_60px_rgba(2,6,23,0.32)] backdrop-blur-xl transition-transform duration-200 hover:scale-[1.01] xl:sticky xl:top-6"
+          >
+            <div className="mb-4 flex items-center justify-between">
+              <div>
+                <p className="text-xs font-black uppercase tracking-[0.24em] text-slate-400">Verdict</p>
+                <h3 className="mt-1 text-xl font-bold text-white">Front-and-center risk summary</h3>
+              </div>
+              <Badge className={cn('border', stateCopy.surface, stateCopy.text)}>{stateCopy.badge}</Badge>
+            </div>
+
+            <div className={cn('relative overflow-hidden rounded-[22px] border p-4 sm:p-5', stateCopy.surface)}>
+              <div className={cn('absolute inset-0 bg-linear-to-br', stateCopy.glow)} />
+              {result ? (
+                <div className="relative">
+                  <div className="mb-4 flex items-start justify-between gap-3">
+                    <div>
+                      <p className={cn('text-xs font-black uppercase tracking-[0.24em]', stateCopy.text)}>Final verdict</p>
+                      <h4 className="mt-2 text-2xl font-black tracking-[0.18em] text-white">{stateCopy.title}</h4>
+                      <p className="mt-1 text-sm text-slate-300">{confidence}</p>
+                      <p className="mt-1 text-xs text-slate-400">Confidence based on model agreement + signal strength</p>
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {senderVerified && (
+                          <Badge className="border border-emerald-400/30 bg-emerald-500/10 text-emerald-200">
+                            Trusted Sender
+                          </Badge>
+                        )}
+                        {hasHeaderSpoofing && (
+                          <Badge className="border border-[#FF4C4C]/30 bg-[#FF4C4C]/10 text-[#fecaca]">
+                            ⚠️ Header Spoofing Detected
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                    <div className="rounded-[18px] border border-white/10 bg-slate-950/65 px-4 py-3 text-right shadow-inner">
+                      <div className={cn('text-4xl font-black leading-none sm:text-5xl', stateCopy.text)}>
+                        {score}
+                      </div>
+                      <div className="mt-1 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">/100</div>
+                    </div>
+                  </div>
+
+                  <div className="rounded-[18px] border border-white/10 bg-slate-950/70 p-4">
+                    <p className="text-xs font-black uppercase tracking-[0.22em] text-slate-400">Summary</p>
+                    <p className="mt-2 text-sm leading-6 text-slate-100">{summary}</p>
+                  </div>
+
+                  {visualState === 'safe' ? (
+                    <div className="mt-4">
+                      <p className="text-xs font-black uppercase tracking-[0.22em] text-slate-400">Signal Breakdown</p>
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {(safeSignals.length > 0 ? safeSignals : ['No phishing patterns detected']).map((signal, index) => (
+                          <span key={`${signal}-${index}`} className="rounded bg-green-500/10 px-2 py-1 text-xs text-green-300">
+                            ✓ {signal}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="mt-4">
+                      <p className="text-xs font-black uppercase tracking-[0.22em] text-slate-400">Primary Risk Indicators</p>
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {signals.slice(0, 4).map((signal) => {
+                          const tone = signalTone(signal);
+                          return (
+                            <span key={signal} className={cn('rounded-full border px-3 py-1 text-xs font-semibold', tone.className)}>
+                              <span className="mr-1">{tone.icon}</span>
+                              {signal}
+                            </span>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {displayComponents.length > 0 && (
+                    <div className="mt-4 rounded-[18px] border border-white/10 bg-slate-950/70 p-4">
+                      <p className="text-xs font-black uppercase tracking-[0.22em] text-slate-400">Score Components</p>
+                      <div className="mt-3 space-y-2">
+                        {displayComponents.map((component) => (
+                          <div key={component.label}>
+                            <div className="flex items-center justify-between text-xs">
+                              <span className="text-slate-300">{component.label}</span>
+                              <span className="font-semibold text-white">{component.value}</span>
+                            </div>
+                            <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-white/10">
+                              <div
+                                className={cn('h-full rounded-full transition-all duration-500', component.tone)}
+                                style={{ width: `${component.value}%` }}
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="mt-4">
+                    <h4 className="mb-2 text-sm text-slate-400">Why this verdict?</h4>
+                    <ul className="space-y-1 text-sm text-slate-100">
+                      {verdictReasons.map((reason, index) => (
+                        <li key={`${reason}-${index}`}>• {reason}</li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className="mt-4 rounded-[18px] border border-white/10 bg-slate-950/70 p-4">
+                    <p className="text-xs font-black uppercase tracking-[0.22em] text-slate-400">Recommended action</p>
+                    <p className="mt-2 text-sm leading-6 text-slate-100">{recommendedAction}</p>
+                  </div>
+
+                  <div className="mt-4 flex flex-wrap gap-3">
+                    <Button onClick={() => handleScan()} disabled={isPending || !emailText.trim()} className="flex-1 bg-sky-500 text-slate-950 hover:bg-sky-400">
+                      Re-scan
+                    </Button>
+                    <Button
+                      onClick={handleDownloadReport}
+                      disabled={!(((result as any)?.scan_id as string | undefined) ?? ((result as any)?.scanId as string | undefined))}
+                      variant="outline"
+                      className="flex-1 border-white/12 bg-white/5 text-white hover:bg-white/10"
+                    >
+                      <Download className="mr-2 h-4 w-4" />
+                      Download Report
+                    </Button>
+                    <Button onClick={handleDismiss} variant="outline" className="flex-1 border-white/12 bg-white/5 text-white hover:bg-white/10">
+                      Dismiss
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="relative py-10 text-center text-slate-400">
+                  <p>Paste an email to analyze phishing risk</p>
+                </div>
+              )}
+            </div>
+          </motion.aside>
+        </div>
+
+        <div className="mt-4 grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
+          <motion.section
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.16 }}
+            className="rounded-3xl border border-white/10 bg-slate-950/65 p-4 shadow-[0_16px_60px_rgba(2,6,23,0.32)] backdrop-blur-xl transition-transform duration-200 hover:scale-[1.01]"
+          >
+            <div className="mb-4 flex items-center justify-between">
+              <div>
+                <p className="text-xs font-black uppercase tracking-[0.24em] text-slate-400">Operations</p>
+                <h3 className="mt-1 text-xl font-bold text-white">Security posture at a glance</h3>
+              </div>
+              <Sparkles className="h-5 w-5 text-sky-300" />
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+              {topStats.map((stat) => (
+                <div key={stat.label} className={cn('rounded-[18px] border p-4 transition-transform duration-200 hover:scale-[1.02]', stat.tone)}>
+                  <p className="text-[11px] font-black uppercase tracking-[0.22em]">{stat.label}</p>
+                  <p className="mt-2 text-3xl font-black text-white">{stat.value}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-4 rounded-[18px] border border-white/10 bg-white/5 p-4">
+              <p className="text-xs font-black uppercase tracking-[0.22em] text-slate-400">Model health</p>
+              <div className="mt-3 grid grid-cols-1 gap-3 text-sm text-slate-200 sm:grid-cols-2">
+                <div>
+                  <span className="block text-slate-400">Benchmark Accuracy (Offline Dataset)</span>
+                  <strong>{Math.round((metrics?.accuracy ?? 0) * 100)}%</strong>
+                </div>
+                <div>
+                  <span className="block text-slate-400">F1 Score (Offline Dataset)</span>
+                  <strong>{Math.round((metrics?.f1Score ?? 0) * 100)}%</strong>
+                </div>
+              </div>
+            </div>
+          </motion.section>
+
+          <motion.section
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.18 }}
+            className="rounded-3xl border border-white/10 bg-slate-950/65 p-4 shadow-[0_16px_60px_rgba(2,6,23,0.32)] backdrop-blur-xl transition-transform duration-200 hover:scale-[1.01]"
+          >
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <div>
+                <p className="text-xs font-black uppercase tracking-[0.24em] text-slate-400">Recent activity</p>
+                <h3 className="mt-1 text-xl font-bold text-white">Latest scan history</h3>
+              </div>
+              <Button
+                variant="ghost"
+                onClick={() => clearHistory(undefined, { onSuccess: () => { refetchHistory(); refetchMetrics(); } })}
+                className="text-slate-300 hover:bg-white/10 hover:text-white"
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                Clear
+              </Button>
+            </div>
+
+            {recentHistory.length === 0 ? (
+              <div className="rounded-[18px] border border-dashed border-white/12 bg-white/5 px-4 py-8 text-center text-slate-300">
+                <History className="mx-auto mb-3 h-5 w-5 text-slate-400" />
+                <p className="text-sm">Paste an email to analyze phishing risk</p>
+                <p className="mt-1 text-xs text-slate-400">Your premium activity feed appears after the first scan.</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {recentHistory.map((item: any) => {
+                  const rowState = getVisualState(item?.classification);
+                  const rowCopy = getStateCopy(rowState);
+
+                  return (
+                    <div key={item.id} className="flex items-start justify-between gap-3 rounded-[18px] border border-white/10 bg-white/5 p-4 transition-colors hover:bg-white/8">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className={cn('h-2.5 w-2.5 rounded-full', rowCopy.accent)} />
+                          <p className="truncate text-sm font-semibold text-white">{item.emailPreview}</p>
+                        </div>
+                        <p className="mt-1 text-xs text-slate-400">{item.detectedLanguage?.toUpperCase?.() || 'EN'} · {formatCountLabel(item.reasonCount, 'signal')}</p>
+                      </div>
+                      <div className="text-right">
+                        <Badge className={cn('border', rowCopy.surface, rowCopy.text)}>{rowCopy.badge}</Badge>
+                        <p className="mt-2 text-sm font-black text-white">{Math.round(item.riskScore ?? 0)}/100</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </motion.section>
+        </div>
+
+        <motion.section
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="mt-4 rounded-[22px] border border-sky-400/20 bg-sky-500/10 px-5 py-4 text-sm text-slate-100"
+        >
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="h-4 w-4 text-sky-300" />
+              <span className="font-semibold">Designed to feel premium, clean, and powerful at first glance.</span>
+            </div>
+            <span className="text-slate-300">Built for serious email security workflows.</span>
+          </div>
+        </motion.section>
+      </div>
+    </div>
+  );
+}

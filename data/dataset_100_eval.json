@@ -1,0 +1,832 @@
+{
+  "dataset_size": 80,
+  "accuracy_percent": 98.75,
+  "correct": 79,
+  "mismatches_count": 1,
+  "mismatch_categories": {
+    "safe_context_misread": 1
+  },
+  "mismatches": [
+    {
+      "id": "ITEM-010",
+      "text": "Your OTP is 483920, do not share it",
+      "expected": "safe",
+      "predicted": "phishing",
+      "risk_score": 72,
+      "verdict": "High Risk",
+      "matched_signals": [],
+      "failure_category": "safe_context_misread"
+    }
+  ],
+  "results": [
+    {
+      "id": "ITEM-001",
+      "text": "Dear SBI user, share your OTP immediately to avoid account block",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 89,
+      "verdict": "High Risk",
+      "matched_signals": [
+        "OTP-harvesting pattern (OTP request plus urgency or link)",
+        "OTP request detected",
+        "OTP sharing request detected",
+        "Urgency language",
+        "Indian brand impersonation",
+        "Bank credential harvesting pattern"
+      ]
+    },
+    {
+      "id": "ITEM-002",
+      "text": "Your Amazon order has been shipped successfully",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 20,
+      "verdict": "Safe",
+      "matched_signals": [
+        "Known brand mentioned"
+      ]
+    },
+    {
+      "id": "ITEM-003",
+      "text": "Bhai OTP bhejo warna account band ho jayega",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 89,
+      "verdict": "High Risk",
+      "matched_signals": [
+        "Mixed-language phishing phrasing"
+      ]
+    },
+    {
+      "id": "ITEM-004",
+      "text": "Weekly newsletter from GitHub",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 20,
+      "verdict": "Safe",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-005",
+      "text": "Transfer 2 lakh urgently, don't inform anyone",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 59,
+      "verdict": "Suspicious",
+      "matched_signals": [
+        "Business email compromise pattern (payment instruction plus secrecy/urgency)",
+        "Urgency language"
+      ]
+    },
+    {
+      "id": "ITEM-006",
+      "text": "Your bank statement is ready",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 24,
+      "verdict": "Safe",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-007",
+      "text": "Click to verify your account: http://secure-login.xyz",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 60,
+      "verdict": "Suspicious",
+      "matched_signals": [
+        "High-risk TLD detected (.tk/.ml/.xyz)",
+        "Link included in message",
+        "Suspicious verification link"
+      ]
+    },
+    {
+      "id": "ITEM-008",
+      "text": "Meeting scheduled for tomorrow",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 20,
+      "verdict": "Safe",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-009",
+      "text": "Income tax refund pending, submit details",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 80,
+      "verdict": "High Risk",
+      "matched_signals": [
+        "Indian brand impersonation",
+        "Suspicious phishing keywords",
+        "Income Tax refund lure",
+        "Government department impersonation"
+      ]
+    },
+    {
+      "id": "ITEM-010",
+      "text": "Your OTP is 483920, do not share it",
+      "expected": "safe",
+      "predicted": "phishing",
+      "risk_score": 72,
+      "verdict": "High Risk",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-011",
+      "text": "Pls send O T P fast bro",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 77,
+      "verdict": "High Risk",
+      "matched_signals": [
+        "OTP request detected",
+        "OTP sharing request detected"
+      ]
+    },
+    {
+      "id": "ITEM-012",
+      "text": "Order delivered successfully",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 20,
+      "verdict": "Safe",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-013",
+      "text": "Verify PAN details now or account blocked",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 89,
+      "verdict": "High Risk",
+      "matched_signals": [
+        "Urgency language",
+        "Indian brand impersonation",
+        "PAN card update pressure"
+      ]
+    },
+    {
+      "id": "ITEM-014",
+      "text": "Project update attached",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 20,
+      "verdict": "Safe",
+      "matched_signals": [
+        "Attachment verification lure from untrusted sender"
+      ]
+    },
+    {
+      "id": "ITEM-015",
+      "text": "You won 25 lakh lottery contact now",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 75,
+      "verdict": "High Risk",
+      "matched_signals": [
+        "Suspicious phishing keywords"
+      ]
+    },
+    {
+      "id": "ITEM-016",
+      "text": "Thanks for your payment",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 20,
+      "verdict": "Safe",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-017",
+      "text": "Login to update KYC: http://kyc-update.xyz",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 60,
+      "verdict": "Suspicious",
+      "matched_signals": [
+        "High-risk TLD detected (.tk/.ml/.xyz)",
+        "Suspicious phishing keywords",
+        "Link included in message",
+        "Suspicious verification link"
+      ]
+    },
+    {
+      "id": "ITEM-018",
+      "text": "Invoice attached for review",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 20,
+      "verdict": "Safe",
+      "matched_signals": [
+        "Attachment verification lure from untrusted sender"
+      ]
+    },
+    {
+      "id": "ITEM-019",
+      "text": "Urgent: account suspension warning",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 60,
+      "verdict": "Suspicious",
+      "matched_signals": [
+        "Urgency language"
+      ]
+    },
+    {
+      "id": "ITEM-020",
+      "text": "Welcome to our service",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 20,
+      "verdict": "Safe",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-021",
+      "text": "Send OTP to continue transaction",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 77,
+      "verdict": "High Risk",
+      "matched_signals": [
+        "OTP request detected",
+        "OTP sharing request detected"
+      ]
+    },
+    {
+      "id": "ITEM-022",
+      "text": "Delivery update: package arriving today",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 24,
+      "verdict": "Safe",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-023",
+      "text": "Click here to claim reward",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 72,
+      "verdict": "High Risk",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-024",
+      "text": "Team meeting notes attached",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 20,
+      "verdict": "Safe",
+      "matched_signals": [
+        "Attachment verification lure from untrusted sender"
+      ]
+    },
+    {
+      "id": "ITEM-025",
+      "text": "Account verification required immediately",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 60,
+      "verdict": "Suspicious",
+      "matched_signals": [
+        "Urgency language"
+      ]
+    },
+    {
+      "id": "ITEM-026",
+      "text": "Your subscription is active",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 20,
+      "verdict": "Safe",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-027",
+      "text": "Confirm password now: http://fake-login.xyz",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 88,
+      "verdict": "High Risk",
+      "matched_signals": [
+        "Credential-harvesting pattern (sensitive request plus urgency or link)",
+        "High-risk TLD detected (.tk/.ml/.xyz)",
+        "OTP request detected",
+        "Link included in message",
+        "Suspicious verification link"
+      ]
+    },
+    {
+      "id": "ITEM-028",
+      "text": "Payment received successfully",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 20,
+      "verdict": "Safe",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-029",
+      "text": "Your Aadhaar needs update urgently",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 77,
+      "verdict": "High Risk",
+      "matched_signals": [
+        "Urgency language",
+        "Indian brand impersonation",
+        "Aadhaar KYC requirement"
+      ]
+    },
+    {
+      "id": "ITEM-030",
+      "text": "No action required",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 20,
+      "verdict": "Safe",
+      "matched_signals": [
+        "Urgency language"
+      ]
+    },
+    {
+      "id": "ITEM-031",
+      "text": "O-T-P required for verification",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 72,
+      "verdict": "High Risk",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-032",
+      "text": "Your invoice is ready",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 24,
+      "verdict": "Safe",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-033",
+      "text": "Urgent payment needed",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 72,
+      "verdict": "High Risk",
+      "matched_signals": [
+        "Business email compromise pattern (payment instruction plus secrecy/urgency)",
+        "Urgency language"
+      ]
+    },
+    {
+      "id": "ITEM-034",
+      "text": "System maintenance notice",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 20,
+      "verdict": "Safe",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-035",
+      "text": "Verify bank account now",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 72,
+      "verdict": "High Risk",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-036",
+      "text": "Your order is confirmed",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 24,
+      "verdict": "Safe",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-037",
+      "text": "Click link to avoid suspension",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 60,
+      "verdict": "Suspicious",
+      "matched_signals": [
+        "Urgency language"
+      ]
+    },
+    {
+      "id": "ITEM-038",
+      "text": "Report ready for download",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 24,
+      "verdict": "Safe",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-039",
+      "text": "Immediate action required",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 72,
+      "verdict": "High Risk",
+      "matched_signals": [
+        "Urgency language"
+      ]
+    },
+    {
+      "id": "ITEM-040",
+      "text": "Happy birthday from our team",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 24,
+      "verdict": "Safe",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-041",
+      "text": "Bhai paise bhej jaldi",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 72,
+      "verdict": "High Risk",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-042",
+      "text": "Weekly summary available",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 24,
+      "verdict": "Safe",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-043",
+      "text": "OTP share karo abhi",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 85,
+      "verdict": "High Risk",
+      "matched_signals": [
+        "OTP request detected",
+        "OTP sharing request detected",
+        "Mixed-language phishing phrasing"
+      ]
+    },
+    {
+      "id": "ITEM-044",
+      "text": "Your login was successful",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 24,
+      "verdict": "Safe",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-045",
+      "text": "KYC update needed now",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 75,
+      "verdict": "High Risk",
+      "matched_signals": [
+        "Suspicious phishing keywords"
+      ]
+    },
+    {
+      "id": "ITEM-046",
+      "text": "Newsletter issue released",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 24,
+      "verdict": "Safe",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-047",
+      "text": "Confirm identity now",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 72,
+      "verdict": "High Risk",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-048",
+      "text": "Account credited successfully",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 24,
+      "verdict": "Safe",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-049",
+      "text": "Link expired, verify again",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 72,
+      "verdict": "High Risk",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-050",
+      "text": "Reminder: meeting at 5pm",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 24,
+      "verdict": "Safe",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-051",
+      "text": "Send money urgently",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 72,
+      "verdict": "High Risk",
+      "matched_signals": [
+        "Urgency language"
+      ]
+    },
+    {
+      "id": "ITEM-052",
+      "text": "Thank you for your order",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 24,
+      "verdict": "Safe",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-053",
+      "text": "Reset password now",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 72,
+      "verdict": "High Risk",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-054",
+      "text": "Welcome email",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 20,
+      "verdict": "Safe",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-055",
+      "text": "Click below link to proceed",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 72,
+      "verdict": "High Risk",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-056",
+      "text": "System alert resolved",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 24,
+      "verdict": "Safe",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-057",
+      "text": "Provide OTP to continue",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 72,
+      "verdict": "High Risk",
+      "matched_signals": [
+        "OTP request detected"
+      ]
+    },
+    {
+      "id": "ITEM-058",
+      "text": "Subscription renewed",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 20,
+      "verdict": "Safe",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-059",
+      "text": "Verify details immediately",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 60,
+      "verdict": "Suspicious",
+      "matched_signals": [
+        "Urgency language"
+      ]
+    },
+    {
+      "id": "ITEM-060",
+      "text": "Update successful",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 24,
+      "verdict": "Safe",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-061",
+      "text": "Transfer funds now",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 72,
+      "verdict": "High Risk",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-062",
+      "text": "Invoice paid successfully",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 24,
+      "verdict": "Safe",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-063",
+      "text": "Urgent request please respond",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 60,
+      "verdict": "Suspicious",
+      "matched_signals": [
+        "Urgency language"
+      ]
+    },
+    {
+      "id": "ITEM-064",
+      "text": "Monthly report ready",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 20,
+      "verdict": "Safe",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-065",
+      "text": "Confirm account ownership",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 72,
+      "verdict": "High Risk",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-066",
+      "text": "Order dispatched",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 24,
+      "verdict": "Safe",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-067",
+      "text": "Payment pending act now",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 72,
+      "verdict": "High Risk",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-068",
+      "text": "Service activated",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 24,
+      "verdict": "Safe",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-069",
+      "text": "Click to unlock account",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 72,
+      "verdict": "High Risk",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-070",
+      "text": "Profile updated",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 20,
+      "verdict": "Safe",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-071",
+      "text": "Verify immediately to avoid block",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 59,
+      "verdict": "Suspicious",
+      "matched_signals": [
+        "Urgency language"
+      ]
+    },
+    {
+      "id": "ITEM-072",
+      "text": "System update completed",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 24,
+      "verdict": "Safe",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-073",
+      "text": "Provide credentials now",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 72,
+      "verdict": "High Risk",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-074",
+      "text": "Thank you message",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 20,
+      "verdict": "Safe",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-075",
+      "text": "Urgent login required",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 72,
+      "verdict": "High Risk",
+      "matched_signals": [
+        "Urgency language"
+      ]
+    },
+    {
+      "id": "ITEM-076",
+      "text": "Your request processed",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 24,
+      "verdict": "Safe",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-077",
+      "text": "Account locked verify now",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 72,
+      "verdict": "High Risk",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-078",
+      "text": "Notification settings updated",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 20,
+      "verdict": "Safe",
+      "matched_signals": []
+    },
+    {
+      "id": "ITEM-079",
+      "text": "Click here urgently",
+      "expected": "phishing",
+      "predicted": "phishing",
+      "risk_score": 72,
+      "verdict": "High Risk",
+      "matched_signals": [
+        "Urgency language"
+      ]
+    },
+    {
+      "id": "ITEM-080",
+      "text": "All good no action needed",
+      "expected": "safe",
+      "predicted": "safe",
+      "risk_score": 20,
+      "verdict": "Safe",
+      "matched_signals": []
+    }
+  ]
+}

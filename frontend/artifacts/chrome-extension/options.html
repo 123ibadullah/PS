@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PhishShield AI Options</title>
+  <style>
+    body { margin: 0; font-family: Inter, system-ui, sans-serif; background: #0a0f1e; color: #f8fafc; padding: 24px; }
+    .card { max-width: 760px; margin: 0 auto; background: #0d1528; border: 1px solid #1e3a5f; border-radius: 14px; padding: 18px; }
+    h1 { margin-top: 0; }
+    label { display: block; margin: 10px 0 6px; color: #94a3b8; }
+    input[type="text"] {
+      width: 100%; border: 1px solid #1e3a5f; border-radius: 10px; background: #091022;
+      color: #f8fafc; padding: 10px;
+    }
+    .toggle { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+    .row { margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap; }
+    button { border: none; border-radius: 10px; padding: 10px 12px; cursor: pointer; font-weight: 700; }
+    #save-btn { background: #3b82f6; color: #041327; }
+    #test-btn { background: #10b981; color: #03210f; }
+    #export-btn { background: #f59e0b; color: #2b1601; }
+    #result { margin-top: 10px; font-size: 13px; color: #93c5fd; }
+    .muted { color: #94a3b8; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>PhishShield AI Options</h1>
+    <p class="muted">Configure backend and proactive protection controls.</p>
+    <label for="api-url">API Base URL</label>
+    <input id="api-url" type="text" placeholder="http://localhost:8000" />
+
+    <label class="toggle"><input id="toggle-tooltips" type="checkbox" /> Enable link hover tooltips</label>
+    <label class="toggle"><input id="toggle-interception" type="checkbox" /> Enable link click interception</label>
+    <label class="toggle"><input id="toggle-auto-scan" type="checkbox" /> Enable auto page scanning</label>
+    <label class="toggle"><input id="toggle-gmail" type="checkbox" /> Enable Gmail integration</label>
+    <label class="toggle"><input id="toggle-link-badges" type="checkbox" /> Enable link badge overlay</label>
+
+    <div class="row">
+      <button id="save-btn">Save</button>
+      <button id="test-btn">Test Connection</button>
+      <button id="export-btn">Export Scan History JSON</button>
+    </div>
+    <div id="result"></div>
+  </div>
+  <script src="options.js"></script>
+</body>
+</html>

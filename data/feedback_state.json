@@ -1,0 +1,7 @@
+{
+  "feedback_rows_consumed": 50,
+  "last_retrain": "2026-04-05T11:17:13.636063+00:00",
+  "last_retrain_accuracy": 0.971902595664972,
+  "previous_accuracy": 0.970225321888412,
+  "model_improving": true
+}
