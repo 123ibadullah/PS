@@ -1,4 +1,14 @@
 
 # Local model weights
-PhisShield-Backend/indicbert_model/*.safetensors
+backend/indicbert_model/*.safetensors
 .env
+.env.local
+.env.*.local
+__pycache__/
+.mypy_cache/
+.pytest_cache/
+.venv/
+*.pyc
+/archive/
+.cursor/
+node_modules/
