@@ -259,7 +259,7 @@ Curated offline metrics can look stronger than what users see in a mixed real in
 ## Author
 **MOHD IBADULLAH**  
 Full-stack developer with a security focus — I build things that solve real problems, not just demo well.  
-[GitHub profile](https://github.com/123ibadullah?tab=repositories) · [LinkedIn](https://linkedin.com/in/YOURUSERNAME) · [PhishShield repository](https://github.com/123ibadullah/PhishShield)
+[GitHub profile](https://github.com/123ibadullah?tab=repositories) · [LinkedIn](https://linkedin.com/in/mohd-ibadullah-12a046280) · [PhishShield repository](https://github.com/123ibadullah/PhishShield)
 
 ## License
 MIT License
