@@ -344,7 +344,7 @@ docker-compose exec backend python -m pytest tests/ -v
 
 ## License
 
-[Your License Here]
+MIT License
 
 ---
 
