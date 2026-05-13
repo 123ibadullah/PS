@@ -28,7 +28,7 @@ PhishShield is a containerized full-stack cybersecurity project featuring a Reac
 
 | Component | Tech Stack | Location |
 |-----------|-----------|----------|
-| Dashboard & UI | React 18, Vite, TypeScript | `frontend/` |
+| Dashboard & UI | React 19, Vite 7, TypeScript | `frontend/` |
 | Web API | Node.js + Express | `frontend/artifacts/api-server/` |
 | ML Analysis | FastAPI, Python 3.12, SecureBERT/MuRIL | `backend/` |
 | Browser Extension | Chrome Extension API | `frontend/artifacts/chrome-extension/` |
