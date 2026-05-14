@@ -82,6 +82,10 @@ flowchart LR
   API -.-> FILES
 ```
 
+### Full System Architecture
+
+![PhishShield Full Architecture](docs/architecture.png)
+
 See `docs/PHISHSHIELD_COMPLETE_OVERVIEW.md` for a full deep-dive.
 
 ## Screenshots
