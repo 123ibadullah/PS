@@ -4,16 +4,16 @@
 
 ---
 
-## Current Project Status (Updated)
+## Current Project Status (May 2026 — live QA hardened)
 
-As of **April 18, 2026**, this repo contains a working phishing-defense project with:
+As of **May 2026**, this repo contains a working phishing-defense project with:
 
 - a **React dashboard** in `artifacts/phishshield/`
 - a **TypeScript API + verification layer** in `artifacts/api-server/`
 - a **FastAPI + ML backend** in the sibling `backend/` folder
 - a **Chrome extension** in `artifacts/chrome-extension/`
 
-### Fresh verification evidence
+### Fresh verification evidence (honest)
 
 | Check | Result |
 |---|---|
@@ -21,9 +21,10 @@ As of **April 18, 2026**, this repo contains a working phishing-defense project 
 | OTP scam runtime check | ✅ `classification: phishing`, `riskScore: 79` |
 | Safe mail runtime check | ✅ `classification: safe`, `riskScore: 0` |
 | cache behavior | ✅ startup cache clear + `cache_version: 2` invalidation enabled |
-| `artifacts/reports/qa/system-readiness-audit-latest.md` | `SYSTEM VERIFIED: 100% WORKING — NO CRITICAL ISSUES` |
-| `artifacts/api-server/reports/verification/real-world-mass-benchmark-latest.md` | `2000` scenarios / `2300` executions / `100.00%` accuracy |
-| `..\backend\training_meta.json` | `97.19%` accuracy / `96.52%` F1 |
+| `artifacts/reports/qa/system-readiness-audit-latest.md` | April 2026 internal suite PASS (not a live-accuracy claim) |
+| `artifacts/api-server/reports/verification/real-world-mass-benchmark-latest.md` | April 2026 internal scenario suite PASS (not a live-accuracy claim) |
+| `..\backend\training_meta.json` | Offline benchmark: `97.19%` accuracy / `96.52%` F1 |
+| May 2026 live UI QA (100 real emails) | **~80–85%** accuracy after hardening (was ~42% before fixes) |
 
 ### Important run note
 
@@ -213,7 +214,7 @@ If SecureBERT/MuRIL is unavailable, the backend falls back to:
 
 Training scripts in the backend:
 - `train_model.py` → classical ML training
-- `train_securebert_muril.py` → transformer fine-tuning and checkpoint export
+- `train_indicbert.py` → transformer fine-tuning and checkpoint export
 
 Current `training_meta.json` shows:
 - dataset rows: **18,684**
@@ -343,7 +344,7 @@ PhishShield did not become reliable in one step. It evolved through repeated QA 
 15. created a **50-email self-testing readiness audit** via `pnpm --filter @workspace/scripts run qa:system`
 16. added a **Playwright UI regression suite** via `pnpm --filter @workspace/scripts run qa:ui`
 17. polished the result page and dashboard to remove duplicated wording, fix singular/plural copy, and improve session summaries
-18. **Recent Hardening (April 2026)**: Achieved **100% detection accuracy** across advanced attack vectors including **Thread Hijacking**, **Attachment Payload Analysis**, and **Complex BEC** scenarios.
+18. **Recent Hardening (May 2026)**: Live UI QA (100 real emails) uncovered 20 gaps; fixed and re-verified (20/20 PASS). Live accuracy is now **~80–85%** after hardening; offline benchmark remains ~97%.
 19. implemented **deterministic enforcement floors** for high-risk categories (OTP, Wire Transfers) ensuring zero-false-negative stability in critical alerts.
 20. published the full parent-folder project snapshot to GitHub, with the large backend model tracked through **Git LFS** so the repository is cloneable and usable.
 
@@ -380,7 +381,7 @@ The live `/health` endpoint currently reports:
 ### Training scripts
 
 - `train_model.py` → classical TF-IDF + Logistic Regression training
-- `train_securebert_muril.py` → SecureBERT/MuRIL fine-tuning, evaluation, and model export into `indicbert_model/`
+- `train_indicbert.py` → SecureBERT/MuRIL fine-tuning, evaluation, and model export into `indicbert_model/`
 
 ---
 
@@ -388,7 +389,7 @@ The live `/health` endpoint currently reports:
 
 ### Frontend deployment (Vercel)
 
-1. Push the project to GitHub (canonical remote: **https://github.com/123ibadullah/PhishShield** — use the same URL if you fork for your own deploy).
+1. Push the project to GitHub (canonical remote: **https://github.com/mohd-ibadullah/PhishShield** — use the same URL if you fork for your own deploy).
 2. import the repo into **Vercel**
 3. set the project root to `PhishShield/`
 4. build command:
@@ -458,7 +459,7 @@ PhishShield is strong, but it still has honest limitations:
 4. **Active learning currently retrains only the TF-IDF pipeline**, not the SecureBERT/MuRIL model automatically.
 5. **Some borderline corporate or promotional emails can still require manual review**, especially when they blend urgency with legitimate transactional wording.
 6. **Frontend offline fallback preserves usability but may reduce detection depth** if the Python backend is unavailable.
-7. **The current deployment flow is dev-friendly, not enterprise-hardened**; a full production rollout would still need auth, monitoring, rate limiting, secret rotation, and structured audit logs.
+7. **The current deployment flow is dev-friendly, not enterprise-hardened**; a full production rollout would still need auth, monitoring, secret rotation, and structured audit logs.
 
 These limitations are normal for a real applied security product and provide a clear roadmap for future improvement.
 
@@ -919,7 +920,7 @@ New folder (2)/
     ├── main.py
     ├── explain.py
     ├── train_model.py
-    ├── train_securebert_muril.py
+    ├── train_indicbert.py
     ├── model.pkl
     ├── vectorizer.pkl
     ├── indicbert_model/

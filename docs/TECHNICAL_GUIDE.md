@@ -335,10 +335,10 @@ docker-compose exec backend python -m pytest tests/ -v
 
 ## Support & Documentation
 
-- **Source repository**: [github.com/123ibadullah/PhishShield](https://github.com/123ibadullah/PhishShield)
-- **Clone URL**: `git clone https://github.com/123ibadullah/PhishShield.git`
-- **Maintainer profile**: [github.com/123ibadullah](https://github.com/123ibadullah)
-- **Bug Reports**: [GitHub Issues](https://github.com/123ibadullah/PhishShield/issues)
+- **Source repository**: [github.com/mohd-ibadullah/PhishShield](https://github.com/mohd-ibadullah/PhishShield)
+- **Clone URL**: `git clone https://github.com/mohd-ibadullah/PhishShield.git`
+- **Maintainer profile**: [github.com/mohd-ibadullah](https://github.com/mohd-ibadullah)
+- **Bug Reports**: [GitHub Issues](https://github.com/mohd-ibadullah/PhishShield/issues)
 - **Frontend Docs**: [frontend/README.md](../frontend/README.md)
 - **Docker Docs**: [docs.docker.com](https://docs.docker.com/)
 - **Nginx Docs**: [nginx.org](https://nginx.org/)

@@ -1,6 +1,6 @@
 # Docs Index
 
-**Canonical GitHub:** [github.com/123ibadullah/PhishShield](https://github.com/123ibadullah/PhishShield) · **Clone:** `git clone https://github.com/123ibadullah/PhishShield.git`
+**Canonical GitHub:** [github.com/mohd-ibadullah/PhishShield](https://github.com/mohd-ibadullah/PhishShield) · **Clone:** `git clone https://github.com/mohd-ibadullah/PhishShield.git`
 
 | File | What it contains |
 |------|-----------------|

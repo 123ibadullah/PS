@@ -243,7 +243,7 @@ If SecureBERT/MuRIL is unavailable, the backend falls back to:
 
 Training scripts in the backend:
 - `train_model.py` → classical ML training
-- `train_securebert_muril.py` → transformer fine-tuning and checkpoint export
+- `train_indicbert.py` → transformer fine-tuning and checkpoint export
 
 Current `training_meta.json` shows:
 - dataset rows: **18,684**
@@ -410,7 +410,7 @@ The live `/health` endpoint currently reports:
 ### Training scripts
 
 - `train_model.py` → classical TF-IDF + Logistic Regression training
-- `train_securebert_muril.py` → SecureBERT/MuRIL fine-tuning, evaluation, and model export into `indicbert_model/`
+- `train_indicbert.py` → SecureBERT/MuRIL fine-tuning, evaluation, and model export into `indicbert_model/`
 
 ---
 
@@ -418,7 +418,7 @@ The live `/health` endpoint currently reports:
 
 ### Frontend deployment (Vercel)
 
-1. Push the project to GitHub (canonical remote: **https://github.com/123ibadullah/PhishShield** — use the same URL if you fork for your own deploy).
+1. Push the project to GitHub (canonical remote: **https://github.com/mohd-ibadullah/PhishShield** — use the same URL if you fork for your own deploy).
 2. import the repo into **Vercel**
 3. set the project root to `PhishShield/`
 4. build command:
@@ -495,7 +495,7 @@ PhishShield is strong, but it still has honest limitations:
 4. **Active learning currently retrains only the TF-IDF pipeline**, not the SecureBERT/MuRIL model automatically.
 5. **Some borderline corporate or promotional emails can still require manual review**, especially when they blend urgency with legitimate transactional wording.
 6. **Frontend offline fallback preserves usability but may reduce detection depth** if the Python backend is unavailable.
-7. **The current deployment flow is dev-friendly, not enterprise-hardened**; a full production rollout would still need auth, monitoring, rate limiting, secret rotation, and structured audit logs.
+7. **The current deployment flow is dev-friendly, not enterprise-hardened**; a full production rollout would still need auth, monitoring, secret rotation, and structured audit logs.
 
 These limitations are normal for a real applied security product and provide a clear roadmap for future improvement.
 
@@ -971,7 +971,7 @@ New folder (2)/
     ├── main.py
     ├── explain.py
     ├── train_model.py
-    ├── train_securebert_muril.py
+    ├── train_indicbert.py
     ├── model.pkl
     ├── vectorizer.pkl
     ├── indicbert_model/

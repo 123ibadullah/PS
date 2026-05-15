@@ -38,11 +38,12 @@ For example, a note claiming your HDFC account is frozen until you “urgently�
 ## Tech Stack
 | Layer | Technology |
 |-------|------------|
-| Backend | Python, FastAPI, Uvicorn |
+| Backend | Python, FastAPI, Uvicorn, WebSocket |
 | ML Model | TF-IDF + Logistic Regression, SecureBERT/MuRIL (Transformers, Torch) |
 | Frontend | React 19, Vite 7, TypeScript, Tailwind CSS |
-| Database | SQLite (local dev DB), JSON/CSV flat file stores |
-| DevOps | Docker, Docker Compose, Nginx |
+| Database | SQLite (local dev DB), Drizzle ORM, JSON/CSV flat file stores |
+| Observability | Prometheus metrics, SHAP/LIME explainability |
+| DevOps | Docker, Docker Compose, Nginx, Playwright, GitHub Actions CI |
 
 ## How It Works
 1. A user submits an email to scan.
@@ -126,7 +127,7 @@ All UI captures below are stored under `screenshots/`; each block lists the exac
 The full **frontend + backend** stack is meant to come up with **one command** via **Docker Compose** from the repo root — no separate terminal per service.
 
 ```bash
-git clone https://github.com/123ibadullah/PhishShield.git
+git clone https://github.com/mohd-ibadullah/PhishShield.git
 cd PhishShield
 cp .env.example .env
 docker compose up --build
@@ -147,7 +148,7 @@ Use **Prerequisites**, **Installation**, and **Running the Project** below only 
 ### Installation
 ```bash
 # 1) Clone
-git clone https://github.com/123ibadullah/PhishShield.git
+git clone https://github.com/mohd-ibadullah/PhishShield.git
 cd PhishShield
 
 # 2) Environment file
@@ -258,12 +259,12 @@ Curated offline metrics can look stronger than what users see in a mixed real in
 - I want broader Indian-language coverage and cleaner transliteration handling because mixed-script bait already shows up in the wild and the model still stumbles when the script hops mid-sentence.
 - A small model and version log in the UI would help me compare runs without diffing JSON by hand; right now the honest numbers live in files and that is fine for me, not great for a teammate joining cold.
 - Signed-in accounts with stored scan history belong in a serious deployment because feedback and repeat checks need a home that is not a shared CSV on disk.
-- CI that runs backend pytest plus the frontend checks on every PR is overdue because I still catch regressions manually, and that does not scale once the surface area grows.
+- CI currently runs backend pytest, mypy, and frontend pnpm build on every push/PR via GitHub Actions; expanding to include integration tests and the Playwright UI suite would catch more regressions automatically.
 
 ## Author
 **MOHD IBADULLAH**  
 Full-stack developer with a security focus — I build things that solve real problems, not just demo well.  
-[GitHub profile](https://github.com/123ibadullah?tab=repositories) · [LinkedIn](https://linkedin.com/in/mohd-ibadullah-12a046280) · [PhishShield repository](https://github.com/123ibadullah/PhishShield)
+[GitHub profile](https://github.com/mohd-ibadullah?tab=repositories) · [LinkedIn](https://linkedin.com/in/mohd-ibadullah-12a046280) · [PhishShield repository](https://github.com/mohd-ibadullah/PhishShield)
 
 ## License
 MIT License
