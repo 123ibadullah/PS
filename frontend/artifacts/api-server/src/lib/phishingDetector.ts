@@ -2214,6 +2214,7 @@ export async function analyzeEmail(
 
   // URL analysis — score is weighted max+avg to avoid one bad link dominating
   const urls = extractUrls(analysisText);
+  const hasLinks = urls.length > 0;
   const urlAnalyses = urls.map(analyzeUrl);
 
   let urlScore = 0;

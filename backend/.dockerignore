@@ -14,7 +14,9 @@ env/
 scan_logs.jsonl
 node_modules/
 reports/
-models/
+models/muril_model/
+models/securebert_model/
+models/__pycache__/
 indicbert_model/
 securebert_model/
 muril_model/

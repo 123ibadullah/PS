@@ -236,10 +236,29 @@ async def enforce_max_request_size(request: Request, call_next):
     return await call_next(request)
 
 
+def _csv_env_values(name: str) -> list[str]:
+    return [item.strip() for item in (os.getenv(name) or "").split(",") if item.strip()]
+
+
+def _allowed_cors_origins() -> list[str]:
+    configured = _csv_env_values("CORS_ALLOWED_ORIGINS")
+    if configured:
+        return configured
+    return [
+        "http://127.0.0.1:5173",
+        "http://localhost:5173",
+    ]
+
+
+def _ensure_parent_dir(path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+
 _url_pool = concurrent.futures.ThreadPoolExecutor(max_workers=4)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=_allowed_cors_origins(),
+    allow_origin_regex=os.getenv("CORS_ALLOWED_ORIGIN_REGEX") or None,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -879,14 +898,17 @@ def load_training_metadata() -> dict[str, Any]:
 
 
 def save_training_metadata(metadata: dict[str, Any]) -> None:
+    _ensure_parent_dir(METADATA_PATH)
     METADATA_PATH.write_text(json.dumps(metadata, indent=2), encoding="utf-8")
 
 
 def ensure_feedback_store() -> None:
     if not FEEDBACK_CSV_PATH.exists():
+        _ensure_parent_dir(FEEDBACK_CSV_PATH)
         pd.DataFrame(columns=FEEDBACK_COLUMNS).to_csv(FEEDBACK_CSV_PATH, index=False)
 
     if not FEEDBACK_STATE_PATH.exists():
+        _ensure_parent_dir(FEEDBACK_STATE_PATH)
         metadata = load_training_metadata()
         baseline_accuracy = float((metadata.get("metrics") or {}).get("accuracy", 0.0) or 0.0)
         FEEDBACK_STATE_PATH.write_text(
@@ -924,11 +946,13 @@ def load_feedback_state() -> dict[str, Any]:
 
 
 def save_feedback_state(state: dict[str, Any]) -> None:
+    _ensure_parent_dir(FEEDBACK_STATE_PATH)
     FEEDBACK_STATE_PATH.write_text(json.dumps(state, indent=2), encoding="utf-8")
 
 
 def ensure_feedback_memory_store() -> None:
     if not FEEDBACK_MEMORY_PATH.exists():
+        _ensure_parent_dir(FEEDBACK_MEMORY_PATH)
         FEEDBACK_MEMORY_PATH.write_text("{}", encoding="utf-8")
 
 
@@ -942,6 +966,7 @@ def load_feedback_memory() -> dict[str, Any]:
 
 
 def save_feedback_memory(memory_payload: dict[str, Any]) -> None:
+    _ensure_parent_dir(FEEDBACK_MEMORY_PATH)
     FEEDBACK_MEMORY_PATH.write_text(json.dumps(memory_payload, indent=2), encoding="utf-8")
 
 
@@ -972,6 +997,7 @@ def update_rule_weight_adjustments(predicted: str, corrected: str) -> None:
 
 def ensure_sender_profile_store() -> None:
     if not SENDER_PROFILE_PATH.exists():
+        _ensure_parent_dir(SENDER_PROFILE_PATH)
         SENDER_PROFILE_PATH.write_text("{}", encoding="utf-8")
 
 
@@ -984,10 +1010,12 @@ def load_sender_profiles() -> dict[str, Any]:
 
 
 def save_sender_profiles(profiles: dict[str, Any]) -> None:
+    _ensure_parent_dir(SENDER_PROFILE_PATH)
     SENDER_PROFILE_PATH.write_text(json.dumps(profiles, indent=2), encoding="utf-8")
 
 
 def ensure_scans_db() -> None:
+    _ensure_parent_dir(SCANS_DB_PATH)
     with sqlite3.connect(SCANS_DB_PATH) as conn:
         conn.execute(
             """
@@ -1114,6 +1142,7 @@ def default_threat_intel_feed() -> dict[str, Any]:
 
 def ensure_threat_intel_store() -> None:
     if not THREAT_INTEL_PATH.exists():
+        _ensure_parent_dir(THREAT_INTEL_PATH)
         THREAT_INTEL_PATH.write_text(json.dumps(default_threat_intel_feed(), indent=2), encoding="utf-8")
 
 
