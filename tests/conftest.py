@@ -35,6 +35,12 @@ backend_main = importlib.import_module("main")
 app = backend_main.app
 
 
+@pytest.fixture(scope="session", autouse=True)
+def _load_model_artifacts_once() -> None:
+    """Load TF-IDF artifacts before API tests (CI runs backend/train_model.py first)."""
+    backend_main.load_artifacts()
+
+
 @pytest.fixture(autouse=True)
 def _reset_scan_cache_for_tests(tmp_path, monkeypatch) -> None:
     """Avoid cross-test pollution from scan_cache / explanations (stable scores)."""
