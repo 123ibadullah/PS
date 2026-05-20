@@ -16,7 +16,7 @@ if str(BACKEND_DIR) not in sys.path:
 
 main = importlib.import_module("main")
 
-_CASES_PATH = ROOT_DIR / "tests" / "adversarial_cases.json"
+_CASES_PATH = ROOT_DIR / "data" / "adversarial_cases.json"
 
 
 def _load_cases() -> list[dict]:

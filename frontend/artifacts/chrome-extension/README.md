@@ -57,8 +57,13 @@ Expected response fields used by popup/content scripts:
 
 - `risk_score` (0-100)
 - `verdict`
+- `confidence` (calibrated percent when present)
 - `signals` (array)
-- `explanation` (string or object with `why_risky`, `top_words`)
+- `explanation` (object with `why_risky`, `top_words`, `method`, optional `explanation_degraded` / `degraded_reason`)
+
+**Explainability default:** backend uses fast `linear-weights` attributions unless `PHISHSHIELD_TRY_SHAP_ON_SCAN=1` on the server. The extension surfaces `method` and fallback notes when degraded.
+
+**Not used by extension:** `/feedback`, `/retrain`, `/api/metrics`, WebSocket feed (dashboard-only).
 
 ### Defensive parsing details
 

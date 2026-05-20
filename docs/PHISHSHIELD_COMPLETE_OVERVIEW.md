@@ -103,8 +103,8 @@ The React dashboard calls the **Python backend directly on `localhost:8000`** fo
 - `/check-url`
 - `/check-headers`
 - `/health`
-- `/feedback`
-- `/feedback/stats`
+- `/feedback` (alias: `/api/feedback`)
+- `/feedback/stats` (alias: `/api/feedback/stats`)
 - `/explain/{scan_id}`
 
 It also talks to the **Node.js API** for generated analysis hooks, history, and metrics. The UI merges these results and uses the **higher risk score** as the final safety verdict. If the Python backend is offline, the frontend gracefully falls back to frontend/Node-only analysis.
@@ -283,7 +283,7 @@ The frontend maps these codes to full labels in the dashboard.
 
 ## Explainability (SHAP / LIME / Heuristic)
 
-Every `/scan-email` response includes an `explanation` object shaped like this:
+Every `/scan-email` response includes an `explanation` object with runtime word attributions. **Default runtime path:** TF-IDF **linear-weights** (fast), then LIME/heuristic if needed. SHAP is **opt-in** via `PHISHSHIELD_TRY_SHAP_ON_SCAN=1`. The `method` field reports which path actually ran (`linear-weights`, `lime`, `heuristic`, or `shap`).
 
 ```json
 {
@@ -292,20 +292,32 @@ Every `/scan-email` response includes an `explanation` object shaped like this:
       { "word": "OTP", "contribution": 0.22 },
       { "word": "urgent", "contribution": 0.18 }
     ],
-    "why_risky": "Top words driving this verdict",
-    "confidence_interval": "100% ± 8%",
+    "why_risky": "Evidence summary from triggered signals",
+    "confidence_interval": "91% ± 8%",
     "method": "shap"
   }
 }
 ```
 
-PhishShield stores scan explanations in memory and exposes them via:
+`confidence_interval` uses the calibrated scan confidence (not the risk score). When explainability exceeds `EXPLAIN_TIMEOUT_SECONDS` or SHAP is skipped, `explanation_degraded: true` and `degraded_reason` are set — the UI must not imply full SHAP ran.
+
+## Metrics API (offline vs runtime)
+
+`GET /api/metrics` returns two honest buckets:
+
+- **`offline_evaluation`** — holdout metrics from `data/training_meta.json` (`evaluated_at`, `evaluation_dataset_size`, disclaimers). **Not live production accuracy.**
+- **`runtime_operational`** — in-process scan counters for the current API session (`total_scans`, verdict buckets).
+
+Flat fields (`accuracy`, `precision`, …) mirror offline evaluation for backward compatibility and include `accuracy_source: "offline_holdout_evaluation"`.
+
+PhishShield stores scan context in memory. A separate narrative explain route is available:
 
 ```http
+POST /explain
 GET /explain/{scan_id}
 ```
 
-This is critical for trust: users do not just get a score; they see **why** the email looks dangerous.
+Those routes return a human-readable paragraph (OpenRouter when configured, otherwise a rule-based fallback). Word-level attributions always come from `/scan-email`.
 
 ---
 
@@ -316,8 +328,8 @@ PhishShield includes a lightweight human-feedback loop:
 1. user scans an email
 2. user clicks **Mark as Safe** or **Mark as Phishing**
 3. feedback is saved into `feedback.csv`
-4. after **50 pending feedback rows**, the TF-IDF model can auto-retrain
-5. `/feedback/stats` reports progress and last retrain status
+4. after the configured threshold (default **50** pending CSV rows since the last retrain), TF-IDF auto-retrains
+5. `POST /retrain` runs the same pipeline manually; `/feedback/stats` reports queue progress and last retrain date
 
 This makes the system **self-improving over time** while preserving a simple local workflow.
 

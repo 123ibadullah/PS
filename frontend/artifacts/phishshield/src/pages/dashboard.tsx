@@ -887,6 +887,8 @@ type PythonModelExplanation = {
   why_risky?: string;
   confidence_interval?: string;
   method?: string;
+  explanation_degraded?: boolean;
+  degraded_reason?: string | null;
   links?: {
     trusted: string[];
     suspicious: string[];
@@ -1148,6 +1150,12 @@ function enforceScoreAlignedClassification(classification: VerdictState, score =
 function scoreToConfidenceLevel(score = 0) {
   if (score >= 75) return 'HIGH';
   if (score >= 40) return 'MEDIUM';
+  return 'LOW';
+}
+
+function confidencePercentToLevel(percent = 0) {
+  if (percent >= 85) return 'HIGH';
+  if (percent >= 62) return 'MEDIUM';
   return 'LOW';
 }
 
@@ -1597,48 +1605,21 @@ export default function Dashboard() {
 
     const predicted = normalizeClassification(result.classification);
     const predictedSnapshot = predicted === 'suspicious' ? 'uncertain' : predicted;
-    const isAccurate = predictedSnapshot === correctedClassification;
     const feedbackNoteText = feedbackNote.trim();
     const scanId = ((result as any).scanId as string | undefined) ?? ((result as any).scan_id as string | undefined) ?? crypto.randomUUID();
 
     setIsFeedbackPending(true);
     try {
-      const legacyPromise = fetch('/api/feedback', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer dev-sandbox-key',
-        },
-        body: JSON.stringify({
-          emailId: result.id,
-          userFeedback: isAccurate ? 'correct' : 'incorrect',
-          isAccurate,
-          correctedClassification,
-          feedbackSource: 'user',
-          notes: feedbackNoteText || undefined,
-          emailText,
-          emailPreview: emailText.slice(0, 80).replace(/\n/g, ' '),
-          predictedClassification: predictedSnapshot,
-          riskScore: displayRiskScore,
-          confidence: result.confidence,
-          attackType: displayAttackType,
-          reasons: result.reasons?.map((reason) => reason.description).slice(0, 20) ?? [],
-        }),
-      }).catch((error) => {
-        console.error('Legacy feedback endpoint failed', error);
-        return null;
-      });
-
       const backendResponse = await fetchPythonBackendJson<PythonFeedbackAck>('/feedback', {
         method: 'POST',
         body: JSON.stringify({
           email_text: emailText,
           correct_label: correctedClassification,
           scan_id: scanId,
+          predicted: predictedSnapshot === 'uncertain' ? 'Suspicious' : predictedSnapshot,
+          corrected: correctedClassification === 'safe' ? 'Safe' : 'High Risk',
         }),
       });
-
-      await legacyPromise;
 
       if (!backendResponse.ok) {
         throw new Error(backendResponse.error || 'Python feedback save failed');
@@ -1920,6 +1901,7 @@ export default function Dashboard() {
     const finalClassification = benignReceiptSafeOverride ? 'safe' : backendClassification;
     const confidenceRaw = Number(scanData.confidence ?? baseResult?.confidence ?? 0);
     const finalConfidence = Math.max(0, Math.min(1, confidenceRaw > 1 ? confidenceRaw / 100 : confidenceRaw));
+    const confidencePercentFromBackend = Math.round(finalConfidence * 100);
 
     const riskSignalsFromBackend = Array.isArray(scanData.signals)
       ? scanData.signals.map((signal) => String(signal).trim()).filter(Boolean)
@@ -2035,8 +2017,8 @@ export default function Dashboard() {
       risk_score: finalRiskScore,
       classification: finalClassification,
       confidence: finalConfidence,
-      confidenceLevel: scoreToConfidenceLevel(finalRiskScore),
-      confidence_level: scoreToConfidenceLevel(finalRiskScore),
+      confidenceLevel: confidencePercentToLevel(confidencePercentFromBackend),
+      confidence_level: confidencePercentToLevel(confidencePercentFromBackend),
       attackType: scanData.category ?? baseResult?.attackType ?? (finalClassification === 'safe' ? 'Safe Email' : 'General Phishing'),
       detectedLanguage: normalizeLanguageCode(scanData.detectedLanguage ?? scanData.language ?? baseResult?.detectedLanguage ?? 'EN'),
       urlAnalyses: backendUrlAnalyses,
@@ -2311,6 +2293,35 @@ export default function Dashboard() {
   };
 
   const learningMetrics = (metrics ?? {}) as any;
+  const offlineEvaluation = (learningMetrics.offline_evaluation ?? learningMetrics) as {
+    accuracy?: number;
+    precision?: number;
+    recall?: number;
+    f1_score?: number;
+    f1Score?: number;
+    false_positive_rate?: number;
+    evaluated_at?: string;
+    evaluation_dataset_size?: number;
+    disclaimer?: string;
+    live_qa_note?: string;
+  };
+  const runtimeOperational = (learningMetrics.runtime_operational ?? {}) as {
+    total_scans?: number;
+    phishing_detected?: number;
+    suspicious_detected?: number;
+    safe_detected?: number;
+    disclaimer?: string;
+  };
+  const benchmarkAccuracy = Number(offlineEvaluation.accuracy ?? learningMetrics.accuracy ?? 0);
+  const benchmarkPrecision = Number(offlineEvaluation.precision ?? learningMetrics.precision ?? 0);
+  const benchmarkRecall = Number(offlineEvaluation.recall ?? learningMetrics.recall ?? 0);
+  const benchmarkF1 = Number(offlineEvaluation.f1_score ?? offlineEvaluation.f1Score ?? learningMetrics.f1Score ?? 0);
+  const benchmarkFpr = Number(
+    offlineEvaluation.false_positive_rate ?? learningMetrics.falsePositiveRate ?? 0,
+  );
+  const sessionScanTotal = Number(
+    runtimeOperational.total_scans ?? learningMetrics.totalScans ?? 0,
+  );
   const feedbackSamplesReviewed = Number(learningMetrics.feedbackSamples ?? 0);
   const feedbackAgreementRate = Number(learningMetrics.feedbackAgreementRate ?? 0);
   const hasFeedbackSamples = feedbackSamplesReviewed > 0;
@@ -2343,9 +2354,9 @@ export default function Dashboard() {
   const backendModelVersion = formatBackendModelVersion(backendHealth);
 
   const protectionCounter = baseProtectionCount +
-    ((metrics?.totalScans ?? 0) * 17) +
-    ((metrics?.phishingDetected ?? 0) * 41) +
-    ((metrics?.suspiciousDetected ?? 0) * 11);
+    (sessionScanTotal * 17) +
+    ((runtimeOperational.phishing_detected ?? metrics?.phishingDetected ?? 0) * 41) +
+    ((runtimeOperational.suspicious_detected ?? metrics?.suspiciousDetected ?? 0) * 11);
 
   useEffect(() => {
     try {
@@ -2616,10 +2627,10 @@ export default function Dashboard() {
   const trustScoreTone = hasBackendTrustScore
     ? (displayTrustScore >= 15 ? 'text-safe' : displayTrustScore >= 8 ? 'text-warning' : 'text-destructive')
     : (100 - displayRiskScore > 70 ? 'text-safe' : 100 - displayRiskScore > 30 ? 'text-warning' : 'text-destructive');
-  const confidenceInterval = detectedSignals.length >= 5 ? 3 : detectedSignals.length >= 3 ? 8 : 15;
+  const fallbackConfidenceInterval = detectedSignals.length >= 5 ? 3 : detectedSignals.length >= 3 ? 8 : 15;
   const confidenceValue = confidencePercent / 100;
   const displayedConfidenceInterval = result
-    ? `${confidencePercent}% ± ${confidenceInterval}%`
+    ? (backendExplanation?.confidence_interval ?? `${confidencePercent}% ± ${fallbackConfidenceInterval}%`)
     : '0% ± 0%';
   const llmUsed = Boolean(
     result && (
@@ -3132,34 +3143,49 @@ export default function Dashboard() {
   };
 
   const handleRetrainNow = async () => {
-    setRetrainProgress(8);
-    try {
-      await fetch('/api/feedback/export?format=json', {
-        headers: { Authorization: 'Bearer dev-sandbox-key' },
+    if (!HAS_CONFIGURED_BACKEND) {
+      toast({
+        title: 'Backend required for retraining',
+        description: 'Set VITE_BACKEND_URL so the FastAPI service can retrain the TF-IDF model.',
       });
-      setRetrainProgress(42);
-      setTimeout(() => setRetrainProgress(76), 220);
-      setTimeout(() => {
-        const label = `Detection Engine v3.2 · Updated ${new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}`;
-        setRetrainLabel(label);
-        localStorage.setItem(RETRAIN_META_KEY, JSON.stringify({
-          label,
-          feedbackSamples: learningMetrics.feedbackSamples ?? 0,
-          retrainedAt: new Date().toISOString(),
-        }));
-        setRetrainProgress(100);
-        toast({
-          title: 'Client-side retraining complete',
-          description: `${learningMetrics.feedbackSamples ?? 0} feedback samples were folded into the local tuning loop.`,
-        });
-        setTimeout(() => setRetrainProgress(null), 600);
-        refetchMetrics();
-      }, 420);
-    } catch {
+      return;
+    }
+
+    setRetrainProgress(12);
+    try {
+      const response = await fetch(`${PYTHON_BACKEND_URL}/retrain`, { method: 'POST' });
+      setRetrainProgress(72);
+      if (!response.ok) {
+        const detail = await response.json().catch(() => ({}));
+        throw new Error(String((detail as { detail?: string }).detail ?? `Retrain failed (${response.status})`));
+      }
+
+      const payload = await response.json();
+      const trainedAt = String(payload.trained_at ?? new Date().toISOString());
+      const accuracy = Number((payload.metrics as { accuracy?: number } | undefined)?.accuracy ?? 0);
+      const label = `TF-IDF · Updated ${new Date(trainedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}`;
+      setRetrainLabel(label);
+      localStorage.setItem(RETRAIN_META_KEY, JSON.stringify({
+        label,
+        feedbackSamples: learningMetrics.feedbackSamples ?? 0,
+        retrainedAt: trainedAt,
+        accuracy,
+      }));
+      setRetrainProgress(100);
+      toast({
+        title: 'Model retrained on backend',
+        description: accuracy > 0
+          ? `TF-IDF retrained with feedback. Holdout accuracy: ${(accuracy * 100).toFixed(1)}%.`
+          : 'TF-IDF retrained with collected feedback samples.',
+      });
+      setTimeout(() => setRetrainProgress(null), 600);
+      refetchMetrics();
+      void refreshFeedbackStats();
+    } catch (error) {
       setRetrainProgress(null);
       toast({
         title: 'Retraining unavailable',
-        description: 'The feedback export route could not be reached right now.',
+        description: error instanceof Error ? error.message : 'The backend retrain route could not be reached.',
       });
     }
   };
@@ -3958,7 +3984,13 @@ export default function Dashboard() {
                             <motion.div className="space-y-3" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.22 }}>
                               <div>
                                 <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-muted-foreground">Primary Risk Indicators</p>
-                                <p className="text-sm text-foreground/80">The clearest signals shaping this verdict.</p>
+                                <p className="text-sm text-foreground/80">
+                                  The clearest signals shaping this verdict.
+                                  {backendExplanation?.method ? ` Word attribution: ${backendExplanation.method}.` : ''}
+                                  {backendExplanation?.explanation_degraded
+                                    ? ' (fast fallback — full SHAP/LIME did not finish in time).'
+                                    : ''}
+                                </p>
                               </div>
                               <div className="flex flex-wrap gap-2">
                                 {detectedSignals.map((signal, index) => {
@@ -4795,15 +4827,23 @@ export default function Dashboard() {
                 </div>
 
                 <div className="mb-3 rounded-xl border border-primary/20 bg-primary/5 px-4 py-3 text-[11px] text-foreground/85">
-                  <span className="font-semibold text-foreground">Benchmark Accuracy</span> comes from the latest offline verification suite. <span className="text-muted-foreground">It does not represent live session performance.</span>
+                  <span className="font-semibold text-foreground">Offline evaluation metrics</span> come from{' '}
+                  <span className="font-mono text-foreground/90">data/training_meta.json</span>
+                  {offlineEvaluation.evaluated_at ? (
+                    <> (evaluated {String(offlineEvaluation.evaluated_at).slice(0, 10)})</>
+                  ) : null}
+                  . <span className="text-muted-foreground">They are not live production accuracy.</span>
+                  {offlineEvaluation.live_qa_note ? (
+                    <p className="mt-1 text-muted-foreground">{offlineEvaluation.live_qa_note}</p>
+                  ) : null}
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
                   {[
-                    { label: 'Accuracy', value: metrics?.accuracy, color: 'text-primary', desc: 'Overall correct predictions' },
-                    { label: 'Precision', value: metrics?.precision, color: 'text-safe', desc: 'Of flagged emails, truly phishing' },
-                    { label: 'Recall', value: metrics?.recall, color: 'text-safe', desc: 'Phishing emails actually caught' },
-                    { label: 'F1 Score', value: metrics?.f1Score, color: 'text-accent', desc: 'Precision–recall balance' },
+                    { label: 'Accuracy', value: benchmarkAccuracy, color: 'text-primary', desc: 'Offline holdout split' },
+                    { label: 'Precision', value: benchmarkPrecision, color: 'text-safe', desc: 'Offline holdout split' },
+                    { label: 'Recall', value: benchmarkRecall, color: 'text-safe', desc: 'Offline holdout split' },
+                    { label: 'F1 Score', value: benchmarkF1, color: 'text-accent', desc: 'Offline holdout split' },
                   ].map(({ label, value, color, desc }) => (
                     <div key={label} className={cn('rounded-xl border border-card-border bg-card p-4', cardHoverClass)}>
                       <p className="text-[10px] text-muted-foreground mb-1 uppercase tracking-wide">{label}</p>
@@ -4819,30 +4859,30 @@ export default function Dashboard() {
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-xs text-muted-foreground font-medium">False Positive Rate</span>
                     <span className="text-xs font-mono text-warning">
-                      {metrics ? `${(metrics.falsePositiveRate * 100).toFixed(1)}%` : '—'} <span className="text-muted-foreground">(lower is better)</span>
+                      {benchmarkFpr > 0 ? `${(benchmarkFpr * 100).toFixed(1)}%` : '—'} <span className="text-muted-foreground">(lower is better)</span>
                     </span>
                   </div>
                   <div className="h-2 w-full bg-secondary rounded-full overflow-hidden">
                     <motion.div
                       className="h-full bg-warning rounded-full"
                       initial={{ width: 0 }}
-                      animate={{ width: `${(metrics?.falsePositiveRate ?? 0) * 100}%` }}
+                      animate={{ width: `${benchmarkFpr * 100}%` }}
                       transition={{ duration: 0.8 }}
                     />
                   </div>
                 </div>
 
-                {metrics && (
+                {benchmarkAccuracy > 0 && (
                   <div className="mt-3 space-y-1.5">
                     <div className="flex justify-between text-xs text-muted-foreground">
-                      <span>Overall benchmark accuracy</span>
-                      <span className="font-mono text-foreground">{(metrics.accuracy * 100).toFixed(1)}%</span>
+                      <span>Offline holdout accuracy</span>
+                      <span className="font-mono text-foreground">{(benchmarkAccuracy * 100).toFixed(1)}%</span>
                     </div>
                     <div className="h-2 w-full bg-secondary rounded-full overflow-hidden">
                       <motion.div
                         className="h-full bg-primary rounded-full"
                         initial={{ width: 0 }}
-                        animate={{ width: `${metrics.accuracy * 100}%` }}
+                        animate={{ width: `${benchmarkAccuracy * 100}%` }}
                         transition={{ duration: 1, ease: "easeOut" }}
                       />
                     </div>

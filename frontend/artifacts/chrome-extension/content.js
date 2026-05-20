@@ -73,6 +73,16 @@
   let gmailScanGeneration = 0;
   let lastScanAt = 0;
 
+  function formatExplanationMeta(explanation) {
+    if (!explanation || typeof explanation !== "object") return "";
+    const parts = [];
+    if (explanation.method) parts.push(`Attribution: ${explanation.method}`);
+    if (explanation.explanation_degraded) {
+      parts.push(`Fallback (${explanation.degraded_reason || "timeout"})`);
+    }
+    return parts.length ? parts.join(" · ") : "";
+  }
+
   function normalizeExplanation(explanation) {
     if (typeof explanation === "string") return explanation;
     if (explanation && typeof explanation === "object") {
@@ -813,6 +823,7 @@
     const band = getBand(score);
     const verdict = getVerdict(score, result);
     const explanation = normalizeExplanation(result?.explanation ?? result?.explanation_text);
+    const explanationMeta = formatExplanationMeta(result?.explanation);
     const signals = normalizeSignals(result?.signals ?? result?.normalized_signals).slice(0, 6);
     const recommendation =
       String(result?.recommendation || "") ||
@@ -858,6 +869,7 @@
       <div class="ps-row-val">${meta?.sender || "unknown"}</div>
       <div class="ps-divider"></div>
       <div class="ps-row-label">Threat analysis</div>
+      ${explanationMeta ? `<div class="ps-analysis-meta" style="font-size:11px;opacity:0.85;margin-bottom:4px;">${explanationMeta}</div>` : ""}
       <div class="ps-analysis-body">${explanation}</div>
       <div class="ps-divider"></div>
       <div class="ps-row-label">Signals</div>

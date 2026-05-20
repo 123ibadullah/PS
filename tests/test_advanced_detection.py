@@ -1,8 +1,7 @@
 """
-Validation tests for new PhishShield advanced detection capabilities:
-1. Attachment content analysis (PDF/HTML/DOCX)
-2. Image/QR phishing detection
-3. Thread hijacking detection
+Manual integration script (requires live backend on 127.0.0.1:8000).
+Excluded from pytest via pytest.ini collect_ignore — run directly:
+  python tests/test_advanced_detection.py
 """
 import json
 import requests

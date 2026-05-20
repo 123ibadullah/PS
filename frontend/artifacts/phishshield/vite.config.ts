@@ -47,6 +47,31 @@ export default defineConfig(async () => {
           target: process.env.VITE_API_PROXY_TARGET ?? "http://localhost:8000",
           changeOrigin: true,
         },
+        "/feedback": {
+          target: process.env.VITE_API_PROXY_TARGET ?? "http://localhost:8000",
+          changeOrigin: true,
+        },
+        "/scan-email": {
+          target: process.env.VITE_API_PROXY_TARGET ?? "http://localhost:8000",
+          changeOrigin: true,
+        },
+        "/retrain": {
+          target: process.env.VITE_API_PROXY_TARGET ?? "http://localhost:8000",
+          changeOrigin: true,
+        },
+        "/health": {
+          target: process.env.VITE_API_PROXY_TARGET ?? "http://localhost:8000",
+          changeOrigin: true,
+        },
+        "/recent-scans": {
+          target: process.env.VITE_API_PROXY_TARGET ?? "http://localhost:8000",
+          changeOrigin: true,
+        },
+        "/ws": {
+          target: process.env.VITE_API_PROXY_TARGET ?? "http://localhost:8000",
+          ws: true,
+          changeOrigin: true,
+        },
       },
       fs: {
         strict: true,

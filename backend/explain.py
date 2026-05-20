@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import os
 import re
+from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeoutError
 from typing import Any, Callable
 
 import numpy as np
@@ -14,6 +16,14 @@ try:
     from lime.lime_text import LimeTextExplainer
 except Exception:  # pragma: no cover - optional dependency at runtime
     LimeTextExplainer = None
+
+SHAP_TIMEOUT_SECONDS = max(0.5, float(os.getenv("PHISHSHIELD_SHAP_TIMEOUT_SECONDS", "2.5")))
+SHAP_MAX_EVALS = max(32, min(128, int(os.getenv("PHISHSHIELD_SHAP_MAX_EVALS", "64"))))
+TRY_SHAP_ON_SCAN = os.getenv("PHISHSHIELD_TRY_SHAP_ON_SCAN", "0").strip().lower() in {"1", "true", "yes"}
+
+_shap_explainer_cache: dict[tuple[int, int], Any] = {}
+_lime_explainer: Any | None = None
+_shap_executor = ThreadPoolExecutor(max_workers=1)
 
 STOPWORDS = {
     'the', 'and', 'for', 'with', 'your', 'this', 'that', 'from', 'have', 'please', 'dear', 'team', 'regards',
@@ -126,29 +136,66 @@ def _tfidf_linear_contributions(email_text: str, model: Any, vectorizer: Any) ->
     return _normalize_items(items)
 
 
-def _shap_tfidf_explanation(email_text: str, model: Any, vectorizer: Any) -> list[dict[str, float | str]]:
+def _get_shap_explainer(model: Any, vectorizer: Any) -> Any:
+    cache_key = (id(model), id(vectorizer))
+    cached = _shap_explainer_cache.get(cache_key)
+    if cached is not None:
+        return cached
+
+    predictor = lambda texts: model.predict_proba(vectorizer.transform([clean_text(text) for text in texts]))[:, 1]
+    masker = shap.maskers.Text(r"\W+")
+    explainer = shap.Explainer(predictor, masker)
+    _shap_explainer_cache[cache_key] = explainer
+    return explainer
+
+
+def _shap_tfidf_explanation_inner(email_text: str, model: Any, vectorizer: Any) -> list[dict[str, float | str]]:
+    explainer = _get_shap_explainer(model, vectorizer)
+    shap_values = explainer([email_text], max_evals=SHAP_MAX_EVALS)
+    tokens = list(shap_values.data[0])
+    values = list(shap_values.values[0])
+    items = [(token, float(value)) for token, value in zip(tokens, values) if str(token).strip()]
+    return _normalize_items(items)
+
+
+def _shap_tfidf_explanation(
+    email_text: str,
+    model: Any,
+    vectorizer: Any,
+    *,
+    timeout: float | None = None,
+) -> tuple[list[dict[str, float | str]], str | None]:
     if shap is None or model is None or vectorizer is None:
-        return []
+        return [], None
+
+    effective_timeout = SHAP_TIMEOUT_SECONDS if timeout is None else timeout
+    if effective_timeout <= 0:
+        return [], None
 
     try:
-        predictor = lambda texts: model.predict_proba(vectorizer.transform([clean_text(text) for text in texts]))[:, 1]
-        masker = shap.maskers.Text(r"\W+")
-        explainer = shap.Explainer(predictor, masker)
-        shap_values = explainer([email_text], max_evals=128)
-        tokens = list(shap_values.data[0])
-        values = list(shap_values.values[0])
-        items = [(token, float(value)) for token, value in zip(tokens, values) if str(token).strip()]
-        return _normalize_items(items)
+        future = _shap_executor.submit(_shap_tfidf_explanation_inner, email_text, model, vectorizer)
+        return future.result(timeout=effective_timeout), None
+    except FuturesTimeoutError:
+        return [], "shap_timeout"
     except Exception:
-        return []
+        return [], "shap_error"
+
+
+def _get_lime_explainer() -> Any | None:
+    global _lime_explainer
+    if LimeTextExplainer is None:
+        return None
+    if _lime_explainer is None:
+        _lime_explainer = LimeTextExplainer(class_names=['safe', 'phishing'])
+    return _lime_explainer
 
 
 def _lime_text_explanation(email_text: str, predictor: Callable[[list[str]], np.ndarray] | None) -> list[dict[str, float | str]]:
-    if LimeTextExplainer is None or predictor is None:
+    explainer = _get_lime_explainer()
+    if explainer is None or predictor is None:
         return []
 
     try:
-        explainer = LimeTextExplainer(class_names=['safe', 'phishing'])
         explanation = explainer.explain_instance(
             email_text,
             classifier_fn=predictor,
@@ -165,16 +212,33 @@ def explain_prediction(
     *,
     risk_score: int,
     signal_count: int,
+    confidence_percent: int | None = None,
     model: Any | None = None,
     vectorizer: Any | None = None,
     predictor: Callable[[list[str]], np.ndarray] | None = None,
+    skip_shap: bool = False,
+    shap_timeout: float | None = None,
 ) -> dict[str, Any]:
-    top_words = _shap_tfidf_explanation(email_text, model, vectorizer)
-    method = 'shap'
+    degraded_reason: str | None = None
+    top_words: list[dict[str, float | str]] = []
+    method = 'linear-weights'
+
+    effective_skip_shap = skip_shap or not TRY_SHAP_ON_SCAN
+
+    if not effective_skip_shap:
+        top_words, degraded_reason = _shap_tfidf_explanation(
+            email_text,
+            model,
+            vectorizer,
+            timeout=shap_timeout,
+        )
+        if top_words:
+            method = 'shap'
 
     if not top_words:
         top_words = _tfidf_linear_contributions(email_text, model, vectorizer)
-        method = 'linear-weights'
+        if top_words:
+            method = 'linear-weights'
 
     if not top_words:
         top_words = _lime_text_explanation(email_text, predictor)
@@ -188,9 +252,14 @@ def explain_prediction(
         method = 'heuristic'
 
     confidence_margin = max(3, min(12, 12 - min(signal_count, 4)))
-    return {
+    display_confidence = int(round(confidence_percent if confidence_percent is not None else risk_score))
+    payload: dict[str, Any] = {
         'top_words': top_words[:5],
         'why_risky': 'Top words driving this verdict',
-        'confidence_interval': f'{int(round(risk_score))}% ± {confidence_margin}%',
+        'confidence_interval': f'{display_confidence}% ± {confidence_margin}%',
         'method': method,
     }
+    if degraded_reason:
+        payload['explanation_degraded'] = True
+        payload['degraded_reason'] = degraded_reason
+    return payload

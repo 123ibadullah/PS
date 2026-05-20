@@ -65,6 +65,11 @@ try:
     from explain import explain_prediction
 except ImportError:
     explain_prediction = None
+
+from routes.metrics_routes import router as metrics_router
+from services.metrics_service import build_api_metrics_payload
+from ws.connection_manager import ConnectionManager
+
 from prometheus_client import (
     CONTENT_TYPE_LATEST,
     CollectorRegistry,
@@ -96,7 +101,7 @@ SENDER_PROFILE_PATH = BASE_DIR / "sender_profiles.json"
 THREAT_INTEL_PATH = BASE_DIR.parent / "data" / "threat_intel_feed.json"
 SCANS_DB_PATH = BASE_DIR / "scans.db"
 FEEDBACK_COLUMNS = ["email_text", "user_label", "model_prediction", "timestamp", "scan_id"]
-RETRAIN_THRESHOLD = 50
+RETRAIN_THRESHOLD = max(1, int(os.getenv("PHISHSHIELD_RETRAIN_SAMPLE_THRESHOLD", "50")))
 INDICBERT_MODEL_DIR = BASE_DIR / "indicbert_model"
 INDICBERT_REQUIRED_FILES = (
     "config.json",
@@ -104,20 +109,26 @@ INDICBERT_REQUIRED_FILES = (
     "model.safetensors",
     "tokenizer_config.json",
 )
-SECUREBERT_MODEL_DIR = BASE_DIR / "securebert_model"
+SECUREBERT_MODEL_DIR = BASE_DIR / "models" / "securebert_model"
 SECUREBERT_REQUIRED_FILES = (
     "config.json",
-    "tokenizer.json",
     "model.safetensors",
+    "tokenizer.json",
     "tokenizer_config.json",
+    "special_tokens_map.json",
+    "vocab.json",
+    "merges.txt",
 )
-MURIL_MODEL_DIR = BASE_DIR / "muril_model"
+MURIL_MODEL_DIR = BASE_DIR / "models" / "muril_model"
 MURIL_REQUIRED_FILES = (
     "config.json",
-    "tokenizer.json",
     "model.safetensors",
+    "tokenizer.json",
     "tokenizer_config.json",
+    "special_tokens_map.json",
+    "vocab.txt",
 )
+PROVIDER_WARMUP_SECONDS = max(30.0, float(os.getenv("PHISHSHIELD_PROVIDER_WARMUP_SECONDS", "180")))
 INDICBERT_HEALTH_LABEL = "SecureBERT/MuRIL-GPU-97.4%"
 SECUREBERT_HEALTH_LABEL = "SecureBERT"
 MURIL_HEALTH_LABEL = "MuRIL"
@@ -158,7 +169,14 @@ def _normalize_gemini_model_name(raw_model: str | None) -> str:
 
 
 SCAN_PROCESS_TIMEOUT_SECONDS = min(120.0, max(5.0, _env_float("SCAN_PROCESS_TIMEOUT_SECONDS", 45.0)))
+EXPLAIN_TIMEOUT_SECONDS = min(
+    SCAN_PROCESS_TIMEOUT_SECONDS,
+    max(1.0, _env_float("EXPLAIN_TIMEOUT_SECONDS", 4.0)),
+)
 NETWORK_IO_TIMEOUT_SECONDS = min(SCAN_PROCESS_TIMEOUT_SECONDS, max(0.2, _env_float("NETWORK_IO_TIMEOUT_SECONDS", 0.75)))
+RETRAIN_MIN_TRAINING_ROWS = max(10, int(os.getenv("PHISHSHIELD_RETRAIN_MIN_ROWS", "20")))
+_retrain_lock = threading.Lock()
+_retrain_in_progress = False
 VT_HTTP_TIMEOUT_SECONDS = min(NETWORK_IO_TIMEOUT_SECONDS, max(0.2, _env_float("VT_HTTP_TIMEOUT_SECONDS", NETWORK_IO_TIMEOUT_SECONDS)))
 VT_RETRY_WAIT_SECONDS = min(0.25, max(0.05, _env_float("VT_RETRY_WAIT_SECONDS", 0.15)))
 
@@ -220,6 +238,7 @@ logger = logging.getLogger("phishshield")
 INTERNAL_API_KEY = (os.getenv("PHISHSHIELD_INTERNAL_API_KEY") or "").strip()
 
 app = FastAPI(title="PhishShield AI Backend", version="1.0")
+app.include_router(metrics_router)
 
 MAX_REQUEST_BYTES = 1024 * 1024  # 1 MiB
 
@@ -334,117 +353,6 @@ _vt_cache: dict[str, dict] = {}
 _vt_cache_lock = Lock()
 VT_CACHE_MAX = 500
 VT_CACHE_TTL_SECONDS = 3600
-
-
-class ConnectionManager:
-    """Manages active WebSocket connections for live scan feed."""
-
-    def __init__(self) -> None:
-        self._active: dict[str, WebSocket] = {}
-        self._session_by_ws: dict[WebSocket, str] = {}
-        self._lock = asyncio.Lock()
-        # Pending events: store (event_dict, created_at) tuples
-        self._pending: list[tuple[dict[str, Any], datetime]] = []
-        self._PENDING_MAX = 20
-        self._PENDING_TTL_SECONDS = 60  # discard events older than 60s
-
-    def _prune_pending_locked(self) -> list[dict[str, Any]]:
-        now = datetime.now(timezone.utc)
-        fresh: list[dict[str, Any]] = []
-        kept: list[tuple[dict[str, Any], datetime]] = []
-        for event, created_at in self._pending:
-            age = (now - created_at).total_seconds()
-            if age < self._PENDING_TTL_SECONDS:
-                fresh.append(event)
-                kept.append((event, created_at))
-        self._pending = kept
-        return fresh
-
-    def _is_open(self, ws: WebSocket) -> bool:
-        return ws.client_state == WebSocketState.CONNECTED and ws.application_state == WebSocketState.CONNECTED
-
-    async def connect(self, ws: WebSocket, session_id: str | None = None) -> str:
-        await ws.accept()
-        session_key = session_id or f"anonymous-{uuid4().hex}"
-        replaced_ws: WebSocket | None = None
-        fresh: list[dict[str, Any]] = []
-
-        async with self._lock:
-            replaced_ws = self._active.get(session_key)
-            self._active[session_key] = ws
-            self._session_by_ws[ws] = session_key
-            fresh = self._prune_pending_locked()
-            if fresh:
-                self._pending.clear()
-            print(f"[WS] Connection accepted. Sending {len(fresh)} pending events...")
-
-        if replaced_ws is not None and replaced_ws is not ws:
-            try:
-                await replaced_ws.close(code=1000)
-            except Exception:
-                pass
-
-        # Send pending events outside the lock
-        for ev in fresh:
-            try:
-                await ws.send_json(ev)
-            except Exception:
-                break  # client already gone
-
-        print(f"[WS] Client connected. Total active connections: {len(self._active)}")
-        return session_key
-
-    async def disconnect(self, ws: WebSocket) -> None:
-        async with self._lock:
-            before = len(self._active)
-            session_key = self._session_by_ws.pop(ws, None)
-            if session_key and self._active.get(session_key) is ws:
-                self._active.pop(session_key, None)
-            else:
-                for key, active_ws in list(self._active.items()):
-                    if active_ws is ws:
-                        self._active.pop(key, None)
-                        break
-            print(f"[WS] Client disconnected. Active connections before disconnect: {before}")
-            print(f"[WS] Cleanup complete. Remaining connections: {len(self._active)}")
-
-    async def broadcast(self, message: dict[str, Any]) -> None:
-        """Broadcast to all active connections. Dead connections are removed."""
-        async with self._lock:
-            snapshot = list(self._active.items())
-
-        if not snapshot:
-            # Queue with TTL â€” cap at max size
-            async with self._lock:
-                self._pending.append((message, datetime.now(timezone.utc)))
-                if len(self._pending) > self._PENDING_MAX:
-                    self._pending = self._pending[-self._PENDING_MAX:]
-            print(f"[WS] No active connections, queuing event for next client...")
-            return
-
-        dead: list[tuple[str, WebSocket]] = []
-        for session_key, ws in snapshot:
-            if not self._is_open(ws):
-                dead.append((session_key, ws))
-                continue
-            try:
-                await asyncio.wait_for(ws.send_json(message), timeout=3.0)
-            except asyncio.TimeoutError:
-                dead.append((session_key, ws))
-            except Exception:
-                dead.append((session_key, ws))
-
-        # Remove dead connections
-        if dead:
-            async with self._lock:
-                for session_key, ws in dead:
-                    if self._active.get(session_key) is ws:
-                        self._active.pop(session_key, None)
-                    self._session_by_ws.pop(ws, None)
-
-    async def ping_all(self) -> None:
-        """Keepalive ping disabled."""
-        return
 
 
 ws_manager = ConnectionManager()
@@ -888,6 +796,19 @@ def has_complete_muril_assets() -> bool:
     return MURIL_MODEL_DIR.exists() and all((MURIL_MODEL_DIR / name).exists() for name in MURIL_REQUIRED_FILES)
 
 
+def has_ensemble_transformer_assets() -> bool:
+    return has_complete_securebert_assets() or has_complete_muril_assets()
+
+
+def _provider_available(provider: Any | None) -> bool:
+    if provider is None:
+        return False
+    try:
+        return provider.health().get("status") != "disabled"
+    except Exception:
+        return False
+
+
 def load_training_metadata() -> dict[str, Any]:
     if not METADATA_PATH.exists():
         return {}
@@ -1218,9 +1139,27 @@ def load_artifacts() -> None:
             fallback_reason = "transformers/torch not available"
 
     if artifacts.active_model != INDICBERT_HEALTH_LABEL:
-        print(f"Falling back to TF-IDF: {fallback_reason or 'SecureBERT/MuRIL unavailable'}")
+        if has_ensemble_transformer_assets():
+            ensemble_bits: list[str] = []
+            if has_complete_securebert_assets():
+                ensemble_bits.append("SecureBERT")
+            if has_complete_muril_assets():
+                ensemble_bits.append("MuRIL")
+            print(
+                f"Legacy IndicBERT bundle unavailable ({fallback_reason or 'not present'}); "
+                f"ensemble will use {' + '.join(ensemble_bits)} with TF-IDF anchor."
+            )
+        else:
+            print(f"Falling back to TF-IDF: {fallback_reason or 'transformer artifacts unavailable'}")
 
-    if has_complete_securebert_assets() and AutoTokenizer is not None and AutoModelForSequenceClassification is not None:
+    # Ensemble providers load SecureBERT/MuRIL lazily; avoid duplicate 500MB+ loads here.
+    if (
+        has_complete_securebert_assets()
+        and _securebert_provider is not None
+        and _provider_available(_securebert_provider)
+    ):
+        logger.info("SecureBERT delegated to ensemble provider (startup warmup will load weights)")
+    elif has_complete_securebert_assets() and AutoTokenizer is not None and AutoModelForSequenceClassification is not None:
         try:
             artifacts.securebert_tokenizer = AutoTokenizer.from_pretrained(
                 str(SECUREBERT_MODEL_DIR),
@@ -1231,6 +1170,7 @@ def load_artifacts() -> None:
             artifacts.securebert_model = AutoModelForSequenceClassification.from_pretrained(
                 str(SECUREBERT_MODEL_DIR),
                 local_files_only=True,
+                low_cpu_mem_usage=False,
                 token=HF_TOKEN or None,
             )
             try:
@@ -1286,7 +1226,12 @@ async def startup_event() -> None:
     ensure_sender_profile_store()
     ensure_threat_intel_store()
     load_artifacts()
-    has_model = artifacts.model is not None or artifacts.indicbert_model is not None
+    has_model = (
+        artifacts.model is not None
+        or artifacts.indicbert_model is not None
+        or _provider_available(_securebert_provider)
+        or _provider_available(_muril_provider)
+    )
     model_loaded.set(1 if has_model else 0)
     app.state.scan_explanations = OrderedDict()
     app.state.scan_cache = OrderedDict()
@@ -1305,32 +1250,98 @@ async def startup_event() -> None:
     except Exception as exc:
         logging.getLogger("uvicorn.error").warning("Provider status logging failed: %s", exc)
 
-    async def _warmup_providers() -> None:
+    async def _warmup_single_provider(provider_name: str, provider: Any | None) -> None:
         import asyncio as _asyncio
 
-        dummy_text = "warmup"
+        uvicorn_logger = logging.getLogger("uvicorn.error")
+        if provider is None:
+            uvicorn_logger.info("%s provider unavailable (not installed)", provider_name)
+            return
+
+        health_before = provider.health()
+        if health_before.get("status") == "disabled":
+            uvicorn_logger.info(
+                "%s disabled at startup: %s",
+                provider_name,
+                health_before.get("reason") or "artifacts_missing",
+            )
+            return
+
+        loop = _asyncio.get_event_loop()
+        warmup_fn = getattr(provider, "warmup_load", None)
+        if not callable(warmup_fn):
+            warmup_fn = lambda: provider.get_model()
+
+        try:
+            await _asyncio.wait_for(
+                loop.run_in_executor(None, warmup_fn),
+                timeout=PROVIDER_WARMUP_SECONDS,
+            )
+            health_after = provider.health()
+            if health_after.get("status") == "ready":
+                uvicorn_logger.info("✅ %s warmup complete (%s)", provider_name, health_after.get("device", "cpu"))
+            elif health_after.get("status") == "disabled":
+                uvicorn_logger.warning(
+                    "⚠️ %s failed to load: %s",
+                    provider_name,
+                    health_after.get("reason") or "unknown",
+                )
+            else:
+                uvicorn_logger.warning("⚠️ %s warmup finished without ready status: %s", provider_name, health_after)
+        except _asyncio.TimeoutError:
+            health_after = provider.health()
+            if health_after.get("status") == "ready":
+                uvicorn_logger.info(
+                    "✅ %s loaded during warmup (exceeded %.0fs budget, now ready on %s)",
+                    provider_name,
+                    PROVIDER_WARMUP_SECONDS,
+                    health_after.get("device", "cpu"),
+                )
+            else:
+                uvicorn_logger.warning(
+                    "⚠️ %s warmup still in progress after %.0fs — first scan may wait for model load",
+                    provider_name,
+                    PROVIDER_WARMUP_SECONDS,
+                )
+        except Exception as exc:
+            uvicorn_logger.warning("⚠️ %s warmup failed: %s", provider_name, exc)
+
+    async def _warmup_providers() -> None:
+        # Load one transformer at a time to avoid RAM spikes that leave weights on meta device.
+        await _warmup_single_provider("SecureBERT", _securebert_provider)
+        await _warmup_single_provider("MuRIL", _muril_provider)
+
+    async def _warmup_shap_explainer() -> None:
+        import asyncio as _asyncio
+
+        if artifacts.model is None or artifacts.vectorizer is None:
+            return
+        try:
+            from explain import _get_shap_explainer, shap as shap_module
+        except Exception:
+            return
+        if shap_module is None:
+            return
+
         loop = _asyncio.get_event_loop()
         uvicorn_logger = logging.getLogger("uvicorn.error")
-        for provider_name, provider in [
-            ("SecureBERT", _securebert_provider),
-            ("MuRIL", _muril_provider),
-        ]:
-            if provider is None:
-                uvicorn_logger.warning("⚠️ %s warmup failed: provider unavailable — provider may self-disable", provider_name)
-                continue
-            try:
-                await _asyncio.wait_for(
-                    loop.run_in_executor(None, _predict_provider_probability, provider, dummy_text),
-                    timeout=10.0,
-                )
-                uvicorn_logger.info("✅ %s warmup complete", provider_name)
-            except _asyncio.TimeoutError:
-                uvicorn_logger.warning("⚠️ %s warmup timeout — will lazy-load on first request", provider_name)
-            except Exception as e:
-                uvicorn_logger.warning("⚠️ %s warmup failed: %s — provider may self-disable", provider_name, e)
+        try:
+            await _asyncio.wait_for(
+                loop.run_in_executor(
+                    None,
+                    lambda: _get_shap_explainer(artifacts.model, artifacts.vectorizer),
+                ),
+                timeout=12.0,
+            )
+            uvicorn_logger.info("SHAP explainer warmup complete")
+        except _asyncio.TimeoutError:
+            uvicorn_logger.warning("SHAP explainer warmup timeout — first scan may use faster fallbacks")
+        except Exception as exc:
+            uvicorn_logger.warning("SHAP explainer warmup failed: %s", exc)
 
     try:
         await _warmup_providers()
+        await _warmup_shap_explainer()
         uvicorn_logger = logging.getLogger("uvicorn.error")
         secure_after = _securebert_provider.health() if _securebert_provider is not None else {"status": "disabled", "device": "cpu"}
         muril_after = _muril_provider.health() if _muril_provider is not None else {"status": "disabled", "device": "cpu"}
@@ -3479,7 +3490,164 @@ def _validate_internal_access(request: Request) -> None:
         raise HTTPException(status_code=403, detail="Forbidden: invalid internal API key")
 
 
+def feedback_label_for_training(corrected_verdict: str) -> str:
+    if normalize_feedback_verdict(corrected_verdict) == "Safe":
+        return "safe"
+    return "phishing"
+
+
+def append_feedback_csv_row(
+    *,
+    email_text: str,
+    user_label: str,
+    model_prediction: str,
+    scan_id: str | None = None,
+) -> None:
+    ensure_feedback_store()
+    row = {
+        "email_text": email_text,
+        "user_label": user_label,
+        "model_prediction": model_prediction,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "scan_id": scan_id or "",
+    }
+    existing = pd.read_csv(FEEDBACK_CSV_PATH)
+    updated = pd.concat([existing, pd.DataFrame([row])], ignore_index=True)
+    updated.to_csv(FEEDBACK_CSV_PATH, index=False)
+
+
+def count_pending_retrain_samples() -> int:
+    ensure_feedback_store()
+    state = load_feedback_state()
+    consumed = int(state.get("feedback_rows_consumed", 0) or 0)
+    feedback_df = pd.read_csv(FEEDBACK_CSV_PATH)
+    return max(0, len(feedback_df) - consumed)
+
+
+def build_model_explanation(
+    email_text: str,
+    *,
+    risk_score: int,
+    confidence: int,
+    signal_count: int,
+    sender_domain: str = "",
+    linked_domains: list[str] | None = None,
+) -> dict[str, Any]:
+    if explain_prediction is None:
+        return {}
+
+    predictor: Any | None = None
+    if artifacts.model is not None and artifacts.vectorizer is not None:
+        predictor = lambda texts: artifacts.model.predict_proba(
+            artifacts.vectorizer.transform([clean_text(text) for text in texts])
+        )[:, 1]
+
+    def _compute_explanation(*, skip_shap: bool = False) -> dict[str, Any]:
+        return explain_prediction(
+            email_text,
+            risk_score=risk_score,
+            signal_count=signal_count,
+            confidence_percent=confidence,
+            model=artifacts.model,
+            vectorizer=artifacts.vectorizer,
+            predictor=predictor,
+            skip_shap=skip_shap,
+        )
+
+    try:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+            future = pool.submit(_compute_explanation)
+            explanation = future.result(timeout=EXPLAIN_TIMEOUT_SECONDS)
+    except concurrent.futures.TimeoutError:
+        logger.warning(
+            "Explainability timed out after %.1fs; falling back without SHAP",
+            EXPLAIN_TIMEOUT_SECONDS,
+        )
+        explanation = _compute_explanation(skip_shap=True)
+        explanation["explanation_degraded"] = True
+        explanation["degraded_reason"] = "explain_timeout"
+    except Exception:
+        logger.exception("Explainability failed; using heuristic-safe fallback")
+        explanation = _compute_explanation(skip_shap=True)
+        explanation["explanation_degraded"] = True
+        explanation["degraded_reason"] = "explain_error"
+
+    explanation["top_words"] = sanitize_explanation_words(
+        explanation.get("top_words"),
+        sender_domain=sender_domain,
+        linked_domains=linked_domains or [],
+    )
+    return explanation
+
+
+def maybe_auto_retrain() -> dict[str, Any] | None:
+    pending = count_pending_retrain_samples()
+    if pending < RETRAIN_THRESHOLD:
+        return None
+
+    try:
+        result = retrain_tfidf_with_feedback()
+    except Exception:
+        logger.exception("Automatic TF-IDF retraining failed")
+        return None
+
+    state = load_feedback_state()
+    feedback_df = pd.read_csv(FEEDBACK_CSV_PATH) if FEEDBACK_CSV_PATH.exists() else pd.DataFrame()
+    state["feedback_rows_consumed"] = int(len(feedback_df))
+    state["last_retrain"] = result.get("trained_at")
+    state["last_retrain_accuracy"] = float((result.get("metrics") or {}).get("accuracy", 0.0) or 0.0)
+    state["previous_accuracy"] = float(result.get("previous_accuracy", 0.0) or 0.0)
+    state["model_improving"] = state["last_retrain_accuracy"] >= state.get("previous_accuracy", 0.0)
+    save_feedback_state(state)
+    return result
+
+
+class RetrainInProgressError(RuntimeError):
+    """Raised when a retrain request arrives while another retrain is running."""
+
+
+def _validate_feedback_csv(feedback_df: pd.DataFrame) -> pd.DataFrame:
+    missing_columns = [column for column in FEEDBACK_COLUMNS if column not in feedback_df.columns]
+    if missing_columns:
+        raise ValueError(f"Feedback CSV missing required columns: {missing_columns}")
+
+    normalized = feedback_df.copy()
+    normalized["email_text"] = normalized["email_text"].astype(str).str.strip()
+    normalized["user_label"] = normalized["user_label"].astype(str).str.strip().str.lower()
+    valid_labels = {"safe", "phishing"}
+    invalid_mask = ~normalized["user_label"].isin(valid_labels)
+    if invalid_mask.any():
+        invalid_labels = sorted(normalized.loc[invalid_mask, "user_label"].astype(str).unique().tolist())
+        raise ValueError(f"Unsupported feedback labels: {invalid_labels}")
+
+    return normalized[normalized["email_text"].astype(bool)].copy()
+
+
+def _atomic_joblib_dump(obj: Any, target_path: Path) -> None:
+    temp_path = target_path.with_suffix(target_path.suffix + ".tmp")
+    joblib.dump(obj, temp_path)
+    temp_path.replace(target_path)
+
+
 def retrain_tfidf_with_feedback() -> dict[str, Any]:
+    global _retrain_in_progress
+
+    if not DATASET_PATH.exists():
+        raise FileNotFoundError(f"Dataset not found: {DATASET_PATH}")
+
+    with _retrain_lock:
+        if _retrain_in_progress:
+            raise RetrainInProgressError("A retrain job is already running.")
+        _retrain_in_progress = True
+
+    try:
+        return _retrain_tfidf_with_feedback_locked()
+    finally:
+        with _retrain_lock:
+            _retrain_in_progress = False
+
+
+def _retrain_tfidf_with_feedback_locked() -> dict[str, Any]:
     if not DATASET_PATH.exists():
         raise FileNotFoundError(f"Dataset not found: {DATASET_PATH}")
 
@@ -3490,19 +3658,22 @@ def retrain_tfidf_with_feedback() -> dict[str, Any]:
         raise ValueError(f"Missing required columns in base dataset: {sorted(missing_columns)}")
 
     base_df = base_df[["Email Text", "Email Type"]].dropna().copy()
-    feedback_df = pd.read_csv(FEEDBACK_CSV_PATH)
+    ensure_feedback_store()
+    feedback_df = _validate_feedback_csv(pd.read_csv(FEEDBACK_CSV_PATH))
+    state = load_feedback_state()
+    consumed = int(state.get("feedback_rows_consumed", 0) or 0)
+    pending_feedback = feedback_df.iloc[consumed:].copy() if consumed < len(feedback_df) else pd.DataFrame()
+    if pending_feedback.empty:
+        raise ValueError("No unconsumed feedback rows are available for retraining.")
 
-    if not feedback_df.empty:
-        feedback_training = feedback_df.copy()
-        feedback_training["Email Text"] = feedback_training["email_text"].astype(str)
-        feedback_training["Email Type"] = feedback_training["user_label"].map({
-            "phishing": "Phishing Email",
-            "safe": "Safe Email",
-        })
-        feedback_training = feedback_training[["Email Text", "Email Type"]].dropna()
-        combined_df = pd.concat([base_df, feedback_training], ignore_index=True)
-    else:
-        combined_df = base_df.copy()
+    feedback_training = pending_feedback.copy()
+    feedback_training["Email Text"] = feedback_training["email_text"].astype(str)
+    feedback_training["Email Type"] = feedback_training["user_label"].map({
+        "phishing": "Phishing Email",
+        "safe": "Safe Email",
+    })
+    feedback_training = feedback_training[["Email Text", "Email Type"]].dropna()
+    combined_df = pd.concat([base_df, feedback_training], ignore_index=True)
 
     combined_df["label"] = combined_df["Email Type"].map(LABEL_MAP)
     if combined_df["label"].isna().any():
@@ -3510,6 +3681,11 @@ def retrain_tfidf_with_feedback() -> dict[str, Any]:
         raise ValueError(f"Unsupported label values found during retraining: {unknown_labels}")
 
     combined_df["clean_text"] = combined_df["Email Text"].astype(str).apply(clean_text)
+    combined_df = combined_df[combined_df["clean_text"].astype(bool)].copy()
+    if len(combined_df) < RETRAIN_MIN_TRAINING_ROWS:
+        raise ValueError(
+            f"Not enough training rows after cleaning ({len(combined_df)} < {RETRAIN_MIN_TRAINING_ROWS})."
+        )
     X_train, X_test, y_train, y_test = train_test_split(
         combined_df["clean_text"],
         combined_df["label"].astype(int),
@@ -3547,8 +3723,8 @@ def retrain_tfidf_with_feedback() -> dict[str, Any]:
     previous_metadata = load_training_metadata()
     previous_accuracy = float((previous_metadata.get("metrics") or {}).get("accuracy", 0.0) or 0.0)
 
-    joblib.dump(model, MODEL_PATH)
-    joblib.dump(vectorizer, VECTORIZER_PATH)
+    _atomic_joblib_dump(model, MODEL_PATH)
+    _atomic_joblib_dump(vectorizer, VECTORIZER_PATH)
 
     trained_at = datetime.now(timezone.utc).isoformat()
     updated_metadata = {
@@ -3559,11 +3735,15 @@ def retrain_tfidf_with_feedback() -> dict[str, Any]:
         "train_rows": int(len(X_train)),
         "test_rows": int(len(X_test)),
         "model_type": "TF-IDF Active Learning",
-        "feedback_rows": int(len(feedback_df)),
+        "feedback_rows": int(len(pending_feedback)),
         "metrics": metrics,
     }
     save_training_metadata(updated_metadata)
     load_artifacts()
+
+    state = load_feedback_state()
+    state["feedback_rows_consumed"] = int(len(feedback_df))
+    save_feedback_state(state)
 
     log_line = f"Model retrained on {trained_at}, new accuracy: {metrics['accuracy']:.4f}"
     print(log_line)
@@ -3571,6 +3751,7 @@ def retrain_tfidf_with_feedback() -> dict[str, Any]:
         "trained_at": trained_at,
         "metrics": metrics,
         "previous_accuracy": previous_accuracy,
+        "feedback_rows_used": int(len(pending_feedback)),
         "log": log_line,
     }
 
@@ -3579,17 +3760,19 @@ def get_feedback_stats_payload() -> dict[str, Any]:
     memory_payload = app.state.feedback_memory if isinstance(app.state.feedback_memory, dict) else load_feedback_memory()
     entries = memory_payload.get("entries", {}) if isinstance(memory_payload, dict) else {}
     total_feedback = int(sum(int((entry or {}).get("count", 0) or 0) for entry in entries.values()))
-    pending_retrain = total_feedback
+    pending_retrain = count_pending_retrain_samples()
     needed_for_retrain = max(RETRAIN_THRESHOLD - pending_retrain, 0)
     adjustments = app.state.rule_weight_adjustments if isinstance(app.state.rule_weight_adjustments, dict) else {}
     pattern_adjustment = int(adjustments.get("pattern_matching", 0) or 0)
+    feedback_state = load_feedback_state()
 
     return {
         "total_feedback": total_feedback,
         "pending_retrain": pending_retrain,
         "needed_for_retrain": needed_for_retrain,
-        "last_retrain": str(artifacts.last_trained)[:10] if artifacts.last_trained else None,
-        "model_improving": pattern_adjustment <= 0,
+        "retrain_threshold": RETRAIN_THRESHOLD,
+        "last_retrain": str(feedback_state.get("last_retrain") or artifacts.last_trained or "")[:10] or None,
+        "model_improving": bool(feedback_state.get("model_improving", pattern_adjustment <= 0)),
     }
 
 
@@ -6264,6 +6447,15 @@ def calculate_email_risk(
         extreme_case=bool(risk_score >= 90),
     )
 
+    model_explanation = build_model_explanation(
+        email_text,
+        risk_score=risk_score,
+        confidence=confidence,
+        signal_count=len(matched_signals),
+        sender_domain=sender_domain or "",
+        linked_domains=linked_domains,
+    )
+
     final_signals = list(matched_signals)
     app.state.total_signals_analyzed += len(final_signals)
     if final_verdict != "Safe" and not final_signals:
@@ -6389,7 +6581,15 @@ def calculate_email_risk(
             "link_risk": clamp_int(link_risk_score, 0, 100),
             "header_spoofing": clamp_int(header_spoofing_score, 0, 100),
         },
-        "explanation": {"why_risky": explanation},
+        "explanation": {
+            "why_risky": explanation,
+            "top_words": model_explanation.get("top_words", []),
+            "method": model_explanation.get("method", "signal_trace"),
+            "confidence_interval": model_explanation.get("confidence_interval"),
+            "explanation_degraded": bool(model_explanation.get("explanation_degraded", False)),
+            "degraded_reason": model_explanation.get("degraded_reason"),
+            "signals": final_signals,
+        },
         "recommendation": recommendation,
         "analysis_meta": {
             "analyzed_at": datetime.now(timezone.utc).isoformat(),
@@ -6433,6 +6633,9 @@ def calculate_email_risk(
             "analysis_meta": response_payload["analysis_meta"],
             "explanation": {
                 "why_risky": explanation,
+                "top_words": model_explanation.get("top_words", []),
+                "method": model_explanation.get("method", "signal_trace"),
+                "confidence_interval": model_explanation.get("confidence_interval"),
                 "signals": final_signals,
             },
         },
@@ -6618,29 +6821,6 @@ def legacy_clear_history() -> dict[str, str]:
     return {"status": "cleared"}
 
 
-@app.get("/api/metrics")
-def legacy_metrics() -> dict[str, Any]:
-    scans = list(app.state.scan_explanations.values())
-    total_scans = len(scans)
-    phishing_detected = sum(1 for item in scans if int(item.get("risk_score", 0) or 0) >= 61)
-    suspicious_detected = sum(1 for item in scans if 26 <= int(item.get("risk_score", 0) or 0) <= 60)
-    safe_detected = max(total_scans - phishing_detected - suspicious_detected, 0)
-
-    return {
-        "accuracy": 0.974,
-        "precision": 0.968,
-        "recall": 0.968,
-        "f1Score": 0.968,
-        "falsePositiveRate": 0.02,
-        "totalScans": total_scans,
-        "phishingDetected": phishing_detected,
-        "suspiciousDetected": suspicious_detected,
-        "safeDetected": safe_detected,
-        "driftLevel": "low",
-        "falseNegativeCount": 0,
-    }
-
-
 @app.post("/scan-email")
 async def scan_email(payload: EmailScanRequest, request: Request) -> dict[str, Any]:
     started_at = time.perf_counter()
@@ -6685,19 +6865,24 @@ async def scan_email(payload: EmailScanRequest, request: Request) -> dict[str, A
         preview = str(payload.email_text or "").strip()[:120]
         if not preview:
             preview = "Preview unavailable"
-        asyncio.create_task(ws_manager.broadcast({
-            "type": "scan_complete",
-            "scan_id": scan_id_val,
-            "preview": preview,
-            "verdict": result.get("verdict") or "Unknown",
-            "risk_score": int(result.get("risk_score") or result.get("riskScore") or 0),
-            "sender_domain": "",
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "language": detect_language_code(payload.email_text),
-            "has_url": bool(result.get("url_results")),
-            "processing_ms": processing_ms,
-        }))
-        print(f"[WS] Broadcasting scan_complete: scan_id={scan_id_val}, active_connections={len(ws_manager._active)}")
+        async def _broadcast_scan_complete() -> None:
+            try:
+                await ws_manager.broadcast({
+                    "type": "scan_complete",
+                    "scan_id": scan_id_val,
+                    "preview": preview,
+                    "verdict": result.get("verdict") or "Unknown",
+                    "risk_score": int(result.get("risk_score") or result.get("riskScore") or 0),
+                    "sender_domain": "",
+                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                    "language": detect_language_code(payload.email_text),
+                    "has_url": bool(result.get("url_results")),
+                    "processing_ms": processing_ms,
+                })
+            except Exception as exc:
+                logger.warning("WebSocket broadcast failed for scan %s: %s", scan_id_val, exc)
+
+        asyncio.create_task(_broadcast_scan_complete())
 
         return result
     except asyncio.TimeoutError as exc:
@@ -6860,7 +7045,9 @@ def get_report(scan_id: str) -> StreamingResponse:
 
 
 @app.post("/feedback")
+@app.post("/api/feedback")
 def submit_feedback(payload: FeedbackRequest) -> dict[str, Any]:
+    retrain_result: dict[str, Any] | None = None
     try:
         with feedback_memory_lock:
             if not isinstance(app.state.feedback_memory, dict) or not app.state.feedback_memory:
@@ -6917,12 +7104,23 @@ def submit_feedback(payload: FeedbackRequest) -> dict[str, Any]:
                 false_negative_corrections.inc()
 
             total_feedback = int(sum(int((entry or {}).get("count", 0) or 0) for entry in entries.values()))
+            if email_text.strip():
+                append_feedback_csv_row(
+                    email_text=email_text,
+                    user_label=feedback_label_for_training(normalized_corrected),
+                    model_prediction=normalize_prediction_label(normalized_predicted),
+                    scan_id=str(payload.scan_id or ""),
+                )
+                retrain_result = maybe_auto_retrain()
 
+        pending_retrain = count_pending_retrain_samples()
         return {
             "saved": True,
             "feedback_count": total_feedback,
-            "retrain_triggered": False,
-            "pending_retrain": total_feedback,
+            "retrain_triggered": retrain_result is not None,
+            "pending_retrain": pending_retrain,
+            "needed_for_retrain": max(RETRAIN_THRESHOLD - pending_retrain, 0),
+            "retrain": retrain_result,
             "entry": {
                 "email_hash": email_hash,
                 "predicted": normalized_predicted,
@@ -6937,11 +7135,49 @@ def submit_feedback(payload: FeedbackRequest) -> dict[str, Any]:
 
 
 @app.get("/feedback/stats")
+@app.get("/api/feedback/stats")
 def feedback_stats() -> dict[str, Any]:
     try:
         return get_feedback_stats_payload()
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"Feedback stats failed: {exc}") from exc
+
+
+@app.post("/retrain")
+@app.post("/api/retrain")
+def trigger_retrain(request: Request) -> dict[str, Any]:
+    """Retrain the TF-IDF model using base dataset plus collected feedback rows."""
+    _validate_internal_access(request)
+    pending = count_pending_retrain_samples()
+    if pending < 1:
+        raise HTTPException(status_code=400, detail="No new feedback samples are available for retraining.")
+
+    try:
+        result = retrain_tfidf_with_feedback()
+    except RetrainInProgressError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Retraining failed: {exc}") from exc
+
+    state = load_feedback_state()
+    feedback_df = pd.read_csv(FEEDBACK_CSV_PATH) if FEEDBACK_CSV_PATH.exists() else pd.DataFrame()
+    state["feedback_rows_consumed"] = int(len(feedback_df))
+    state["last_retrain"] = result.get("trained_at")
+    state["last_retrain_accuracy"] = float((result.get("metrics") or {}).get("accuracy", 0.0) or 0.0)
+    state["previous_accuracy"] = float(result.get("previous_accuracy", 0.0) or 0.0)
+    state["model_improving"] = state["last_retrain_accuracy"] >= state.get("previous_accuracy", 0.0)
+    save_feedback_state(state)
+
+    return {
+        "retrained": True,
+        "pending_retrain": count_pending_retrain_samples(),
+        "needed_for_retrain": max(RETRAIN_THRESHOLD - count_pending_retrain_samples(), 0),
+        **result,
+    }
 
 
 @app.get("/metrics", include_in_schema=False)

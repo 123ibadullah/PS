@@ -4,7 +4,8 @@ Run with: pytest test_regression.py -v
 ALL tests must pass. A CI check should run this on every commit.
 """
 import pytest
-from main import calculate_email_risk, is_safe_otp_delivery, evaluate_bec_no_link
+from main import calculate_email_risk, is_otp_safety_notice
+from analyzers.bec_detector import evaluate_bec_no_link
 
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
@@ -233,12 +234,12 @@ def test_suspicious_mixed_links():
 
 # ── UNIT TESTS for core helper functions ─────────────────────────────────────
 
-def test_unit_is_safe_otp_delivery_true():
-    assert is_safe_otp_delivery("Your OTP is 483920. Do not share this with anyone.") is True
+def test_unit_is_otp_safety_notice_true():
+    assert is_otp_safety_notice("Your OTP is 483920. Do not share this with anyone.") is True
 
 
-def test_unit_is_safe_otp_delivery_coercive():
-    assert is_safe_otp_delivery(
+def test_unit_is_otp_safety_notice_coercive():
+    assert is_otp_safety_notice(
         "Your OTP is 1234. Do not share. Account blocked immediately."
     ) is False
 

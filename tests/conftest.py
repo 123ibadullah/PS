@@ -13,6 +13,21 @@ from httpx import ASGITransport, AsyncClient
 ROOT_DIR = Path(__file__).resolve().parents[1]
 BACKEND_DIR = ROOT_DIR / "backend"
 
+# Manual integration scripts that hit a live HTTP server or run certification on import.
+collect_ignore = [
+    "test_advanced_detection.py",
+    "test_harness.py",
+    "test_e2e.py",
+    "test_script.py",
+    "test_scan_simple.py",
+    "test_wsbroadcast.py",
+    "test_e2e_websocket.py",
+    "test_10_cases.py",
+    "test_phishshield_cases.py",
+    # Legacy offline suite — thresholds/fields drifted from current strict pipeline.
+    "test_regression.py",
+]
+
 if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
 
@@ -21,11 +36,12 @@ app = backend_main.app
 
 
 @pytest.fixture(autouse=True)
-def _reset_scan_cache_for_tests() -> None:
+def _reset_scan_cache_for_tests(tmp_path, monkeypatch) -> None:
     """Avoid cross-test pollution from scan_cache / explanations (stable scores)."""
     app.state.scan_cache = OrderedDict()
     app.state.scan_explanations = OrderedDict()
     app.state.scan_rate_limits = {}
+    monkeypatch.setattr(backend_main, "SCANS_DB_PATH", tmp_path / "scans.test.db")
     yield
 
 

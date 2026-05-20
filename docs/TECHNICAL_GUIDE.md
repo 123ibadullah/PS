@@ -35,7 +35,8 @@ PhishShield is a containerized full-stack cybersecurity project featuring a Reac
 
 ## Key Features
 
-- **Hybrid AI Engine**: Combines **SecureBERT/MuRIL** (semantic NLP) with **TF-IDF + LR** (lexical analysis). Offline benchmark is ~97%; live accuracy depends on inbox distribution.
+- **Hybrid AI Engine**: Combines **SecureBERT/MuRIL** (semantic NLP) with **TF-IDF + LR** (lexical analysis). Offline holdout benchmark is ~97% (`data/training_meta.json`); live UI accuracy is lower (~80–85% documented in `live_qa`).
+- **Honest metrics**: `GET /api/metrics` separates `offline_evaluation` from `runtime_operational` session counters.
 - **Advanced Threat Analysis**: Production-ready detection for **Thread Hijacking**, **Malicious Attachments**, and **QR Code lures**.
 - **India-Focused Defense**: Native support for English, Hindi, Telugu, and Hinglish script detection with local brand protection (SBI, HDFC, UPI, etc.).
 - **Explainable Verdicts**: Real-time risk scoring (0-100) with detailed signal highlighting and confidence intervals.

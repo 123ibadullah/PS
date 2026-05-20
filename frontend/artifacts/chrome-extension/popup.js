@@ -63,6 +63,16 @@ function normalizeExplanation(explanation) {
   return "No explanation available.";
 }
 
+function formatExplanationMeta(explanation) {
+  if (!explanation || typeof explanation !== "object") return "";
+  const parts = [];
+  if (explanation.method) parts.push(`Attribution: ${explanation.method}`);
+  if (explanation.explanation_degraded) {
+    parts.push(`Fallback (${explanation.degraded_reason || "timeout"})`);
+  }
+  return parts.length ? parts.join(" · ") : "";
+}
+
 function normalizeSignals(signals) {
   if (!Array.isArray(signals)) return [];
   return signals
@@ -225,9 +235,11 @@ function renderCurrentPage(result, activeTab) {
   renderGauge(score, verdict, band);
 
   const explanation = normalizeExplanation(result?.explanation ?? result?.explanation_text);
+  const meta = formatExplanationMeta(result?.explanation);
   const signals = normalizeSignals(result?.signals ?? result?.normalized_signals).slice(0, 6);
   pageDetails.innerHTML = `
     <div><strong>Explanation</strong></div>
+    ${meta ? `<div style="font-size:11px;opacity:0.85;margin-bottom:4px;">${meta}</div>` : ""}
     <div>${explanation}</div>
     <div style="margin-top:8px;"><strong>Signals</strong></div>
     <ul style="margin:6px 0 0 18px;padding:0;">${signals.map((item) => `<li>${item}</li>`).join("") || "<li>None</li>"}</ul>

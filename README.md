@@ -42,7 +42,7 @@ For example, a note claiming your HDFC account is frozen until you “urgently�
 | ML Model | TF-IDF + Logistic Regression, SecureBERT/MuRIL (Transformers, Torch) |
 | Frontend | React 19, Vite 7, TypeScript, Tailwind CSS |
 | Database | SQLite (local dev DB), Drizzle ORM, JSON/CSV flat file stores |
-| Observability | Prometheus metrics, SHAP/LIME explainability |
+| Observability | Prometheus metrics; per-scan SHAP/LIME/heuristic word attributions on `/scan-email` (SHAP times out gracefully; `explanation_degraded` when fallback) |
 | DevOps | Docker, Docker Compose, Nginx, Playwright, GitHub Actions CI |
 
 ## How It Works
@@ -224,6 +224,19 @@ Key visible files include:
 
 Source notes in the code/docs reference curated phishing corpora plus internally cleaned and synthetic balancing steps.  
 The training metadata in `data/training_meta.json` reports `rows: 18684`.
+
+## Environment variables (runtime honesty)
+
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `PHISHSHIELD_TRY_SHAP_ON_SCAN` | `0` | Set `1` to attempt SHAP on `/scan-email` (slower on CPU). Default uses fast TF-IDF linear-weights/LIME/heuristic paths. |
+| `PHISHSHIELD_SHAP_TIMEOUT_SECONDS` | `2.5` | Per-SHAP attempt cap before fallback. |
+| `PHISHSHIELD_SHAP_MAX_EVALS` | `64` | SHAP evaluation budget when enabled. |
+| `EXPLAIN_TIMEOUT_SECONDS` | `4` | Total explainability budget per scan. |
+| `PHISHSHIELD_PROVIDER_WARMUP_SECONDS` | `180` | Startup warmup timeout per transformer provider. |
+| `VITE_BACKEND_URL` | — | Frontend → FastAPI base URL (e.g. `http://127.0.0.1:8000`). |
+
+`/api/metrics` returns **offline_evaluation** (from `data/training_meta.json`) and **runtime_operational** (in-process scan counters) as separate objects — not live production accuracy.
 
 ## Results
 

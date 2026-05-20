@@ -63,9 +63,9 @@ def test_p95_latency_targets() -> None:
     perf.clear_timings()
     cert._init_app_state()
     texts: list[str] = [t for t, _ in cert.CERT_CASES]
-    raw = json.loads((Path(__file__).resolve().parent / "adversarial_cases.json").read_text(encoding="utf-8"))
+    raw = json.loads((Path(__file__).resolve().parents[1] / "data" / "adversarial_cases.json").read_text(encoding="utf-8"))
     texts.extend(str(c["email_text"]) for c in raw["cases"])
-    assert len(texts) == 95
+    assert len(texts) == len(cert.CERT_CASES) + len(raw["cases"])
 
     wall_seconds: list[float] = []
     for t in texts:

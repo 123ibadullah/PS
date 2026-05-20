@@ -181,8 +181,11 @@ async def test_sender_domain_bank_alert_is_suspicious(client) -> None:
 
     assert response.status_code == 200
     payload = response.json()
-    # Post May-2026 hardening, low-context benign "account notice" without links/requests is allowed to stay Safe.
-    assert_scan_payload(payload, min_score=0, max_score=25, expected_verdict="Safe")
+    assert_scan_payload(payload, min_score=26, max_score=60, expected_verdict="Suspicious")
+    assert any(
+        "lookalike" in signal.lower() or "brand" in signal.lower()
+        for signal in payload.get("matched_signals", [])
+    )
 
 
 async def test_soft_pressure_details_request_is_suspicious(client) -> None:

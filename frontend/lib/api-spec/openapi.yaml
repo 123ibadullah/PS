@@ -133,11 +133,11 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
-  /metrics:
+  /api/metrics:
     get:
       operationId: getModelMetrics
       tags: [phishing]
-      summary: Get model performance metrics
+      summary: Get offline evaluation metrics plus runtime session counters
       responses:
         "200":
           description: Model metrics
@@ -440,24 +440,32 @@ components:
     ModelMetrics:
       type: object
       properties:
+        metrics_kind:
+          type: string
+          description: Payload type discriminator
+        accuracy_source:
+          type: string
+          description: e.g. offline_holdout_evaluation — not live measured accuracy
+        offline_evaluation:
+          type: object
+          description: Holdout metrics from training_meta.json
+        runtime_operational:
+          type: object
+          description: In-process scan counters for this API session
         accuracy:
           type: number
-          description: Model accuracy 0-1
+          description: Offline holdout accuracy 0-1 (not live production accuracy)
         precision:
           type: number
-          description: Precision 0-1
         recall:
           type: number
-          description: Recall 0-1
         f1Score:
           type: number
-          description: F1 score 0-1
         falsePositiveRate:
           type: number
-          description: False positive rate 0-1
         totalScans:
           type: integer
-          description: Total scans in current session
+          description: Runtime session scan count
         phishingDetected:
           type: integer
         suspiciousDetected:
@@ -466,14 +474,7 @@ components:
           type: integer
       required:
         - accuracy
-        - precision
-        - recall
-        - f1Score
-        - falsePositiveRate
         - totalScans
-        - phishingDetected
-        - suspiciousDetected
-        - safeDetected
     ErrorResponse:
       type: object
       properties:
