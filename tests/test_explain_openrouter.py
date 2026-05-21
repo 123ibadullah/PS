@@ -77,6 +77,8 @@ async def test_explain_falls_back_on_openrouter_http_error(client, monkeypatch) 
             return {"error": "upstream unavailable"}
 
     monkeypatch.setattr(backend_main, "OPENROUTER_API_KEY", "test-key")
+    monkeypatch.setattr(backend_main, "GEMINI_API_KEY", "")
+    monkeypatch.setattr(backend_main, "LLM_PROVIDER", "openrouter")
     monkeypatch.setattr(backend_main.requests, "post", lambda *args, **kwargs: _FakeResponse())
 
     try:
@@ -85,9 +87,10 @@ async def test_explain_falls_back_on_openrouter_http_error(client, monkeypatch) 
 
         payload = response.json()
         assert payload["scan_id"] == scan_id
-        assert payload["source"] == "fallback"
-        assert payload["fallback_used"] is True
+        assert payload["source"] == "signal_trace"
+        assert payload["fallback_used"] is False
         assert payload["fallback_reason"] == "openrouter_http_503"
+        assert payload.get("narrative_source") == "signal_trace"
         assert "suspicious" in payload["explanation"].lower() or "high risk" in payload["explanation"].lower()
     finally:
         backend_main.app.state.scan_explanations.pop(scan_id, None)
@@ -98,6 +101,7 @@ async def test_explain_falls_back_when_key_missing(client, monkeypatch) -> None:
     backend_main.app.state.scan_explanations[scan_id] = _sample_scan_record(scan_id)
 
     monkeypatch.setattr(backend_main, "OPENROUTER_API_KEY", "")
+    monkeypatch.setattr(backend_main, "GEMINI_API_KEY", "")
 
     try:
         response = await client.post("/explain", json={"scan_id": scan_id})
@@ -105,9 +109,10 @@ async def test_explain_falls_back_when_key_missing(client, monkeypatch) -> None:
 
         payload = response.json()
         assert payload["scan_id"] == scan_id
-        assert payload["source"] == "fallback"
-        assert payload["fallback_used"] is True
-        assert payload["fallback_reason"] == "missing_openrouter_key"
+        assert payload["source"] == "signal_trace"
+        assert payload["fallback_used"] is False
+        assert payload["fallback_reason"] is None
+        assert payload.get("narrative_source") == "signal_trace"
         assert payload["explanation"]
     finally:
         backend_main.app.state.scan_explanations.pop(scan_id, None)

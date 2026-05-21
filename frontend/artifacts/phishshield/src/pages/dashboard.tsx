@@ -1105,7 +1105,7 @@ type PythonExplainResponse = {
   model?: string;
   explanation?: string;
   fallback_used?: boolean;
-  fallback_reason?: string;
+  fallback_reason?: string | null;
 };
 
 type SafeSenderEntry = {
@@ -3497,12 +3497,12 @@ export default function Dashboard() {
     const narrative = isSafeVerdict
       ? (
           signalLines
-            ? `Verdict: ${displayVerdictLabel}. Benign transactional email; low-weight cues suppressed. Reassuring signals: ${signalLines}. Action: ${result?.recommendation ?? 'No urgent action needed.'}`
-            : `Verdict: ${displayVerdictLabel}. Benign transactional email; low-weight cues suppressed. ${whyRisky || 'No suspicious behavior detected.'}`
+            ? `Verdict: ${verdictHeadline}. Benign transactional email; low-weight cues suppressed. Reassuring signals: ${signalLines}. Action: ${result?.recommendation ?? 'No urgent action needed.'}`
+            : `Verdict: ${verdictHeadline}. Benign transactional email; low-weight cues suppressed. ${whyRisky || 'No suspicious behavior detected.'}`
         )
       : (
           signalLines
-            ? `Verdict: ${displayVerdictLabel}. Signals: ${signalLines}. Action: ${result?.recommendation ?? 'Review manually before acting.'}`
+            ? `Verdict: ${verdictHeadline}. Signals: ${signalLines}. Action: ${result?.recommendation ?? 'Review manually before acting.'}`
             : whyRisky
         );
     return {
