@@ -21,6 +21,8 @@ METADATA_PATH = BASE_DIR.parent / "data" / "training_meta.json"
 LABEL_MAP = {
     "Phishing Email": 1,
     "Safe Email": 0,
+    "phishing": 1,
+    "safe": 0,
 }
 
 
@@ -36,19 +38,27 @@ def main() -> None:
         raise FileNotFoundError(f"Dataset not found: {DATASET_PATH}")
 
     df = pd.read_csv(DATASET_PATH)
-    expected_columns = {"Email Text", "Email Type"}
-    missing_columns = expected_columns.difference(df.columns)
-    if missing_columns:
-        raise ValueError(f"Missing required columns: {sorted(missing_columns)}")
+    columns = {str(col).strip() for col in df.columns}
 
-    df = df[["Email Text", "Email Type"]].dropna().copy()
-    df["label"] = df["Email Type"].map(LABEL_MAP)
+    if {"Email Text", "Email Type"}.issubset(columns):
+        df = df[["Email Text", "Email Type"]].dropna().copy()
+        df["label"] = df["Email Type"].astype(str).map(LABEL_MAP)
+        text_column = "Email Text"
+    elif {"email_text", "label"}.issubset(columns):
+        df = df[["email_text", "label"]].dropna().copy()
+        df["label"] = df["label"].astype(str).str.strip().str.lower().map(LABEL_MAP)
+        text_column = "email_text"
+    else:
+        raise ValueError(
+            "Dataset must include either ['Email Text', 'Email Type'] or ['email_text', 'label'] columns."
+        )
 
     if df["label"].isna().any():
-        unknown_labels = sorted(df.loc[df["label"].isna(), "Email Type"].astype(str).unique().tolist())
+        label_col = "Email Type" if text_column == "Email Text" else "label"
+        unknown_labels = sorted(df.loc[df["label"].isna(), label_col].astype(str).unique().tolist())
         raise ValueError(f"Unsupported label values found: {unknown_labels}")
 
-    df["clean_text"] = df["Email Text"].astype(str).apply(clean_text)
+    df["clean_text"] = df[text_column].astype(str).apply(clean_text)
 
     X_train, X_test, y_train, y_test = train_test_split(
         df["clean_text"],

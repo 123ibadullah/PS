@@ -3249,7 +3249,7 @@ export default function Dashboard() {
 
     const lines = [
       `PhishShield verdict: ${formatVerdictLabel(displayClassification, displayRiskScore)} (${Math.round(displayRiskScore)} / 100)`,
-      `Confidence: ${confidencePercent}% (± ${confidenceInterval}%)`,
+      `Confidence: ${confidencePercent}% (± ${fallbackConfidenceInterval}%)`,
       `Attack type: ${safeShareText(displayAttackType)}`,
       `Summary: ${safeShareText(conciseExplanation)}`,
       detectedSignals.length ? `Primary Risk Indicators: ${detectedSignals.map((signal) => safeShareText(signal)).join(', ')}` : '',
