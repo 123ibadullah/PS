@@ -284,7 +284,7 @@ Manual checks on FastAPI `:8000` + React dashboard:
 | Team meeting (no lure) | Safe ~10 | Pass |
 | Income tax refund `.xyz` | High Risk ~75 | Pass |
 
-Also verified: `/health` (SecureBERT/MuRIL), `/stats` (Gemini + VT active), `/check-url` (VirusTotal + allowlist), `/check-headers` (spoof signals), `/explain` (Gemini or OpenRouter), `/feedback`, `/recent-scans` (3 session items for Live Feed), `pytest` (**66 passed**).
+Also verified: `/health` (SecureBERT/MuRIL), `/stats` (Gemini + VT active), `/check-url` (VirusTotal + allowlist), `/check-headers` (spoof signals), `/explain` (Gemini/OpenRouter when keyed; otherwise `source: signal_trace`), `/feedback`, `/recent-scans` (3 session items for Live Feed), `pytest` (**66 passed**).
 
 ## Future Improvements
 - A live Gmail or Outlook hook is next on my list because paste-only flows still add friction for people who live inside their inbox all day, and that is where most risky threads actually land.

@@ -53,6 +53,15 @@ if ($robo -gt 7) {
     throw "robocopy failed with exit code $robo"
 }
 
+# Offline benchmark metrics for GET /api/metrics (small JSON, required on HF Space)
+$TrainingMeta = Join-Path $RepoRoot "data\training_meta.json"
+if (Test-Path $TrainingMeta) {
+    $SpaceDataDir = Join-Path $SpaceDir "data"
+    New-Item -ItemType Directory -Force -Path $SpaceDataDir | Out-Null
+    Copy-Item $TrainingMeta (Join-Path $SpaceDataDir "training_meta.json") -Force
+    Write-Host "  Copied data/training_meta.json for /api/metrics" -ForegroundColor DarkGray
+}
+
 # Never ship transformer weights to free HF Spaces (1 GB repo cap). Runtime uses HF_TOKEN download.
 foreach ($drop in @(
     "indicbert_model",

@@ -23,8 +23,8 @@ Copy from your local `.env` — **never commit these to git**:
 | `PHISHSHIELD_SECUREBERT_HF_REPO` | e.g. `Mohd1314234123/phishshield-securebert` (see upload script below) |
 | `PHISHSHIELD_MURIL_HF_REPO` | e.g. `Mohd1314234123/phishshield-muril` |
 | `VT_API_KEY` | VirusTotal URL checks |
-| `GOOGLE_API_KEY` | Gemini explanations |
-| `LLM_API_KEY` | OpenRouter (if `LLM_PROVIDER=openrouter`) |
+| `GOOGLE_API_KEY` | Gemini narrative `/explain` (optional; without keys, `source: signal_trace`) |
+| `OPENROUTER_API_KEY` or `LLM_API_KEY` | OpenRouter narrative `/explain` when `LLM_PROVIDER=openrouter` |
 
 ### One-time: upload local weights to HF Model repos
 

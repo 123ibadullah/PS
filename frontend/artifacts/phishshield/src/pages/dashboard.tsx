@@ -749,6 +749,11 @@ async function hydrateLiveFeedFromBackend(
   }
 }
 
+type LiveFeedMode = 'connecting' | 'live' | 'polling';
+
+const LIVE_FEED_POLL_INTERVAL_MS = 20_000;
+const LIVE_FEED_WS_FAIL_THRESHOLD = 3;
+
 function DashboardLiveFeed() {
   const prefersReducedMotion = usePrefersReducedMotion();
   const sessionId = useMemo(() => getSessionId(), []);
@@ -756,22 +761,54 @@ function DashboardLiveFeed() {
   const LIVE_FEED_DEFAULT_VISIBLE = 4;
   const LIVE_FEED_MAX_STORED = 4;
   const [events, setEvents] = useState<DashboardLiveEvent[]>([]);
-  const [connected, setConnected] = useState(false);
+  const [feedMode, setFeedMode] = useState<LiveFeedMode>('connecting');
   const [newestEventKey, setNewestEventKey] = useState<string | null>(null);
   const socketRef = useRef<WebSocket | null>(null);
   const reconnectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const heartbeatTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const pollingTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const wsFailCountRef = useRef(0);
+  const wsEverConnectedRef = useRef(false);
+  const pollingActiveRef = useRef(false);
   const unmountedRef = useRef(false);
 
   useEffect(() => {
     if (!HAS_CONFIGURED_BACKEND) {
-      setConnected(false);
+      setFeedMode('connecting');
       return;
     }
 
     unmountedRef.current = false;
+    wsFailCountRef.current = 0;
+    wsEverConnectedRef.current = false;
     let reconnectDelay = 2000;
     const storageKey = getLiveFeedStorageKey(sessionId);
+
+    const applyHydratedEvents = (hydrated: DashboardLiveEvent[]) => {
+      if (unmountedRef.current || hydrated.length === 0) return;
+      const trimmed = persistLiveFeedEvents(sessionId, hydrated, LIVE_FEED_MAX_STORED);
+      setEvents(trimmed);
+    };
+
+    const pollFeedFromBackend = () => {
+      void hydrateLiveFeedFromBackend(sessionId, PYTHON_BACKEND_URL, LIVE_FEED_MAX_STORED).then(applyHydratedEvents);
+    };
+
+    const stopPolling = () => {
+      pollingActiveRef.current = false;
+      if (pollingTimerRef.current) {
+        clearInterval(pollingTimerRef.current);
+        pollingTimerRef.current = null;
+      }
+    };
+
+    const startPolling = () => {
+      if (unmountedRef.current || pollingTimerRef.current) return;
+      pollingActiveRef.current = true;
+      setFeedMode('polling');
+      pollFeedFromBackend();
+      pollingTimerRef.current = setInterval(pollFeedFromBackend, LIVE_FEED_POLL_INTERVAL_MS);
+    };
 
     // Restore cached feed events immediately on mount/refresh.
     try {
@@ -786,11 +823,7 @@ function DashboardLiveFeed() {
       // Ignore malformed cached live feed data.
     }
 
-    void hydrateLiveFeedFromBackend(sessionId, PYTHON_BACKEND_URL, LIVE_FEED_MAX_STORED).then((hydrated) => {
-      if (unmountedRef.current || hydrated.length === 0) return;
-      const trimmed = persistLiveFeedEvents(sessionId, hydrated, LIVE_FEED_MAX_STORED);
-      setEvents(trimmed);
-    });
+    pollFeedFromBackend();
 
     const socketBaseUrl = PYTHON_BACKEND_URL.replace(/^http/i, 'ws');
     const socketUrl = new URL('/ws/feed', socketBaseUrl);
@@ -808,7 +841,7 @@ function DashboardLiveFeed() {
     };
 
     const connect = () => {
-      if (unmountedRef.current) return;
+      if (unmountedRef.current || pollingActiveRef.current) return;
 
       const existing = socketRef.current;
       if (existing && (existing.readyState === WebSocket.OPEN || existing.readyState === WebSocket.CONNECTING)) {
@@ -818,12 +851,16 @@ function DashboardLiveFeed() {
         try { existing.close(1000, 'Replacing stale socket'); } catch { /* ignore */ }
       }
 
+      setFeedMode('connecting');
       const ws = new WebSocket(socketUrl.toString());
       socketRef.current = ws;
 
       ws.onopen = () => {
         if (ws !== socketRef.current) return;
-        setConnected(true);
+        wsEverConnectedRef.current = true;
+        wsFailCountRef.current = 0;
+        stopPolling();
+        setFeedMode('live');
         reconnectDelay = 2000;
 
         if (heartbeatTimerRef.current) clearInterval(heartbeatTimerRef.current);
@@ -836,7 +873,7 @@ function DashboardLiveFeed() {
               timestamp: new Date().toISOString(),
             }));
           } catch {
-            // Ignore heartbeat send failures; onclose will reconnect.
+            // Ignore heartbeat send failures; onclose will reconnect or fall back to polling.
           }
         }, 25000);
       };
@@ -892,8 +929,17 @@ function DashboardLiveFeed() {
         }
 
         if (unmountedRef.current) return;
-        setConnected(false);
 
+        wsFailCountRef.current += 1;
+        const shouldPoll = !wsEverConnectedRef.current && wsFailCountRef.current >= LIVE_FEED_WS_FAIL_THRESHOLD;
+
+        if (shouldPoll) {
+          clearTimers();
+          startPolling();
+          return;
+        }
+
+        setFeedMode('connecting');
         if (reconnectTimerRef.current) clearTimeout(reconnectTimerRef.current);
         reconnectTimerRef.current = setTimeout(() => {
           if (!unmountedRef.current) connect();
@@ -907,13 +953,14 @@ function DashboardLiveFeed() {
     return () => {
       unmountedRef.current = true;
       clearTimers();
+      stopPolling();
 
       const ws = socketRef.current;
       socketRef.current = null;
       if (ws && ws.readyState !== WebSocket.CLOSED) {
         try { ws.close(1000, 'Dashboard unmounted'); } catch { /* ignore */ }
       }
-      setConnected(false);
+      setFeedMode('connecting');
     };
   }, [sessionId]);
 
@@ -922,10 +969,27 @@ function DashboardLiveFeed() {
   return (
     <div className="max-h-96 overflow-y-auto rounded-2xl border border-card-border/70 bg-[linear-gradient(140deg,rgba(15,23,42,0.96),rgba(15,23,42,0.88))] p-4 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
       <div className="mb-4 flex items-center gap-2">
-        <span className={cn('h-2.5 w-2.5 rounded-full', connected ? 'bg-safe animate-pulse' : 'bg-destructive')} aria-hidden="true" />
-        <span className="text-sm font-semibold tracking-wide text-white/90">{connected ? 'Live Feed Active' : 'Reconnecting...'}</span>
+        <span
+          className={cn(
+            'h-2.5 w-2.5 rounded-full',
+            feedMode === 'live' ? 'bg-safe animate-pulse' : feedMode === 'polling' ? 'bg-warning' : 'bg-muted-foreground',
+          )}
+          aria-hidden="true"
+        />
+        <span className="text-sm font-semibold tracking-wide text-white/90">
+          {feedMode === 'live'
+            ? 'Live Feed Active'
+            : feedMode === 'polling'
+              ? 'Polling mode (REST)'
+              : 'Connecting…'}
+        </span>
         <span className="ml-auto rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[11px] text-slate-300">{visibleEvents.length} item{visibleEvents.length === 1 ? '' : 's'}</span>
       </div>
+      {feedMode === 'polling' && (
+        <p className="mb-3 text-[11px] leading-relaxed text-slate-400">
+          WebSocket is unavailable on this host. Refreshing recent scans every {Math.round(LIVE_FEED_POLL_INTERVAL_MS / 1000)}s via REST.
+        </p>
+      )}
 
       {!HAS_CONFIGURED_BACKEND && (
         <div className="rounded-xl border border-warning/30 bg-warning/10 px-4 py-4 text-center">
@@ -1337,6 +1401,59 @@ function formatBackendHealthMetrics(health?: PythonBackendHealth | null) {
   return bits.join(' · ');
 }
 
+function parseHealthPercentMetric(value?: string | null): number | null {
+  if (!value || value === '—') return null;
+  const parsed = Number.parseFloat(String(value).replace('%', '').trim());
+  if (Number.isNaN(parsed)) return null;
+  return parsed > 1 ? parsed / 100 : parsed;
+}
+
+function mergeLearningMetrics(
+  nodeMetrics: Record<string, unknown> | undefined,
+  pythonMetrics: Record<string, unknown> | null,
+  health: PythonBackendHealth | null,
+): Record<string, unknown> {
+  const node = (nodeMetrics ?? {}) as Record<string, unknown>;
+  const py = (pythonMetrics ?? {}) as Record<string, unknown>;
+  const merged: Record<string, unknown> = HAS_CONFIGURED_BACKEND && Object.keys(py).length > 0
+    ? {
+        ...node,
+        ...py,
+        offline_evaluation: (py.offline_evaluation ?? node.offline_evaluation) as Record<string, unknown> | undefined,
+      }
+    : { ...node };
+
+  const offlineRaw = (merged.offline_evaluation ?? merged) as Record<string, unknown>;
+  const healthAccuracy = parseHealthPercentMetric(health?.accuracy);
+  const healthF1 = parseHealthPercentMetric(health?.f1_score);
+
+  const accuracy = Number(offlineRaw.accuracy ?? merged.accuracy ?? 0) || healthAccuracy || 0;
+  const precision = Number(offlineRaw.precision ?? merged.precision ?? 0) || 0;
+  const recall = Number(offlineRaw.recall ?? merged.recall ?? 0) || 0;
+  const f1Score = Number(offlineRaw.f1_score ?? offlineRaw.f1Score ?? merged.f1Score ?? 0) || healthF1 || 0;
+
+  const offlineEvaluation = {
+    ...offlineRaw,
+    accuracy,
+    precision: precision || offlineRaw.precision,
+    recall: recall || offlineRaw.recall,
+    f1_score: f1Score,
+    metrics_source_note:
+      accuracy > 0 && Number(offlineRaw.accuracy ?? 0) <= 0 && healthAccuracy
+        ? 'Offline holdout from /health when training_meta.json is unavailable on the host.'
+        : offlineRaw.metrics_source_note,
+  };
+
+  return {
+    ...merged,
+    offline_evaluation: offlineEvaluation,
+    accuracy,
+    precision: precision || merged.precision,
+    recall: recall || merged.recall,
+    f1Score: f1Score || merged.f1Score,
+  };
+}
+
 function buildExplanationSpans(text: string, topWords: PythonExplanationWord[] = []) {
   const spans: Array<{ start: number; end: number; text: string; reason: string }> = [];
 
@@ -1728,6 +1845,7 @@ export default function Dashboard() {
   const [backendStatus, setBackendStatus] = useState<BackendConnectionState>('checking');
   const [backendHealth, setBackendHealth] = useState<PythonBackendHealth | null>(null);
   const [backendFeedbackStats, setBackendFeedbackStats] = useState<PythonFeedbackStats | null>(null);
+  const [pythonMetrics, setPythonMetrics] = useState<Record<string, unknown> | null>(null);
   const [offlineModeNotice, setOfflineModeNotice] = useState('');
   const [isScanTransitioning, setIsScanTransitioning] = useState(false);
   const [activeResultScanId, setActiveResultScanId] = useState<string | null>(null);
@@ -1749,6 +1867,7 @@ export default function Dashboard() {
   const activeScanTokenRef = useRef(0);
   const healthRequestRef = useRef<Promise<PythonBackendHealth | null> | null>(null);
   const feedbackStatsRequestRef = useRef<Promise<PythonFeedbackStats | null> | null>(null);
+  const metricsRequestRef = useRef<Promise<Record<string, unknown> | null> | null>(null);
 
   const handleFeedback = async (correctedClassification: 'safe' | 'phishing') => {
     if (!result) return;
@@ -1848,15 +1967,48 @@ export default function Dashboard() {
       refetchOnWindowFocus: false,
     } as any,
   });
-  const { data: metrics, refetch: refetchMetrics } = useGetModelMetrics({
+  const { data: nodeMetrics, refetch: refetchNodeMetrics } = useGetModelMetrics({
     query: {
-      enabled: activeTab === 'dashboard',
+      enabled: activeTab === 'dashboard' && !HAS_CONFIGURED_BACKEND,
       staleTime: 60000,
       refetchOnMount: false,
       refetchOnReconnect: false,
       refetchOnWindowFocus: false,
     } as any,
   });
+
+  const refreshPythonMetrics = async () => {
+    if (!HAS_CONFIGURED_BACKEND) {
+      setPythonMetrics(null);
+      return null;
+    }
+    if (metricsRequestRef.current) {
+      return metricsRequestRef.current;
+    }
+
+    metricsRequestRef.current = (async () => {
+      const metricsResponse = await fetchPythonBackendJson<Record<string, unknown>>('/api/metrics');
+      if (metricsResponse.ok) {
+        setPythonMetrics(metricsResponse.data);
+        return metricsResponse.data;
+      }
+      return null;
+    })();
+
+    try {
+      return await metricsRequestRef.current;
+    } finally {
+      metricsRequestRef.current = null;
+    }
+  };
+
+  const refetchMetrics = () => {
+    if (HAS_CONFIGURED_BACKEND) {
+      void refreshPythonMetrics();
+      return;
+    }
+    refetchNodeMetrics();
+  };
   const { mutate: clearHistory } = useClearScanHistory();
   const isScanning = isScanTransitioning;
   const resultCandidate = enhancedResult as DashboardResult | null;
@@ -1955,6 +2107,7 @@ export default function Dashboard() {
               ? 'ML weights are not loaded on the server — scans still run using rules and heuristics.'
               : '',
           );
+          void refreshPythonMetrics();
           return health;
         }
 
@@ -2464,7 +2617,11 @@ export default function Dashboard() {
     */
   };
 
-  const learningMetrics = (metrics ?? {}) as any;
+  const learningMetrics = mergeLearningMetrics(
+    nodeMetrics as Record<string, unknown> | undefined,
+    pythonMetrics,
+    backendHealth,
+  ) as any;
   const offlineEvaluation = (learningMetrics.offline_evaluation ?? learningMetrics) as {
     accuracy?: number;
     precision?: number;
@@ -2476,6 +2633,7 @@ export default function Dashboard() {
     evaluation_dataset_size?: number;
     disclaimer?: string;
     live_qa_note?: string;
+    metrics_source_note?: string;
   };
   const runtimeOperational = (learningMetrics.runtime_operational ?? {}) as {
     total_scans?: number;
@@ -2494,6 +2652,7 @@ export default function Dashboard() {
   const sessionScanTotal = Number(
     runtimeOperational.total_scans ?? learningMetrics.totalScans ?? 0,
   );
+  const feedbackCollectedTotal = Number(backendFeedbackStats?.total_feedback ?? learningMetrics.feedbackSamples ?? 0);
   const feedbackSamplesReviewed = Number(learningMetrics.feedbackSamples ?? 0);
   const feedbackAgreementRate = Number(learningMetrics.feedbackAgreementRate ?? 0);
   const hasFeedbackSamples = feedbackSamplesReviewed > 0;
@@ -3584,6 +3743,7 @@ export default function Dashboard() {
 
     void refreshBackendHealth();
     void refreshFeedbackStats();
+    void refreshPythonMetrics();
   }, [activeTab]);
 
   // Poll backend health so model status and connectivity stay current on Analyze tab
@@ -4994,7 +5154,7 @@ export default function Dashboard() {
                     <Shield className="w-4 h-4 text-primary" />
                     Live Feed
                   </h2>
-                  <span className="text-xs text-muted-foreground">Live events from backend WebSocket</span>
+                  <span className="text-xs text-muted-foreground">Live WebSocket or REST polling from Python backend</span>
                 </div>
                 <DashboardLiveFeed />
               </section>
@@ -5092,6 +5252,9 @@ export default function Dashboard() {
                   . <span className="text-muted-foreground">They are not live production accuracy.</span>
                   {offlineEvaluation.live_qa_note ? (
                     <p className="mt-1 text-muted-foreground">{offlineEvaluation.live_qa_note}</p>
+                  ) : null}
+                  {offlineEvaluation.metrics_source_note ? (
+                    <p className="mt-1 text-muted-foreground">{String(offlineEvaluation.metrics_source_note)}</p>
                   ) : null}
                 </div>
 
@@ -5226,9 +5389,11 @@ export default function Dashboard() {
                             : 'Check VITE_BACKEND_URL and that the Python service is running',
                     },
                     {
-                      label: 'Feedback Samples',
-                      value: String(learningMetrics.feedbackSamples ?? 0),
-                      helper: `${learningMetrics.confirmedCorrect ?? 0} confirmed-correct`,
+                      label: 'Feedback collected',
+                      value: String(feedbackCollectedTotal),
+                      helper: hasFeedbackSamples
+                        ? `${feedbackSamplesReviewed} reviewed · ${learningMetrics.confirmedCorrect ?? 0} confirmed-correct`
+                        : 'Labels queued for retrain (not yet reviewed)',
                     },
                     {
                       label: 'False Negatives',

@@ -18,8 +18,8 @@ Last audited: engineering completion pass (full-system consistency).
 
 ## Explainability defaults
 
-- Scan attributions: `linear-weights` → `lime` → `heuristic` (SHAP only if `PHISHSHIELD_TRY_SHAP_ON_SCAN=1`)
-- Narrative: `POST /explain` (LLM or rule fallback) — separate from word attributions
+- **Scan (`POST /scan-email`):** word attributions via `linear-weights` → `lime` → `heuristic` (SHAP only if `PHISHSHIELD_TRY_SHAP_ON_SCAN=1`); plus deterministic `signal_trace`, `top_signals`, `math_check`, `explanation_source: "signal_trace"`
+- **Narrative (`POST /explain`, `GET /explain/{scan_id}`):** separate from word attributions. Optional Gemini/OpenRouter when keys are set (`source`: `gemini` / `openrouter`). Otherwise narrative from stored signals with **`source: "signal_trace"`** (not legacy `"fallback"`); `fallback_used` is always `false`; `fallback_reason` is `null` or an LLM error code when providers were tried and failed
 
 ## Clients
 

@@ -105,7 +105,8 @@ The React dashboard calls the **Python backend directly on `localhost:8000`** fo
 - `/health`
 - `/feedback` (alias: `/api/feedback`)
 - `/feedback/stats` (alias: `/api/feedback/stats`)
-- `/explain/{scan_id}`
+- `POST /explain`
+- `GET /explain/{scan_id}`
 
 It also talks to the **Node.js API** for optional history, metrics, and legacy hooks. **Live paste scans use the Python verdict directly** (`POST /scan-email`); Node results are not merged with a higher-score rule on the main Analyze path. If the Python backend is offline, the frontend shows an offline warning and cannot complete a backend-backed scan.
 
@@ -123,7 +124,7 @@ It also talks to the **Node.js API** for optional history, metrics, and legacy h
 | Python API | FastAPI, Uvicorn |
 | Primary ML | SecureBERT/MuRIL (`ai4bharat/SecureBERT/MuRILv2-MLM-only`) |
 | Fallback ML | TF-IDF + Logistic Regression |
-| Explainability | SHAP, LIME, heuristic fallback |
+| Explainability | SHAP, LIME, linear-weights; scan `signal_trace`; narrative `/explain` (Gemini/OpenRouter or `signal_trace`) |
 | Threat Intel | VirusTotal API v3 |
 | Training | Python, scikit-learn, Transformers, Datasets, Torch |
 | Monorepo | pnpm workspaces |
@@ -301,6 +302,58 @@ Every `/scan-email` response includes an `explanation` object with runtime word 
 
 `confidence_interval` uses the calibrated scan confidence (not the risk score). When explainability exceeds `EXPLAIN_TIMEOUT_SECONDS` or SHAP is skipped, `explanation_degraded: true` and `degraded_reason` are set — the UI must not imply full SHAP ran.
 
+### Deterministic score decomposition (`signal_trace`)
+
+Every `/scan-email` response also includes a **signal trace**: a weighted breakdown of how rules, ML, URLs, headers, and caps contributed to the final integer score. The dashboard uses this for the “Why this score?” panel.
+
+| Field | Role |
+|---|---|
+| `signal_trace` | Per-signal `{ weight, evidence[] }` map |
+| `top_signals` | Highest-weight entries (typically top 8) |
+| `math_check` | Sum-of-weights vs `risk_score` sanity check |
+| `explanation_source` | Usually `"signal_trace"` on the scan payload |
+
+Word attributions (`explanation.top_words`) and the signal trace answer different questions: *which words moved the model* vs *which detectors moved the score*.
+
+### Narrative explain routes
+
+PhishShield stores each scan in memory (keyed by `scan_id`). Narrative explain is separate from word attributions:
+
+```http
+POST /explain
+GET /explain/{scan_id}
+```
+
+- **`GET /explain/{scan_id}`** — returns the stored scan record (`signal_trace`, `top_signals`, verdict, signals, etc.). **404** if the scan is missing or expired.
+- **`POST /explain`** — body: `{ "scan_id": "..." }`. Returns a short human-readable `explanation` paragraph plus the trace fields from the stored scan.
+
+**`source` / `narrative_source` values (current contract):**
+
+| Condition | `source` | `fallback_used` | `fallback_reason` |
+|---|---|---|---|
+| No `GEMINI_API_KEY` and no `OPENROUTER_API_KEY` | `signal_trace` | `false` | `null` |
+| LLM succeeds (`LLM_PROVIDER` order: Gemini then OpenRouter, or the reverse) | `gemini` or `openrouter` | `false` | `null` |
+| LLM configured but all providers fail | `signal_trace` | `false` | error code (e.g. `openrouter_http_503`, `openrouter_missing_key`) |
+
+When the LLM path is unavailable, the narrative is built from stored scan signals via `_build_fallback_explanation()` (verdict + top risk/safe signals + recommended action). The API still reports **`source: "signal_trace"`** — not the legacy `"fallback"` string. `fallback_used` remains **`false`** in all cases; `fallback_reason` only documents why an LLM was not used.
+
+Example (`POST /explain`, no LLM keys):
+
+```json
+{
+  "scan_id": "abc123",
+  "verdict": "High Risk",
+  "risk_score": 82,
+  "explanation": "Verdict: High Risk. Signals: OTP request detected; Urgency language. Action: Do not interact...",
+  "source": "signal_trace",
+  "narrative_source": "signal_trace",
+  "fallback_used": false,
+  "fallback_reason": null,
+  "signal_trace": { "...": { "weight": 12.0, "evidence": ["OTP pattern"] } },
+  "top_signals": [{ "name": "otp_pressure", "weight": 12.0 }]
+}
+```
+
 ## Metrics API (offline vs runtime)
 
 `GET /api/metrics` returns two honest buckets:
@@ -309,15 +362,6 @@ Every `/scan-email` response includes an `explanation` object with runtime word 
 - **`runtime_operational`** — in-process scan counters for the current API session (`total_scans`, verdict buckets).
 
 Flat fields (`accuracy`, `precision`, …) mirror offline evaluation for backward compatibility and include `accuracy_source: "offline_holdout_evaluation"`.
-
-PhishShield stores scan context in memory. A separate narrative explain route is available:
-
-```http
-POST /explain
-GET /explain/{scan_id}
-```
-
-Those routes return a human-readable paragraph (OpenRouter when configured, otherwise a rule-based fallback). Word-level attributions always come from `/scan-email`.
 
 ---
 
@@ -359,6 +403,7 @@ PhishShield did not become reliable in one step. It evolved through repeated QA 
 18. **Recent Hardening (May 2026)**: Live UI QA (100 real emails) uncovered 20 gaps; fixed and re-verified (20/20 PASS). Live accuracy is now **~80–85%** after hardening; offline benchmark remains ~97%.
 19. implemented **deterministic enforcement floors** for high-risk categories (OTP, Wire Transfers) ensuring zero-false-negative stability in critical alerts.
 20. published the full parent-folder project snapshot to GitHub, with the large backend model tracked through **Git LFS** so the repository is cloneable and usable.
+21. aligned narrative **`POST /explain`** with **`signal_trace`** as the default `source` when LLM keys are missing or providers fail (replacing the legacy `"fallback"` response label).
 
 This history matters because the current system reflects **real bug fixes driven by real failure cases**, not just idealized design.
 
@@ -741,8 +786,12 @@ Response:
       { "word": "OTP", "contribution": 0.22 }
     ],
     "why_risky": "Top words driving this verdict",
-    "confidence_interval": "100% ± 8%"
-  }
+    "confidence_interval": "100% ± 8%",
+    "method": "linear-weights"
+  },
+  "explanation_source": "signal_trace",
+  "signal_trace": {},
+  "top_signals": []
 }
 ```
 
@@ -778,7 +827,17 @@ Returns the total feedback count, pending retrain count, remaining examples need
 
 #### `GET /explain/{scan_id}`
 
-Returns the stored explanation payload for a prior scan.
+Returns the in-memory scan record for a prior `scan_id` (includes `signal_trace`, `top_signals`, `verdict`, `signals`). **404** if not found.
+
+#### `POST /explain`
+
+Request:
+
+```json
+{ "scan_id": "abc123def456" }
+```
+
+Response: narrative `explanation` plus trace fields. See **Narrative explain routes** for `source` values (`signal_trace`, `gemini`, `openrouter`) and `fallback_reason` semantics.
 
 ### Node.js Express API
 
@@ -854,10 +913,10 @@ It is fast, transparent, and extremely effective for repetitive scam language. I
 To handle semantic and multilingual content better than plain lexical models.
 
 ### 4. Why is explainability important here?
-Users and reviewers need to understand **why** an email was flagged, not just see a score.
+Users and reviewers need to understand **why** an email was flagged, not just see a score. The scan returns word attributions plus a **`signal_trace`** score breakdown; **`POST /explain`** adds a short narrative (LLM when keyed, otherwise the same trace-backed text with `source: signal_trace`).
 
 ### 5. What does SHAP/LIME add?
-It surfaces top contributing words and phrases behind each verdict.
+It surfaces top contributing words and phrases behind each verdict (separate from the deterministic `signal_trace` weights).
 
 ### 6. How do you reduce false positives?
 With newsletter whitelisting, safe context patterns, technical-string suppression, and trust checks.

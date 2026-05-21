@@ -5,14 +5,29 @@ from pathlib import Path
 from typing import Any
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-METADATA_PATH = BASE_DIR.parent / "data" / "training_meta.json"
+
+
+def training_metadata_paths() -> list[Path]:
+    """Repo layout uses ../data; HF Space Docker layout uses ./data next to main.py."""
+    return [
+        BASE_DIR / "data" / "training_meta.json",
+        BASE_DIR.parent / "data" / "training_meta.json",
+    ]
+
+
+def resolve_training_metadata_path() -> Path | None:
+    for candidate in training_metadata_paths():
+        if candidate.exists():
+            return candidate
+    return None
 
 
 def load_training_metadata() -> dict[str, Any]:
-    if not METADATA_PATH.exists():
+    path = resolve_training_metadata_path()
+    if path is None:
         return {}
     try:
-        return json.loads(METADATA_PATH.read_text(encoding="utf-8"))
+        return json.loads(path.read_text(encoding="utf-8"))
     except json.JSONDecodeError:
         return {}
 
@@ -66,7 +81,7 @@ def build_api_metrics_payload(scans: list[dict[str, Any]]) -> dict[str, Any]:
         "training_rows": metadata.get("train_rows"),
         "model_type": metadata.get("model_type"),
         "training_metadata_version": metadata.get("trained_at"),
-        "metadata_path": str(METADATA_PATH),
+        "metadata_path": str(resolve_training_metadata_path() or training_metadata_paths()[0]),
         "disclaimer": "Offline holdout evaluation on a fixed train/test split — not continuously measured live accuracy.",
         "live_qa_note": live_accuracy_note,
     }
