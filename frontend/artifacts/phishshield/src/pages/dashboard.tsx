@@ -15,7 +15,7 @@ import { ScoreGauge } from '@/components/ScoreGauge';
 import { HighlightText } from '@/components/HighlightText';
 import { AnimatedCounter } from '@/components/AnimatedCounter';
 import { ScanLoadingPanel } from '@/components/ScanLoadingPanel';
-import { useAnalyzeEmail, useGetScanHistory, useGetModelMetrics, useClearScanHistory } from '@workspace/api-client-react';
+import { useGetScanHistory, useGetModelMetrics, useClearScanHistory } from '@workspace/api-client-react';
 import { cn } from '@/lib/utils';
 import { getLiveFeedStorageKey, getSessionId } from '@/lib/session';
 import { toast } from '@/hooks/use-toast';
@@ -875,7 +875,7 @@ const RETRAIN_META_KEY = 'phishshield_retrain_meta';
 const PYTHON_BACKEND_URL = (import.meta.env.VITE_BACKEND_URL as string | undefined)?.trim() ?? '';
 const HAS_CONFIGURED_BACKEND = PYTHON_BACKEND_URL.length > 0;
 
-type BackendConnectionState = 'checking' | 'connected' | 'offline';
+type BackendConnectionState = 'checking' | 'connected' | 'degraded' | 'offline';
 
 type PythonExplanationWord = {
   word: string;
@@ -898,6 +898,9 @@ type PythonModelExplanation = {
 type PythonBackendHealth = {
   status?: string;
   model_status?: string;
+  ml_ready?: boolean;
+  model_tier?: 'full' | 'rules-only' | string;
+  active_model?: string;
   last_trained_date?: string | null;
   total_signals_analyzed?: number;
   version?: string;
@@ -905,6 +908,7 @@ type PythonBackendHealth = {
   accuracy?: string;
   f1_score?: string;
   device?: string;
+  providers?: Record<string, { status?: string; device?: string; reason?: string }>;
 };
 
 type PythonEmailScan = {
@@ -1160,30 +1164,27 @@ function confidencePercentToLevel(percent = 0) {
 }
 
 function formatBackendModelVersion(health?: PythonBackendHealth | null) {
-  if (!health) return 'Initializing...';
-  if ((health as any)?.model_used) return (health as any).model_used;
+  if (!health) return 'checking…';
+  if (health.active_model) {
+    return health.ml_ready === false ? `${health.active_model} (degraded)` : health.active_model;
+  }
+  if (health.model_used) return health.model_used;
   if (health.version) return `v${health.version}`;
 
-  // Newer backend /health may return a `providers` map with per-provider lifecycle states.
-  // Detect provider-based shape and report available providers instead of 'Unavailable'.
-  const providers = (health as any)?.providers;
+  const providers = health.providers;
   if (providers && typeof providers === 'object') {
-    try {
-      const ready = Object.entries(providers)
-        .filter(([, v]) => {
-          const status = (v as any)?.status;
-          return String(status ?? '').toLowerCase() === 'ready' || String(status ?? '').toLowerCase() === 'healthy';
-        })
-        .map(([k]) => k);
-      if (ready.length > 0) return ready.join(', ');
-      // If none explicitly ready, but providers exist, return a concise summary
-      return Object.keys(providers).join(', ');
-    } catch {
-      // fallthrough
+    const mlProviders = ['tfidf', 'indicbert', 'securebert', 'muril'] as const;
+    const readyMl = mlProviders.filter((name) => {
+      const status = String(providers[name]?.status ?? '').toLowerCase();
+      return status === 'ready' || status === 'healthy';
+    });
+    if (readyMl.length > 0) return readyMl.join(' + ');
+    if (health.model_tier === 'rules-only' || health.ml_ready === false) {
+      return 'Rules + heuristics (ML not loaded)';
     }
   }
 
-  return 'Initializing...';
+  return health.ml_ready === false ? 'Rules only' : 'checking…';
 }
 
 function buildExplanationSpans(text: string, topWords: PythonExplanationWord[] = []) {
@@ -1550,7 +1551,6 @@ function RegionalThreatMap({
 export default function Dashboard() {
   const prefersReducedMotion = usePrefersReducedMotion();
   const [inputMode, setInputMode] = useState<'demo' | 'real' | 'upload'>('real');
-  const [baseProtectionCount] = useState(1284);
   const [sessionFingerprint] = useState(() => globalThis.crypto?.randomUUID?.().slice(0, 8).toUpperCase() ?? 'LOCALSCAN');
   const [includeHeaders, setIncludeHeaders] = useState(false);
   const [emailText, setEmailText] = useState('');
@@ -1688,7 +1688,6 @@ export default function Dashboard() {
 
   const [localHistory, setLocalHistory] = useState<LocalHistoryItem[]>([]);
 
-  const { isPending, error, reset } = useAnalyzeEmail();
   const { data: serverHistory = [], refetch: refetchHistory } = useGetScanHistory({
     sessionId,
     query: {
@@ -1709,7 +1708,7 @@ export default function Dashboard() {
     } as any,
   });
   const { mutate: clearHistory } = useClearScanHistory();
-  const isScanning = isPending || isScanTransitioning;
+  const isScanning = isScanTransitioning;
   const resultCandidate = enhancedResult as DashboardResult | null;
   const result: DashboardResult | null = resultCandidate && activeResultScanId && ((resultCandidate.scanId ?? resultCandidate.scan_id) === activeResultScanId)
     ? resultCandidate
@@ -1723,7 +1722,6 @@ export default function Dashboard() {
     setScanStageIndex(0);
     setResultRevealPhase(0);
     setExplainResult(null);
-    reset();
   };
 
   const beginLockedScan = () => {
@@ -1735,8 +1733,15 @@ export default function Dashboard() {
     setScanStageIndex(0);
     setResultRevealPhase(0);
     setExplainResult(null);
-    reset();
     return scanToken;
+  };
+
+  const resolveBackendConnectionState = (health: PythonBackendHealth | null): BackendConnectionState => {
+    if (!health) return 'offline';
+    if (health.ml_ready === false || health.model_tier === 'rules-only' || health.model_status === 'rules_only') {
+      return 'degraded';
+    }
+    return 'connected';
   };
 
   const commitLockedScanResult = (scanToken: number, payload: any) => {
@@ -1792,15 +1797,21 @@ export default function Dashboard() {
         clearTimeout(timeoutId);
 
         if (healthResponse.ok) {
-          setBackendStatus('connected');
-          setBackendHealth(healthResponse.data);
-          setOfflineModeNotice('');
-          return healthResponse.data;
+          const health = healthResponse.data;
+          setBackendHealth(health);
+          setBackendStatus(resolveBackendConnectionState(health));
+          setOfflineModeNotice(
+            resolveBackendConnectionState(health) === 'degraded'
+              ? 'ML weights are not loaded on the server — scans still run using rules and heuristics.'
+              : '',
+          );
+          return health;
         }
 
+        setBackendStatus('offline');
+        setBackendHealth(null);
         if (healthResponse.offline) {
-          setBackendStatus('offline');
-          setBackendHealth(null);
+          setOfflineModeNotice('⚠️ Backend unavailable — check VITE_BACKEND_URL and server status.');
         }
 
         return null;
@@ -1856,10 +1867,19 @@ export default function Dashboard() {
 
     let emailResponse: { ok: true; data: PythonEmailScan } | { ok: false; offline?: boolean };
     try {
+      const scanPayload: { email_text: string; session_id: string; headers?: string } = {
+        email_text,
+        session_id: sessionId,
+      };
+      const trimmedHeaders = rawHeaders?.trim();
+      if (trimmedHeaders) {
+        scanPayload.headers = trimmedHeaders;
+      }
+
       const response = await fetch(`${PYTHON_BACKEND_URL}/scan-email`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email_text, session_id: sessionId }),
+        body: JSON.stringify(scanPayload),
       });
 
       if (!response.ok) {
@@ -1880,8 +1900,6 @@ export default function Dashboard() {
       return baseResult;
     }
 
-    setBackendStatus('connected');
-    setOfflineModeNotice('');
     void refreshBackendHealth();
     void refreshFeedbackStats();
 
@@ -2342,21 +2360,20 @@ export default function Dashboard() {
   const backendStatusTone =
     backendStatus === 'connected'
       ? 'text-safe border-safe/30 bg-safe/10'
-      : backendStatus === 'offline'
+      : backendStatus === 'degraded'
         ? 'text-warning border-warning/30 bg-warning/10'
-        : 'text-muted-foreground border-border/50 bg-background/70';
+        : backendStatus === 'offline'
+          ? 'text-warning border-warning/30 bg-warning/10'
+          : 'text-muted-foreground border-border/50 bg-background/70';
   const backendStatusLabel =
     backendStatus === 'connected'
       ? 'Backend: Connected ✅'
-      : backendStatus === 'offline'
-        ? 'Backend: Offline ⚠️'
-        : 'Backend: Checking…';
+      : backendStatus === 'degraded'
+        ? 'Backend: Degraded ⚠️'
+        : backendStatus === 'offline'
+          ? 'Backend: Offline ⚠️'
+          : 'Backend: Checking…';
   const backendModelVersion = formatBackendModelVersion(backendHealth);
-
-  const protectionCounter = baseProtectionCount +
-    (sessionScanTotal * 17) +
-    ((runtimeOperational.phishing_detected ?? metrics?.phishingDetected ?? 0) * 41) +
-    ((runtimeOperational.suspicious_detected ?? metrics?.suspiciousDetected ?? 0) * 11);
 
   useEffect(() => {
     try {
@@ -2413,6 +2430,10 @@ export default function Dashboard() {
     safeDetected: sessionHistory.filter((item) => normalizeClassification(item.classification) === 'safe').length,
   }), [sessionHistory]);
   const sessionTotalScans = sessionHistory.length;
+  const protectionCounter = sessionTotalScans;
+  const serverLifetimeScans = Number(
+    backendHealth?.total_signals_analyzed ?? runtimeOperational.total_scans ?? sessionScanTotal ?? 0,
+  );
   const safeShareText = (value: string) => (privacyMode ? redactSensitiveText(value) : value);
   const filteredHistory = sessionHistory.filter((item) => {
     const normalized = normalizeClassification(item.classification);
@@ -3350,9 +3371,13 @@ export default function Dashboard() {
     void refreshFeedbackStats();
   }, [activeTab]);
 
-  // Ensure the backend health is queried on initial mount so the header shows accurate model status
+  // Poll backend health so model status and connectivity stay current on Analyze tab
   useEffect(() => {
     void refreshBackendHealth();
+    const intervalId = window.setInterval(() => {
+      void refreshBackendHealth();
+    }, 60_000);
+    return () => window.clearInterval(intervalId);
   }, []);
 
   useEffect(() => {
@@ -3441,7 +3466,7 @@ export default function Dashboard() {
               variant="outline"
               size="sm"
               onClick={() => setPrivacyMode((value) => !value)}
-              title="Email content is processed locally. No data leaves your device."
+              title="Scans are sent to your configured analysis backend. Privacy mode redacts sensitive text when you copy or export."
               className={cn('hidden sm:inline-flex h-8 text-[11px] font-bold', privacyMode ? 'border-safe/40 text-safe bg-safe/5' : 'border-border/60')}
             >
               <Lock className="w-3.5 h-3.5 mr-1.5" />
@@ -3452,10 +3477,10 @@ export default function Dashboard() {
                 'hidden md:flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide',
                 privacyMode ? 'border-safe/40 bg-safe/5 text-safe' : 'border-border/60 bg-background/60 text-muted-foreground',
               )}
-              title="Email content is processed locally. No data leaves your device."
+              title="Scans are sent to your configured analysis backend. Privacy mode redacts sensitive text when you copy or export."
             >
               <span className={cn('h-1.5 w-1.5 rounded-full', privacyMode ? 'bg-safe' : 'bg-muted-foreground')} />
-              {privacyMode ? 'Protected session' : 'Protection paused'}
+              {privacyMode ? 'Redacted exports' : 'Full exports'}
             </div>
             {/* Tab switcher */}
             <div className="flex items-center bg-secondary/50 border border-border/50 rounded-lg p-0.5 gap-0.5">
@@ -3517,7 +3542,7 @@ export default function Dashboard() {
                      <span className="font-bold text-foreground">Active Protection Node</span>
                      <span className="w-1.5 h-1.5 rounded-full bg-safe animate-pulse" />
                    </div>
-                   <span className="text-[10px] text-muted-foreground mt-0.5 tracking-tight">Fast, private phishing intelligence tuned for real Indian threat patterns.</span>
+                   <span className="text-[10px] text-muted-foreground mt-0.5 tracking-tight">Hybrid rules + ML detection tuned for real Indian threat patterns.</span>
                 </div>
              </div>
              <div className="flex flex-col items-end relative z-10">
@@ -3526,14 +3551,17 @@ export default function Dashboard() {
                 formatter={(value) => Math.round(value).toLocaleString()}
                 className="font-mono font-bold text-primary text-sm tracking-tighter tabular-nums leading-none"
                />
-                <span className="text-[9px] uppercase font-bold tracking-widest text-muted-foreground opacity-70 mt-0.5">Signals Analysed</span>
-                <span className="text-[9px] text-muted-foreground mt-1">Model {backendModelVersion}</span>
+                <span className="text-[9px] uppercase font-bold tracking-widest text-muted-foreground opacity-70 mt-0.5">Scans this session</span>
+                <span className="text-[9px] text-muted-foreground mt-1">
+                  Model: {backendModelVersion}
+                  {serverLifetimeScans > 0 ? ` · Server total ${serverLifetimeScans.toLocaleString()}` : ''}
+                </span>
              </div>
           </div>
         </div>
       </nav>
 
-      {((learningMetrics.driftLevel === 'high' || Number(learningMetrics.falseNegativeCount ?? 0) > 10) || backendStatus === 'offline') && (
+      {((learningMetrics.driftLevel === 'high' || Number(learningMetrics.falseNegativeCount ?? 0) > 10) || backendStatus === 'offline' || backendStatus === 'degraded') && (
         <div className="max-w-6xl mx-auto px-4 pt-4 space-y-3">
           {learningMetrics.driftLevel === 'high' && (
             <div className="rounded-xl border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive font-medium shadow-sm">
@@ -3543,6 +3571,11 @@ export default function Dashboard() {
           {Number(learningMetrics.falseNegativeCount ?? 0) > 10 && (
             <div className="rounded-xl border border-warning/40 bg-warning/10 px-4 py-3 text-sm text-warning font-medium shadow-sm">
               ⚠️ {learningMetrics.falseNegativeCount} emails may have been missed this session. Review Safe verdicts manually.
+            </div>
+          )}
+          {backendStatus === 'degraded' && (
+            <div className="rounded-xl border border-warning/40 bg-warning/10 px-4 py-3 text-sm text-warning font-medium shadow-sm">
+              {offlineModeNotice || '⚠️ ML weights are not loaded — scans use rules and heuristics only.'}
             </div>
           )}
           {backendStatus === 'offline' && (
@@ -3707,16 +3740,19 @@ export default function Dashboard() {
                     <p className="text-sm font-bold text-foreground">Click or Drag to Upload</p>
                     <p className="text-[11px] text-muted-foreground mt-1">Supports .eml and .txt email files</p>
                     <div className="mt-8 flex gap-2">
-                       <Badge variant="outline" className="text-[10px]">🔒 100% Client-Side</Badge>
-                       <Badge variant="outline" className="text-[10px]">⚡ Instant Extract</Badge>
+                       <Badge variant="outline" className="text-[10px]">📄 Parsed in browser</Badge>
+                       <Badge variant="outline" className="text-[10px]">⚡ Analysed on server</Badge>
                     </div>
                   </div>
                 ) : (
                   <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2">
                      <div className="flex items-center justify-between">
                         <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Live Analysis Mode</label>
-                        <div className="flex items-center gap-1.5 text-[10px] font-medium text-safe bg-safe/10 px-2 py-0.5 rounded border border-safe/20">
-                          <Lock className="w-3 h-3" /> Anonymous Scan
+                        <div
+                          className="flex items-center gap-1.5 text-[10px] font-medium text-muted-foreground bg-secondary/40 px-2 py-0.5 rounded border border-border/50"
+                          title="Email text is sent to your configured PhishShield backend for analysis."
+                        >
+                          <Lock className="w-3 h-3" /> Secure backend scan
                         </div>
                      </div>
                      <textarea
@@ -3768,7 +3804,7 @@ export default function Dashboard() {
                   </div>
                   <div className="flex items-center gap-1">
                     <Lock className="w-3 h-3" />
-                    <span>Content not stored after analysis</span>
+                    <span>Sent to your analysis backend; previews stay in this browser session only</span>
                   </div>
                 </div>
 
@@ -3819,15 +3855,6 @@ export default function Dashboard() {
                   </div>
                 )}
 
-                {error && (
-                  <div className="mt-4 p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm flex items-start flex-col gap-1">
-                    <div className="flex items-center gap-2 font-bold">
-                       <AlertTriangle className="w-4 h-4 shrink-0" />
-                       Analysis Rejected
-                    </div>
-                    <span className="text-xs opacity-90">{error instanceof Error ? error.message : 'Analysis failed. The pasted email may be too massive or severely malformed.'}</span>
-                  </div>
-                )}
               </div>
 
               {/* EMPTY STATE GUIDE */}
@@ -4953,11 +4980,20 @@ export default function Dashboard() {
                     },
                     {
                       label: 'Backend Status',
-                      value: backendStatus === 'connected' ? 'Connected ✅' : backendStatus === 'offline' ? 'Offline ⚠️' : 'Initializing…',
+                      value: backendStatus === 'connected'
+                        ? 'Connected ✅'
+                        : backendStatus === 'degraded'
+                          ? 'Degraded ⚠️'
+                          : backendStatus === 'offline'
+                            ? 'Offline ⚠️'
+                            : 'Initializing…',
                       helper: backendStatus === 'connected'
                         ? `FastAPI model ${backendModelVersion}${backendHealth?.last_trained_date ? ` · trained ${formatDate(backendHealth.last_trained_date)}` : ''}`
-                        : backendStatus === 'checking' ? 'Contacting backend service...'
-                        : 'Frontend will fall back to local analysis if the Python service is unavailable',
+                        : backendStatus === 'degraded'
+                          ? `Rules-only mode: ${backendModelVersion}`
+                          : backendStatus === 'checking'
+                            ? 'Contacting backend service...'
+                            : 'Check VITE_BACKEND_URL and that the Python service is running',
                     },
                     {
                       label: 'Feedback Samples',

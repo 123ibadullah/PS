@@ -291,6 +291,8 @@ async def test_pipeline_health_endpoint_works(client) -> None:
     health_payload = health.json()
     assert "status" in health_payload
     assert "model_status" in health_payload
+    assert "ml_ready" in health_payload
+    assert "active_model" in health_payload
 
     probe = await client.post(
         "/scan-email",

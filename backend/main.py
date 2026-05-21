@@ -7383,10 +7383,32 @@ def health() -> dict[str, Any]:
     _provider_is_temporarily_disabled("muril")
     secure_health = _securebert_provider.health() if _securebert_provider is not None else {"status": "disabled", "device": "cpu", "reason": "provider_unavailable"}
     muril_health = _muril_provider.health() if _muril_provider is not None else {"status": "disabled", "device": "cpu", "reason": "provider_unavailable"}
+    has_tfidf = artifacts.model is not None and artifacts.vectorizer is not None
+    has_indicbert = artifacts.indicbert_model is not None and artifacts.indicbert_tokenizer is not None
+    has_securebert = artifacts.securebert_model is not None and artifacts.securebert_tokenizer is not None
+    ml_ready = has_tfidf or has_indicbert or has_securebert
+    active_model = (
+        artifacts.active_model
+        if ml_ready
+        else "Rules + heuristics (ML weights not loaded)"
+    )
+    model_tier = "full" if ml_ready else "rules-only"
     return {
         "status": "ok",
-        "model_status": "loaded",
+        "model_status": "loaded" if ml_ready else "rules_only",
+        "ml_ready": ml_ready,
+        "model_tier": model_tier,
+        "active_model": active_model,
+        "total_signals_analyzed": int(app.state.total_signals_analyzed),
         "providers": {
+            "tfidf": {
+                "status": "ready" if has_tfidf else "unavailable",
+                "device": artifacts.device,
+            },
+            "indicbert": {
+                "status": "ready" if has_indicbert else "unavailable",
+                "device": artifacts.device,
+            },
             "securebert": {
                 "status": secure_health.get("status"),
                 "device": secure_health.get("device"),
