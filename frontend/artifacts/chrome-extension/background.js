@@ -158,6 +158,28 @@ async function createContextMenu() {
   });
 }
 
+async function postScanEmail(emailText) {
+  const apiBase = await getApiBaseUrl();
+  const payload = String(emailText || "").trim();
+  if (!payload) {
+    return { ok: false, status: 0, error: "empty" };
+  }
+  try {
+    const response = await fetch(`${apiBase}/scan-email`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email_text: payload }),
+    });
+    if (!response.ok) {
+      return { ok: false, status: response.status, error: `HTTP ${response.status}` };
+    }
+    const result = await response.json();
+    return { ok: true, result };
+  } catch (err) {
+    return { ok: false, status: 0, error: String(err?.message || err) };
+  }
+}
+
 async function pingHealth() {
   const apiBase = await getApiBaseUrl();
   let health = {
@@ -271,6 +293,11 @@ chrome.contextMenus.onClicked.addListener(async (info) => {
 });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message?.type === "SCAN_EMAIL") {
+    void postScanEmail(message.email_text).then(sendResponse);
+    return true;
+  }
+
   if (message?.type === "GET_POPUP_STATE") {
     Promise.all([
       getApiBaseUrl(),

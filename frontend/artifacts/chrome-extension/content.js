@@ -1,6 +1,6 @@
 (function () {
   const TRUSTED_SENDERS = [
-    "google.com", "youtube.com", "gmail.com", "amazon.com", "amazon.in",
+    "google.com", "youtube.com", "gmail.com", "skills.google", "amazon.com", "amazon.in",
     "flipkart.com", "swiggy.com", "zomato.com", "linkedin.com", "twitter.com",
     "x.com", "instagram.com", "facebook.com", "microsoft.com", "apple.com",
     "netflix.com", "razorpay.com", "paytm.com", "irctc.co.in", "incometax.gov.in",
@@ -17,6 +17,18 @@
     "roocode.com", "roomote.dev",
     "kaggle.com",
     "applytojob.com",
+    "docker.com", "notify.docker.com",
+    "crunchyroll.com", "mail.crunchyroll.com",
+    "economist.com", "e.economist.com",
+    "pinterest.com", "inspire.pinterest.com",
+    "cursor.com", "mail.cursor.com",
+    "quora.com",
+    "nykaa.com",
+    "abhibus.com",
+    "runwayml.com", "comms.runwayml.com",
+    "wps.com",
+    "ratatype.com",
+    "manus.im",
   ];
   const SAFE_DOMAINS = [...TRUSTED_SENDERS, "wikipedia.org", "github.com"];
   const SUSPICIOUS_TLDS = [".xyz", ".tk", ".ml", ".top", ".ru", ".pw", ".cc"];
@@ -295,13 +307,9 @@
     const payload = String(text || "").trim();
     if (!payload) return null;
     try {
-      const response = await fetch(`${runtimeState.apiBaseUrl}/scan-email`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email_text: payload }),
-      });
-      if (!response.ok) return null;
-      const result = await response.json();
+      const envelope = await chrome.runtime.sendMessage({ type: "SCAN_EMAIL", email_text: payload });
+      if (!envelope?.ok || !envelope?.result) return null;
+      const result = envelope.result;
       const normalized = {
         ...result,
         explanation_text: normalizeExplanation(result?.explanation),

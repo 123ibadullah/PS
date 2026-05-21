@@ -188,12 +188,17 @@ function hideGauge() {
 }
 
 
+function setScoreBarFill(score) {
+  const pct = Math.max(0, Math.min(100, Number(score) || 0));
+  pageScoreFill.style.setProperty("--fill-pct", String(pct));
+}
+
 function renderScoreBar(score, band) {
   pageScoreFill.classList.remove("safe", "suspicious", "high_risk");
   pageScoreFill.classList.add(band);
-  pageScoreFill.style.width = "0%";
+  setScoreBarFill(0);
   requestAnimationFrame(() => {
-    pageScoreFill.style.width = `${score}%`;
+    setScoreBarFill(score);
   });
 }
 
@@ -212,7 +217,7 @@ function renderCurrentPage(result, activeTab) {
     pageVerdict.textContent = result?.explanation_text ? "No email" : "No scan yet";
     pageVerdict.className = "verdict-pill unknown";
     pageScoreLabel.textContent = "0/100";
-    pageScoreFill.style.width = "0%";
+    setScoreBarFill(0);
     pageLastScan.textContent = "—";
     pageDetails.innerHTML = result?.explanation_text || "No result for this tab.";
     shieldIcon.classList.remove("threat-pulse");
@@ -239,10 +244,10 @@ function renderCurrentPage(result, activeTab) {
   const signals = normalizeSignals(result?.signals ?? result?.normalized_signals).slice(0, 6);
   pageDetails.innerHTML = `
     <div><strong>Explanation</strong></div>
-    ${meta ? `<div style="font-size:11px;opacity:0.85;margin-bottom:4px;">${meta}</div>` : ""}
+    ${meta ? `<div class="page-detail-meta">${meta}</div>` : ""}
     <div>${explanation}</div>
-    <div style="margin-top:8px;"><strong>Signals</strong></div>
-    <ul style="margin:6px 0 0 18px;padding:0;">${signals.map((item) => `<li>${item}</li>`).join("") || "<li>None</li>"}</ul>
+    <div class="page-detail-signals-title"><strong>Signals</strong></div>
+    <ul class="page-detail-signals-list">${signals.map((item) => `<li>${item}</li>`).join("") || "<li>None</li>"}</ul>
   `;
 }
 
@@ -262,7 +267,7 @@ function renderTimeline(entries) {
   timelineList.innerHTML = "";
   const list = Array.isArray(entries) ? entries : [];
   if (!list.length) {
-    timelineList.innerHTML = `<div class="muted tiny" style="padding:8px;color:#e2e8f0;">No emails scanned yet in this session.</div>`;
+    timelineList.innerHTML = `<div class="muted tiny timeline-empty">No emails scanned yet in this session.</div>`;
     return;
   }
   list.forEach((entry) => {
@@ -318,7 +323,7 @@ function renderManualResult(result) {
     </div>
     <div class="threat-analysis-label">Threat analysis</div>
     <div class="threat-analysis-body" id="analysis-body">${explanation}</div>
-    <button type="button" class="btn-text" id="expand-analysis" style="margin-top:4px;">Show more</button>
+    <button type="button" class="btn-text expand-analysis-btn" id="expand-analysis">Show more</button>
     <div class="signal-pills">${pills}</div>
     <div class="rec-box ${band}">${recommendation}</div>
   `;
@@ -429,14 +434,11 @@ async function runManualScan() {
   setScanningUi(true);
   await chrome.runtime.sendMessage({ type: "POPUP_MANUAL_SCAN_STATE", scanning: true });
   try {
-    const apiBase = popupState?.apiBaseUrl || "http://localhost:8000";
-    const response = await fetch(`${apiBase}/scan-email`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email_text: text }),
-    });
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const result = await response.json();
+    const envelope = await chrome.runtime.sendMessage({ type: "SCAN_EMAIL", email_text: text });
+    if (!envelope?.ok || !envelope?.result) {
+      throw new Error(envelope?.error || "scan failed");
+    }
+    const result = envelope.result;
     renderManualResult(result);
     const label = guessTimelineLabel(text);
     await chrome.runtime.sendMessage({ type: "SAVE_MANUAL_RESULT", result, timelineLabel: label });

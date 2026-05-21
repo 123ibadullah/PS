@@ -921,3 +921,49 @@ async def test_hinglish_cases(client, case) -> None:
         assert data["risk_score"] >= case["expected_min_risk"]
     else:
         assert data["risk_score"] <= case["expected_max_risk"]
+
+
+MARKETING_NEWSLETTER_CASES = [
+    {
+        "name": "economist-promo",
+        "email_text": (
+            "From: The Economist <noreply@e.economist.com>\n"
+            "Subject: Act now: Save 50% on The Economist\n\n"
+            "Join The Economist and gain a global perspective.\n"
+            "Save 50%. Unsubscribe. Privacy Policy. Terms & Conditions."
+        ),
+    },
+    {
+        "name": "google-skills-lab",
+        "email_text": (
+            "From: noreply@skills.google\n"
+            "Subject: You finished a lab\n\n"
+            "Hi Mohd,\n"
+            "You completed the lab How to Use a Network Policy on Google Kubernetes Engine.\n"
+            "Thank you,\nGoogle Skills Support\n"
+            "Unsubscribe"
+        ),
+    },
+    {
+        "name": "docker-welcome",
+        "email_text": (
+            "From: Docker <no-reply@notify.docker.com>\n"
+            "Subject: You + Docker = Ready for Action\n\n"
+            "Hi and welcome to Docker!\n"
+            "Congratulations, your account has been verified!\n"
+            "Sign in to your Docker account to download Docker Desktop.\n"
+            "Privacy Policy"
+        ),
+    },
+]
+
+
+@pytest.mark.parametrize("case", MARKETING_NEWSLETTER_CASES, ids=[c["name"] for c in MARKETING_NEWSLETTER_CASES])
+async def test_legitimate_marketing_newsletters_stay_safe(client, case) -> None:
+    backend_main.app.state.scan_rate_limits = {}
+    response = await client.post("/scan-email", json={"email_text": case["email_text"]})
+    assert response.status_code == 200
+    payload = response.json()
+    assert_scan_payload(payload, min_score=0, max_score=20, expected_verdict="Safe")
+    signals_lower = " ".join(str(s).lower() for s in (payload.get("signals") or []))
+    assert "indian brand impersonation" not in signals_lower

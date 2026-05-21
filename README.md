@@ -135,6 +135,10 @@ docker compose up --build
 
 `docker compose up --build` starts both services together (images build on first run or when Dockerfiles change).
 
+**Docker + ML models:** Large weights are not copied into the image (see `backend/.dockerignore`). Compose mounts your local `backend/indicbert_model`, `backend/models/*`, and `model.pkl` into the container. Start **Docker Desktop** first, then run compose. First `/health` may take 1–2 minutes while transformers warm up.
+
+**Deploy (Render etc.):** Set the same API keys as local (`HF_TOKEN`, `VT_API_KEY`, `CORS_ALLOWED_ORIGINS`, LLM keys). Without `HF_TOKEN`, the container starts in rules/TF-IDF mode until Hugging Face downloads complete — check `/health` for `securebert` / `muril` status.
+
 There is also a **`Makefile`** at the repo root with helper targets for Docker workflows, local setup convenience (for example creating `.env` from the example), and development tasks such as running tests in the backend container — run `make help` to see the list.
 
 Use **Prerequisites**, **Installation**, and **Running the Project** below only if you prefer a local dev setup without Docker.
@@ -266,6 +270,21 @@ Curated offline metrics can look stronger than what users see in a mixed real in
 - End-to-end architecture (frontend + API + ML backend + deployment) is a different skill than writing isolated scripts.
 - Explainability output is essential when users need to make safety decisions quickly.
 - Shipping the Chrome extension taught me that UX friction is a security problem — if checking a suspicious email requires switching apps, most people skip it and that is where the real risk lives.
+
+## Verification (local E2E, May 2026)
+
+Manual checks on FastAPI `:8000` + React dashboard:
+
+| Case | Expected | Result |
+|------|----------|--------|
+| HDFC OTP / UPI pressure | High Risk ~82 | Pass |
+| Invoice / no action required | Safe ~10 | Pass |
+| Netflix `netflix.com` receipt | Safe ~10 | Pass |
+| Paytm reward `.xyz` + OTP | High Risk ~88 | Pass |
+| Team meeting (no lure) | Safe ~10 | Pass |
+| Income tax refund `.xyz` | High Risk ~75 | Pass |
+
+Also verified: `/health` (SecureBERT/MuRIL), `/stats` (Gemini + VT active), `/check-url` (VirusTotal + allowlist), `/check-headers` (spoof signals), `/explain` (Gemini or OpenRouter), `/feedback`, `/recent-scans` (3 session items for Live Feed), `pytest` (**66 passed**).
 
 ## Future Improvements
 - A live Gmail or Outlook hook is next on my list because paste-only flows still add friction for people who live inside their inbox all day, and that is where most risky threads actually land.

@@ -11,21 +11,32 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - HF_TOKEN=${HF_TOKEN}
-      - VT_API_KEY=${VT_API_KEY}
+      - PORT=8000
+      - HF_TOKEN=${HF_TOKEN:-}
+      - VT_API_KEY=${VT_API_KEY:-}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY:-}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.5-flash}
+      - LLM_PROVIDER=${LLM_PROVIDER:-gemini}
+      - LLM_API_KEY=${LLM_API_KEY:-}
+      - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS:-http://127.0.0.1:5173,http://localhost:5173,https://mail.google.com}
       - ENVIRONMENT=${ENVIRONMENT:-development}
       - PYTHONUNBUFFERED=1
+      - PHISHSHIELD_TRY_SHAP_ON_SCAN=${PHISHSHIELD_TRY_SHAP_ON_SCAN:-0}
     volumes:
       - ./backend/feedback.csv:/app/feedback.csv
       - ./backend/sender_profiles.json:/app/sender_profiles.json
       - ./backend/scan_logs.jsonl:/app/scan_logs.jsonl
+      - ./backend/model.pkl:/app/model.pkl:ro
+      - ./backend/indicbert_model:/app/indicbert_model:ro
+      - ./backend/models/securebert_model:/app/models/securebert_model:ro
+      - ./backend/models/muril_model:/app/models/muril_model:ro
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
-      timeout: 5s
-      retries: 3
-      start_period: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
     networks:
       - phishshield-network
 

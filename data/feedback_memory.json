@@ -18,8 +18,8 @@
       "email_hash": "51bc82c79b0d98da",
       "predicted": "High Risk",
       "corrected": "Safe",
-      "count": 20,
-      "updated_at": "2026-05-20T16:07:01.832308+00:00"
+      "count": 22,
+      "updated_at": "2026-05-21T13:03:58.212050+00:00"
     },
     "86766bf44b27bbe2": {
       "email_hash": "86766bf44b27bbe2",
@@ -41,7 +41,21 @@
       "corrected": "High Risk",
       "count": 1,
       "updated_at": "2026-05-20T15:43:38.919164+00:00"
+    },
+    "84ef33f13cd5282a": {
+      "email_hash": "84ef33f13cd5282a",
+      "predicted": "High Risk",
+      "corrected": "High Risk",
+      "count": 1,
+      "updated_at": "2026-05-21T09:56:37.853595+00:00"
+    },
+    "6094c758c7c76be2": {
+      "email_hash": "6094c758c7c76be2",
+      "predicted": "Safe",
+      "corrected": "Safe",
+      "count": 2,
+      "updated_at": "2026-05-21T11:30:56.599941+00:00"
     }
   },
-  "updated_at": "2026-05-20T16:07:01.832308+00:00"
+  "updated_at": "2026-05-21T13:03:58.212050+00:00"
 }

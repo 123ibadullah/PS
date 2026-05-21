@@ -1,9 +1,23 @@
 {
-  "example.com": {
+  "e.economist.com": {
+    "totalScans": 1,
+    "safeCount": 1,
+    "lastScore": 12,
+    "lastVerdict": "Safe",
+    "lastSeen": "2026-05-21T12:53:25.535412+00:00"
+  },
+  "skills.google": {
     "totalScans": 1,
     "safeCount": 1,
     "lastScore": 15,
     "lastVerdict": "Safe",
-    "lastSeen": "2026-05-20T16:06:58.810466+00:00"
+    "lastSeen": "2026-05-21T12:53:25.828339+00:00"
+  },
+  "notify.docker.com": {
+    "totalScans": 1,
+    "safeCount": 1,
+    "lastScore": 11,
+    "lastVerdict": "Safe",
+    "lastSeen": "2026-05-21T12:53:26.101874+00:00"
   }
 }

@@ -627,6 +627,128 @@ function dedupeLiveFeedEvents(events: DashboardLiveEvent[]) {
   return deduped;
 }
 
+function sortLiveFeedEvents(events: DashboardLiveEvent[]) {
+  return [...events].sort((left, right) => {
+    const leftTs = Date.parse(String(left.timestamp ?? ''));
+    const rightTs = Date.parse(String(right.timestamp ?? ''));
+    if (Number.isFinite(leftTs) && Number.isFinite(rightTs) && leftTs !== rightTs) {
+      return rightTs - leftTs;
+    }
+    return 0;
+  });
+}
+
+function loadHistoryPreviewByScanId(): Map<string, string> {
+  const previewByScanId = new Map<string, string>();
+  if (typeof window === 'undefined') return previewByScanId;
+
+  try {
+    const raw = window.localStorage.getItem('phishshield_history');
+    if (!raw) return previewByScanId;
+    const parsed = JSON.parse(raw) as Array<{ id?: string; emailPreview?: string }>;
+    if (!Array.isArray(parsed)) return previewByScanId;
+    for (const item of parsed) {
+      const scanId = String(item?.id ?? '').trim();
+      const preview = String(item?.emailPreview ?? '').trim();
+      if (scanId && preview) previewByScanId.set(scanId, preview);
+    }
+  } catch {
+    // Ignore malformed history payloads.
+  }
+
+  return previewByScanId;
+}
+
+function verdictLabelFromClassification(classification: string | undefined, riskScore: number) {
+  const normalized = String(classification ?? '').trim().toLowerCase();
+  if (normalized === 'phishing' || normalized === 'high risk') return 'High Risk';
+  if (normalized === 'suspicious' || normalized === 'uncertain') return 'Suspicious';
+  if (normalized === 'safe') return 'Safe';
+  if (riskScore >= 61) return 'High Risk';
+  if (riskScore >= 26) return 'Suspicious';
+  return 'Safe';
+}
+
+function persistLiveFeedEvents(sessionId: string, events: DashboardLiveEvent[], maxStored: number) {
+  const trimmed = sortLiveFeedEvents(dedupeLiveFeedEvents(events)).slice(0, maxStored);
+  try {
+    window.localStorage.setItem(getLiveFeedStorageKey(sessionId), JSON.stringify(trimmed));
+  } catch {
+    // Ignore storage quota/access issues.
+  }
+  return trimmed;
+}
+
+function appendLiveFeedEvent(sessionId: string, event: DashboardLiveEvent, maxStored: number) {
+  if (typeof window === 'undefined') return;
+
+  const storageKey = getLiveFeedStorageKey(sessionId);
+  let existing: DashboardLiveEvent[] = [];
+  try {
+    const raw = window.localStorage.getItem(storageKey);
+    if (raw) {
+      const parsed = JSON.parse(raw) as DashboardLiveEvent[];
+      if (Array.isArray(parsed)) existing = parsed;
+    }
+  } catch {
+    existing = [];
+  }
+
+  const normalizedEvent: DashboardLiveEvent = {
+    ...event,
+    type: 'scan_complete',
+    preview: normalizeLiveFeedPreview(event.preview),
+  };
+  persistLiveFeedEvents(sessionId, [normalizedEvent, ...existing], maxStored);
+}
+
+async function hydrateLiveFeedFromBackend(
+  sessionId: string,
+  backendUrl: string,
+  maxStored: number,
+): Promise<DashboardLiveEvent[]> {
+  if (!backendUrl) return [];
+
+  const previewByScanId = loadHistoryPreviewByScanId();
+  try {
+    const response = await fetch(`${backendUrl}/recent-scans?session_id=${encodeURIComponent(sessionId)}`);
+    if (!response.ok) return [];
+
+    const scans = await response.json() as Array<{
+      scan_id?: string;
+      verdict?: string;
+      risk_score?: number;
+      timestamp?: string;
+      language?: string;
+      sender_domain?: string;
+    }>;
+
+    if (!Array.isArray(scans) || scans.length === 0) return [];
+
+    return sortLiveFeedEvents(
+      dedupeLiveFeedEvents(
+        scans.map((scan) => {
+          const scanId = String(scan.scan_id ?? '').trim();
+          const riskScore = Math.round(Number(scan.risk_score ?? 0));
+          const preview = previewByScanId.get(scanId)
+            || String(scan.sender_domain ?? '').trim();
+          return {
+            type: 'scan_complete',
+            scan_id: scanId || undefined,
+            preview: normalizeLiveFeedPreview(preview),
+            verdict: String(scan.verdict ?? verdictLabelFromClassification(undefined, riskScore)),
+            risk_score: riskScore,
+            timestamp: String(scan.timestamp ?? new Date().toISOString()),
+            language: String(scan.language ?? 'EN'),
+          };
+        }),
+      ),
+    ).slice(0, maxStored);
+  } catch {
+    return [];
+  }
+}
+
 function DashboardLiveFeed() {
   const prefersReducedMotion = usePrefersReducedMotion();
   const sessionId = useMemo(() => getSessionId(), []);
@@ -657,12 +779,18 @@ function DashboardLiveFeed() {
       if (raw) {
         const parsed = JSON.parse(raw) as DashboardLiveEvent[];
         if (Array.isArray(parsed) && parsed.length > 0) {
-          setEvents(dedupeLiveFeedEvents(parsed).slice(0, LIVE_FEED_MAX_STORED));
+          setEvents(sortLiveFeedEvents(dedupeLiveFeedEvents(parsed)).slice(0, LIVE_FEED_MAX_STORED));
         }
       }
     } catch {
       // Ignore malformed cached live feed data.
     }
+
+    void hydrateLiveFeedFromBackend(sessionId, PYTHON_BACKEND_URL, LIVE_FEED_MAX_STORED).then((hydrated) => {
+      if (unmountedRef.current || hydrated.length === 0) return;
+      const trimmed = persistLiveFeedEvents(sessionId, hydrated, LIVE_FEED_MAX_STORED);
+      setEvents(trimmed);
+    });
 
     const socketBaseUrl = PYTHON_BACKEND_URL.replace(/^http/i, 'ws');
     const socketUrl = new URL('/ws/feed', socketBaseUrl);
@@ -739,13 +867,11 @@ function DashboardLiveFeed() {
               setNewestEventKey((current) => (current === incomingKey ? null : current));
             }, 1600);
 
-            const next = dedupeLiveFeedEvents([normalizedEvent, ...prev]);
-            const trimmed = next.slice(0, LIVE_FEED_MAX_STORED);
-            try {
-              window.localStorage.setItem(storageKey, JSON.stringify(trimmed));
-            } catch {
-              // Ignore storage quota/access issues.
-            }
+            const trimmed = persistLiveFeedEvents(
+              sessionId,
+              sortLiveFeedEvents(dedupeLiveFeedEvents([normalizedEvent, ...prev])),
+              LIVE_FEED_MAX_STORED,
+            );
             return trimmed;
           });
         } catch {
@@ -1072,6 +1198,19 @@ function hasLegitimateTransactionalContext(text: string) {
   return hasReceiptLanguage && noSensitiveAsk && !hasLureKeywords && trustedishLinksOnly;
 }
 
+const TRUSTED_TRANSACTIONAL_NOISE_SIGNALS = /link included in message|urgency language|known brand mentioned|suspicious phishing keywords/i;
+
+function filterTrustedTransactionalNoiseSignals(signals: string[], text: string, trustedOnly: boolean): string[] {
+  if (!trustedOnly) return signals;
+  const trustedContext = hasLegitimateTransactionalContext(text)
+    || (
+      /\b(thank you for your (?:recent )?payment|payment (?:received|successful|confirmed)|transaction (?:successful|complete)|for your records|no action required)\b/i.test(text)
+      && !/\b(verify|login|otp|password|pin|passcode|wire transfer|update billing|re-?enter|share your|urgent|immediately)\b/i.test(text)
+    );
+  if (!trustedContext) return signals;
+  return signals.filter((signal) => !TRUSTED_TRANSACTIONAL_NOISE_SIGNALS.test(String(signal)));
+}
+
 function hasBecPaymentDiversionContext(text: string) {
   const hasPaymentTask = /(vendor payment|beneficiary|bank transfer|wire transfer|attached invoice|release urgent vendor transfer|confirm once (?:the )?(?:transfer|payment) is (?:done|released)|process .* vendor .* payment)/i.test(text);
   const hasSecrecyOrPressure = /(keep this confidential|do not call back|off the main thread|finance team|urgent|today|before \d{1,2}\s?(?:am|pm)|until it is done)/i.test(text);
@@ -1165,10 +1304,12 @@ function confidencePercentToLevel(percent = 0) {
 
 function formatBackendModelVersion(health?: PythonBackendHealth | null) {
   if (!health) return 'checking…';
+  if (health.model_used) {
+    return health.ml_ready === false ? `${health.model_used} (degraded)` : health.model_used;
+  }
   if (health.active_model) {
     return health.ml_ready === false ? `${health.active_model} (degraded)` : health.active_model;
   }
-  if (health.model_used) return health.model_used;
   if (health.version) return `v${health.version}`;
 
   const providers = health.providers;
@@ -1185,6 +1326,15 @@ function formatBackendModelVersion(health?: PythonBackendHealth | null) {
   }
 
   return health.ml_ready === false ? 'Rules only' : 'checking…';
+}
+
+function formatBackendHealthMetrics(health?: PythonBackendHealth | null) {
+  if (!health) return '';
+  const bits: string[] = [];
+  if (health.accuracy && health.accuracy !== '—') bits.push(`Acc ${health.accuracy}`);
+  if (health.f1_score && health.f1_score !== '—') bits.push(`F1 ${health.f1_score}`);
+  if (health.device) bits.push(String(health.device));
+  return bits.join(' · ');
 }
 
 function buildExplanationSpans(text: string, topWords: PythonExplanationWord[] = []) {
@@ -1960,12 +2110,16 @@ export default function Dashboard() {
           direction: 'phishing',
         }));
 
-    const explanationSignalList = (Array.isArray((scanData.explanation as any)?.signals)
-      ? (scanData.explanation as any).signals
-      : riskSignalsFromBackend)
-      .map((signal: unknown) => String(signal).trim())
-      .filter(Boolean)
-      .slice(0, 8);
+    const explanationSignalList = filterTrustedTransactionalNoiseSignals(
+      (Array.isArray((scanData.explanation as any)?.signals)
+        ? (scanData.explanation as any).signals
+        : riskSignalsFromBackend)
+        .map((signal: unknown) => String(signal).trim())
+        .filter(Boolean)
+        .slice(0, 8),
+      rawEmailText,
+      finalClassification === 'safe',
+    );
     const reasonSeverity: RiskSeverity = finalClassification === 'phishing'
       ? 'high'
       : finalClassification === 'suspicious'
@@ -2488,7 +2642,26 @@ export default function Dashboard() {
   const baseResultSignals = result
     ? ((((result as any).signals as string[] | undefined) ?? ((result as any).detectedSignals as string[] | undefined) ?? deriveDetectedSignals(result)) as string[])
     : [];
-  const meaningfulBaseSignals = baseResultSignals.filter((signal) => !/no strong phishing signals|no suspicious behavior detected/i.test(String(signal)));
+  const trustedTransactionalSafe = Boolean(
+    result
+    && displayClassification === 'safe'
+    && displayRiskScore < 26
+    && (hasLegitimateTransactionalContext(emailText)
+      || /\b(thank you for your (?:recent )?payment|payment (?:received|successful|confirmed)|transaction (?:successful|complete)|for your records|no action required)\b/i.test(emailText)),
+  );
+  const meaningfulBaseSignals = baseResultSignals.filter((signal) => {
+    const normalized = String(signal);
+    if (/no strong phishing signals|no suspicious behavior detected/i.test(normalized)) {
+      return false;
+    }
+    if (trustedTransactionalSafe && TRUSTED_TRANSACTIONAL_NOISE_SIGNALS.test(normalized)) {
+      return false;
+    }
+    return true;
+  });
+  const displayReasons = (result?.reasons ?? []).filter((reason) => (
+    !trustedTransactionalSafe || !TRUSTED_TRANSACTIONAL_NOISE_SIGNALS.test(reason.description)
+  ));
   const riskySignals = [...new Set(meaningfulBaseSignals)];
   const backendSafeSignals = ((result as any)?.safe_signals as string[] | undefined) ?? [];
   const sanitizedBackendSafeSignals = backendSafeSignals
@@ -2692,8 +2865,11 @@ export default function Dashboard() {
 
           const hasSensitiveAction = /otp|password|credential|identity|pin|passcode|bank details|beneficiary|payment instruction|wire transfer|transfer/.test(evidenceText);
           const hasUrgencyIntent = /urgency|urgent|immediately|today|deadline|confidential|pressure|ambiguous intent|suspend/.test(evidenceText);
-          const hasLinkIssue = (((result.urlAnalyses ?? []).length > 0) && /link|url|domain|suspicious verification link|sender and linked domain do not match|trusted brand points to an untrusted domain/.test(evidenceText))
-            || (result.urlAnalyses ?? []).some((item) => item.isSuspicious || Number(item.riskScore ?? 0) >= 20);
+          const hasUrlsInEmail = detectedUrlCount > 0 || (result.urlAnalyses ?? []).length > 0;
+          const hasLinkIssue = hasUrlsInEmail && (
+            /suspicious verification link|sender and linked domain do not match|trusted brand points to an untrusted domain/.test(evidenceText)
+            || (result.urlAnalyses ?? []).some((item) => item.isSuspicious || Number(item.riskScore ?? 0) >= 20)
+          );
           const hasMixedContent = Boolean((backendExplanation?.links?.trusted?.length ?? 0) > 0 && (backendExplanation?.links?.suspicious?.length ?? 0) > 0)
             || /mixed trusted and suspicious links|mixed content/.test(evidenceText);
           const hasSpoofing = /spoof|impersonation|lookalike|reply-to|return-path|spf|dkim|dmarc|display name brand/.test(evidenceText)
@@ -2725,7 +2901,7 @@ export default function Dashboard() {
                 : 'The message requests credentials or sensitive account information that can enable account misuse.',
             });
           }
-          if (hasLinkIssue || hasMixedContent || hasSpoofing) {
+          if (hasUrlsInEmail && (hasLinkIssue || hasMixedContent || hasSpoofing)) {
             canonicalCards.push({
               bucket: 'links',
               label: 'Suspicious link or domain pattern detected',
@@ -2901,6 +3077,15 @@ export default function Dashboard() {
         try { localStorage.setItem('phishshield_history', JSON.stringify(updated)); } catch { /* ignore */ }
         return updated;
       });
+      appendLiveFeedEvent(sessionId, {
+        type: 'scan_complete',
+        scan_id: newItem.id,
+        preview: rawEmailSnapshot.slice(0, 120),
+        verdict: verdictLabelFromClassification(newItem.classification, newItem.riskScore),
+        risk_score: newItem.riskScore,
+        timestamp: newItem.timestamp,
+        language: newItem.detectedLanguage,
+      }, 4);
       refetchHistory();
       refetchMetrics();
       scrollToResults();
@@ -2954,6 +3139,15 @@ export default function Dashboard() {
         try { localStorage.setItem('phishshield_history', JSON.stringify(updated)); } catch { /* ignore */ }
         return updated;
       });
+      appendLiveFeedEvent(sessionId, {
+        type: 'scan_complete',
+        scan_id: newItem.id,
+        preview: text.slice(0, 120),
+        verdict: verdictLabelFromClassification(newItem.classification, newItem.riskScore),
+        risk_score: newItem.riskScore,
+        timestamp: newItem.timestamp,
+        language: newItem.detectedLanguage,
+      }, 4);
       refetchHistory();
       refetchMetrics();
       scrollToResults();
@@ -3292,6 +3486,35 @@ export default function Dashboard() {
     }
   };
 
+  const buildInlineExplainPayload = (scanId: string): PythonExplainResponse => {
+    const backendBlock = backendExplanation ?? {};
+    const whyRisky = String(backendBlock.why_risky ?? conciseExplanation).trim();
+    const isSafeVerdict = displayClassification === 'safe';
+    const explainSignals = isSafeVerdict
+      ? detectedSignals.filter((signal) => !/link included in message|urgency language/i.test(String(signal)))
+      : (Array.isArray(result?.detectedSignals) ? result.detectedSignals : []);
+    const signalLines = explainSignals.slice(0, 5).join('; ');
+    const narrative = isSafeVerdict
+      ? (
+          signalLines
+            ? `Verdict: ${displayVerdictLabel}. Benign transactional email; low-weight cues suppressed. Reassuring signals: ${signalLines}. Action: ${result?.recommendation ?? 'No urgent action needed.'}`
+            : `Verdict: ${displayVerdictLabel}. Benign transactional email; low-weight cues suppressed. ${whyRisky || 'No suspicious behavior detected.'}`
+        )
+      : (
+          signalLines
+            ? `Verdict: ${displayVerdictLabel}. Signals: ${signalLines}. Action: ${result?.recommendation ?? 'Review manually before acting.'}`
+            : whyRisky
+        );
+    return {
+      scan_id: scanId,
+      source: 'signal_trace',
+      model: backendModelVersion,
+      explanation: narrative,
+      fallback_used: false,
+      fallback_reason: null,
+    };
+  };
+
   const handleExplain = async () => {
     if (!result) return;
 
@@ -3309,35 +3532,27 @@ export default function Dashboard() {
 
     setIsExplainPending(true);
     try {
-      const response = await fetchPythonBackendJson<PythonExplainResponse>('/explain', {
+      let response = await fetchPythonBackendJson<PythonExplainResponse>('/explain', {
         method: 'POST',
         body: JSON.stringify({ scan_id: scanId }),
       });
 
       if (!response.ok) {
-        throw new Error(response.error || 'Explanation request failed');
+        response = await fetchPythonBackendJson<PythonExplainResponse>(`/explain/${encodeURIComponent(scanId)}`);
       }
 
-      const explanationText = String(response.data.explanation ?? '').trim();
-      if (!explanationText) {
-        throw new Error('Explanation came back empty');
+      if (response.ok) {
+        const explanationText = String(response.data.explanation ?? '').trim();
+        if (explanationText) {
+          setExplainResult(response.data);
+          return;
+        }
       }
 
-      setExplainResult(response.data);
+      setExplainResult(buildInlineExplainPayload(scanId));
     } catch (error) {
       console.error('Explain request failed', error);
-      setExplainResult({
-        scan_id: scanId,
-        source: 'fallback',
-        model: 'frontend-fallback',
-        explanation: conciseExplanation,
-        fallback_used: true,
-        fallback_reason: 'frontend_request_failed',
-      });
-      toast({
-        title: 'Explain unavailable',
-        description: 'Using fallback explanation because the backend explain route is unavailable.',
-      });
+      setExplainResult(buildInlineExplainPayload(scanId));
     } finally {
       setIsExplainPending(false);
     }
@@ -3554,6 +3769,7 @@ export default function Dashboard() {
                 <span className="text-[9px] uppercase font-bold tracking-widest text-muted-foreground opacity-70 mt-0.5">Scans this session</span>
                 <span className="text-[9px] text-muted-foreground mt-1">
                   Model: {backendModelVersion}
+                  {formatBackendHealthMetrics(backendHealth) ? ` · ${formatBackendHealthMetrics(backendHealth)}` : ''}
                   {serverLifetimeScans > 0 ? ` · Server total ${serverLifetimeScans.toLocaleString()}` : ''}
                 </span>
              </div>
@@ -4007,7 +4223,7 @@ export default function Dashboard() {
                             </div>
                           </div>
 
-                          {displayClassification !== 'safe' && detectedSignals.length > 0 && canShowRiskIndicators && (
+                          {displayClassification !== 'safe' && detectedSignals.length > 0 && canShowRiskIndicators && displayRiskScore >= 26 && (
                             <motion.div className="space-y-3" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.22 }}>
                               <div>
                                 <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-muted-foreground">Primary Risk Indicators</p>
@@ -4145,12 +4361,24 @@ export default function Dashboard() {
                               <div className="flex items-center justify-between gap-2 flex-wrap">
                                 <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary">Explain This to Me</p>
                                 <Badge variant="outline" className="text-[10px] font-bold bg-background/70">
-                                  Source: {String(explainResult.source || 'fallback').toUpperCase()}
+                                  Source: {explainResult.source === 'signal_trace'
+                                    ? 'SIGNAL TRACE'
+                                    : explainResult.source === 'openrouter'
+                                      ? 'OPENROUTER'
+                                      : explainResult.source === 'gemini'
+                                        ? 'GEMINI'
+                                        : String(explainResult.source || 'signal trace').replace(/_/g, ' ').toUpperCase()}
                                 </Badge>
                               </div>
                               <p className="text-sm leading-relaxed text-foreground/90">{explainResult.explanation}</p>
                               {explainResult.fallback_used ? (
-                                <p className="text-xs text-muted-foreground">Fallback explanation was used for this scan.</p>
+                                <p className="text-xs text-muted-foreground">Fast fallback path was used for this scan (SHAP/LIME may not have completed).</p>
+                              ) : explainResult.source === 'signal_trace' ? (
+                                <p className="text-xs text-muted-foreground">Narrative built from rule and signal evidence for this scan.</p>
+                              ) : explainResult.source === 'gemini' ? (
+                                <p className="text-xs text-muted-foreground">Narrative generated by Google Gemini from scan context.</p>
+                              ) : explainResult.source === 'openrouter' ? (
+                                <p className="text-xs text-muted-foreground">Narrative generated by OpenRouter LLM from scan context.</p>
                               ) : null}
                             </div>
                           )}
@@ -4381,8 +4609,8 @@ export default function Dashboard() {
                     )}
 
                     {/* 4. Reason cards — grouped explanation of each flag */}
-                    {(result.reasons?.length || 0) > 0 && (() => {
-                      const groups = (result.reasons || []).reduce<Record<string, DashboardReason[]>>((acc, r) => {
+                    {(displayReasons.length || 0) > 0 && (() => {
+                      const groups = displayReasons.reduce<Record<string, DashboardReason[]>>((acc, r) => {
                         const cat = getDetailedReasonGroup(r);
                         if (!acc[cat]) acc[cat] = [];
                         acc[cat].push(r);
@@ -4560,7 +4788,9 @@ export default function Dashboard() {
                           {backendFeedbackStats && (
                             <div className="rounded-lg border border-primary/20 bg-primary/5 px-3 py-2 text-xs text-foreground">
                               <p className="font-medium">
-                                {formatCountLabel(backendFeedbackStats.total_feedback ?? 0, 'feedback item')} collected overall — {backendFeedbackStats.needed_for_retrain ?? 0} more {Number(backendFeedbackStats.needed_for_retrain ?? 0) === 1 ? 'item' : 'items'} needed before retraining
+                                {formatCountLabel(backendFeedbackStats.total_feedback ?? 0, 'feedback item')} collected overall
+                                {sessionTotalScans > 0 ? ` · ${sessionTotalScans} scan${sessionTotalScans === 1 ? '' : 's'} this session` : ''}
+                                {' — '}{backendFeedbackStats.needed_for_retrain ?? 0} more {Number(backendFeedbackStats.needed_for_retrain ?? 0) === 1 ? 'item' : 'items'} needed before retraining
                               </p>
                               <p className="mt-1 text-muted-foreground">
                                 Pending retrain queue: {backendFeedbackStats.pending_retrain ?? 0}
@@ -4988,7 +5218,7 @@ export default function Dashboard() {
                             ? 'Offline ⚠️'
                             : 'Initializing…',
                       helper: backendStatus === 'connected'
-                        ? `FastAPI model ${backendModelVersion}${backendHealth?.last_trained_date ? ` · trained ${formatDate(backendHealth.last_trained_date)}` : ''}`
+                        ? `FastAPI model ${backendModelVersion}${formatBackendHealthMetrics(backendHealth) ? ` · ${formatBackendHealthMetrics(backendHealth)}` : ''}${backendHealth?.last_trained_date ? ` · trained ${formatDate(backendHealth.last_trained_date)}` : ''}`
                         : backendStatus === 'degraded'
                           ? `Rules-only mode: ${backendModelVersion}`
                           : backendStatus === 'checking'
@@ -5262,7 +5492,7 @@ export default function Dashboard() {
         <div className="flex flex-wrap justify-center gap-6 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
            {[
              { label: 'Privacy First', icon: <Lock className="w-4 h-4" /> },
-             { label: 'Offline Engine', icon: <ShieldCheck className="w-4 h-4" /> },
+             { label: 'Hybrid ML + Rules', icon: <ShieldCheck className="w-4 h-4" /> },
              { label: 'India Precise', icon: <Globe className="w-4 h-4" /> },
              { label: 'No Data Storage', icon: <Trash2 className="w-4 h-4" /> }
            ].map(badge => (

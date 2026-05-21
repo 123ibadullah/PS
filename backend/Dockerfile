@@ -24,9 +24,11 @@ COPY --chown=user:user . .
 
 USER user
 
-EXPOSE 7860
+EXPOSE 8000
 
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=5 \
-  CMD curl -fsS http://localhost:${PORT:-7860}/health || exit 1
+ENV PORT=8000
 
-CMD ["sh", "-c", "python -m uvicorn main:app --host 0.0.0.0 --port ${PORT:-7860}"]
+HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=5 \
+  CMD curl -fsS http://localhost:${PORT:-8000}/health || exit 1
+
+CMD ["sh", "-c", "python -m uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}"]

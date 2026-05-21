@@ -107,7 +107,7 @@ The React dashboard calls the **Python backend directly on `localhost:8000`** fo
 - `/feedback/stats` (alias: `/api/feedback/stats`)
 - `/explain/{scan_id}`
 
-It also talks to the **Node.js API** for generated analysis hooks, history, and metrics. The UI merges these results and uses the **higher risk score** as the final safety verdict. If the Python backend is offline, the frontend gracefully falls back to frontend/Node-only analysis.
+It also talks to the **Node.js API** for optional history, metrics, and legacy hooks. **Live paste scans use the Python verdict directly** (`POST /scan-email`); Node results are not merged with a higher-score rule on the main Analyze path. If the Python backend is offline, the frontend shows an offline warning and cannot complete a backend-backed scan.
 
 ---
 
@@ -443,7 +443,7 @@ py -3.12 -m uvicorn main:app --host 0.0.0.0 --port 10000
 5. add environment variables:
 
 ```env
-VT_KEY=your_virustotal_api_key
+VT_API_KEY=your_virustotal_api_key
 HF_TOKEN=your_huggingface_token
 ```
 
@@ -683,7 +683,7 @@ pnpm --filter @workspace/scripts run qa:ui
 Create `.env` inside `backend/`:
 
 ```env
-VT_KEY=your_virustotal_api_key
+VT_API_KEY=your_virustotal_api_key
 HF_TOKEN=your_huggingface_token
 ```
 
