@@ -3,6 +3,7 @@
 ## Run Tests
 
 ```bash
+python -m pip install -r backend/requirements.txt -r backend/requirements-dev.txt
 pytest -q
 ```
 

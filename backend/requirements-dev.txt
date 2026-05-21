@@ -1,0 +1,6 @@
+# CI and local dev: pytest, mypy, and test client helpers (not used in production Docker image)
+pytest>=8.0
+pytest-asyncio>=0.23
+httpx>=0.27
+mypy>=1.10
+networkx>=3.0
