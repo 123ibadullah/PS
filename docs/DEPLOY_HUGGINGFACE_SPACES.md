@@ -22,17 +22,27 @@ git lfs install
 git clone https://huggingface.co/spaces/YOUR_HF_USERNAME/phishshield-backend phishshield-backend-space
 ```
 
-## 3. Copy the backend files into the Space repo
+## 3. Copy and push (automated)
 
-From the PhishShield repo root on Windows PowerShell:
+From the PhishShield repo root:
+
+```powershell
+.\scripts\deploy-hf-space.ps1 -HfUser "Mohd1314234123"
+```
+
+This clones/updates `phishshield-backend-space/`, copies `backend/` (without large weight folders), includes `model.pkl` + `vectorizer.pkl`, commits, and pushes.
+
+Manual copy (alternative):
 
 ```powershell
 robocopy backend phishshield-backend-space /E `
-  /XD indicbert_model securebert_model muril_model reports __pycache__ .pytest_cache .mypy_cache `
+  /XD indicbert_model "models\securebert_model" "models\muril_model" reports __pycache__ .pytest_cache .mypy_cache `
   /XF .env *.log *.db *.db-* *.sqlite *.pyc scan_logs.jsonl feedback.csv sender_profiles.json test_results*.txt verify_output.txt
 ```
 
 `robocopy` exit codes `0` through `7` are success states.
+
+See **`docs/HF_SPACE_SECRETS.md`** for the full secrets checklist.
 
 The Space repo root must contain these files:
 

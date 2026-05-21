@@ -24,11 +24,12 @@ COPY --chown=user:user . .
 
 USER user
 
-EXPOSE 8000
+EXPOSE 7860
 
-ENV PORT=8000
+# Hugging Face Spaces sets PORT=7860; local Docker Compose sets PORT=8000.
+ENV PORT=7860
 
-HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=5 \
-  CMD curl -fsS http://localhost:${PORT:-8000}/health || exit 1
+HEALTHCHECK --interval=30s --timeout=10s --start-period=180s --retries=6 \
+  CMD curl -fsS http://localhost:${PORT}/health || exit 1
 
-CMD ["sh", "-c", "python -m uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+CMD ["sh", "-c", "python -m uvicorn main:app --host 0.0.0.0 --port ${PORT}"]

@@ -347,6 +347,7 @@ def _allowed_cors_origin_regex() -> str | None:
     return (
         r"^(chrome-extension|moz-extension|ms-browser-extension)://.*"
         r"|^https?://(127\.0\.0\.1|localhost)(:\d+)?$"
+        r"|^https://[a-z0-9][a-z0-9-]*\.hf\.space$"
         r"|^https://([a-z0-9-]+\.)*"
         r"(google\.com|googlemail\.com|gmail\.com|live\.com|office\.com|office365\.com|"
         r"outlook\.com|hotmail\.com|yahoo\.com|proton\.me|protonmail\.com|zoho\.com)"
@@ -1653,7 +1654,27 @@ async def startup_event() -> None:
         except Exception as exc:
             uvicorn_logger.warning("⚠️ %s warmup failed: %s", provider_name, exc)
 
+    def _sync_transformer_artifacts_from_hub() -> None:
+        try:
+            from models.artifact_sync import ensure_artifacts_from_hub
+
+            ensure_artifacts_from_hub(
+                SECUREBERT_MODEL_DIR,
+                SECUREBERT_REQUIRED_FILES,
+                os.getenv("PHISHSHIELD_SECUREBERT_HF_REPO"),
+                label="SecureBERT",
+            )
+            ensure_artifacts_from_hub(
+                MURIL_MODEL_DIR,
+                MURIL_REQUIRED_FILES,
+                os.getenv("PHISHSHIELD_MURIL_HF_REPO"),
+                label="MuRIL",
+            )
+        except Exception as exc:
+            logging.getLogger("uvicorn.error").warning("Transformer artifact sync failed: %s", exc)
+
     async def _warmup_providers() -> None:
+        _sync_transformer_artifacts_from_hub()
         # Load one transformer at a time to avoid RAM spikes that leave weights on meta device.
         await _warmup_single_provider("SecureBERT", _securebert_provider)
         await _warmup_single_provider("MuRIL", _muril_provider)

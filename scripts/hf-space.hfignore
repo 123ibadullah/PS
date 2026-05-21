@@ -1,0 +1,6 @@
+indicbert_model/
+models/securebert_model/
+models/muril_model/
+**/*.safetensors
+reports/
+.env
